@@ -17,6 +17,7 @@ import EnumerationIdViewer from "@/modelEditor/viewer/EnumerationIdViewer.vue";
 import EnumerationItemIdViewer from "@/modelEditor/viewer/property/EnumerationItemIdViewer.vue";
 import AssociationIdViewer from "@/modelEditor/viewer/AssociationIdViewer.vue";
 import MappedPropertyIdViewer from "@/modelEditor/viewer/property/MappedPropertyIdViewer.vue";
+import MappedPropertyOwnerIdViewer from "@/modelEditor/viewer/property/MappedPropertyOwnerIdViewer.vue";
 
 const {
     modelDiagnoseInfo,
@@ -113,11 +114,15 @@ const {
                                 v-if="messages.length > 0"
                                 @click.stop="focusDiagnosticSource({type: 'EntityProperty', entityId, propertyId})"
                             >
-                                <EntityPropertyIdViewer
-                                    :entity-id="entityId"
-                                    :id="propertyId"
-                                    ctrl-focus
-                                />
+                                <div>
+                                    <EntityIdViewer :id="entityId" ctrl-focus/>
+                                    <span class="sub-item-point">.</span>
+                                    <EntityPropertyIdViewer
+                                        :entity-id="entityId"
+                                        :id="propertyId"
+                                        ctrl-focus
+                                    />
+                                </div>
                                 <DiagnoseViewer :messages="messages"/>
                             </div>
                         </template>
@@ -156,11 +161,15 @@ const {
                                 v-if="messages.length > 0"
                                 @click.stop="focusDiagnosticSource({type: 'MappedSuperClassProperty', mappedSuperClassId, propertyId})"
                             >
-                                <MappedSuperClassPropertyIdViewer
-                                    :mapped-super-class-id="mappedSuperClassId"
-                                    :id="propertyId"
-                                    ctrl-focus
-                                />
+                                <div>
+                                    <MappedSuperClassIdViewer :id="mappedSuperClassId" ctrl-focus/>
+                                    <span class="sub-item-point">.</span>
+                                    <MappedSuperClassPropertyIdViewer
+                                        :mapped-super-class-id="mappedSuperClassId"
+                                        :id="propertyId"
+                                        ctrl-focus
+                                    />
+                                </div>
                                 <DiagnoseViewer :messages="messages"/>
                             </div>
                         </template>
@@ -199,11 +208,15 @@ const {
                                 v-if="messages.length > 0"
                                 @click.stop="focusDiagnosticSource({type: 'EmbeddableTypeProperty', embeddableTypeId, propertyId})"
                             >
-                                <EmbeddableTypePropertyIdViewer
-                                    :embeddable-type-id="embeddableTypeId"
-                                    :id="propertyId"
-                                    ctrl-focus
-                                />
+                                <div>
+                                    <EmbeddableTypeIdViewer :id="embeddableTypeId" ctrl-focus/>
+                                    <span class="sub-item-point">.</span>
+                                    <EmbeddableTypePropertyIdViewer
+                                        :embeddable-type-id="embeddableTypeId"
+                                        :id="propertyId"
+                                        ctrl-focus
+                                    />
+                                </div>
                                 <DiagnoseViewer :messages="messages"/>
                             </div>
                         </template>
@@ -242,11 +255,15 @@ const {
                                 v-if="messages.length > 0"
                                 @click.stop="focusDiagnosticSource({type: 'EnumerationItem', enumerationId, itemId})"
                             >
-                                <EnumerationItemIdViewer
-                                    :enumeration-id="enumerationId"
-                                    :id="itemId"
-                                    ctrl-focus
-                                />
+                                <div>
+                                    <EnumerationIdViewer :id="enumerationId" ctrl-focus/>
+                                    <span class="sub-item-point">.</span>
+                                    <EnumerationItemIdViewer
+                                        :enumeration-id="enumerationId"
+                                        :id="itemId"
+                                        ctrl-focus
+                                    />
+                                </div>
                                 <DiagnoseViewer :messages="messages"/>
                             </div>
                         </template>
@@ -281,7 +298,11 @@ const {
                             v-if="mappedProperty.length > 0"
                             @click.stop="focusDiagnosticSource({type: 'MappedProperty', associationId})"
                         >
-                            <MappedPropertyIdViewer :association-id="associationId" ctrl-focus/>
+                            <div>
+                                <MappedPropertyOwnerIdViewer :association-id="associationId" ctrl-focus/>
+                                <span class="sub-item-point">.</span>
+                                <MappedPropertyIdViewer :association-id="associationId" ctrl-focus/>
+                            </div>
                             <DiagnoseViewer :messages="mappedProperty"/>
                         </div>
                     </template>
@@ -308,5 +329,9 @@ const {
 
 .diagnose-item:hover {
     background-color: var(--background-color-hover);
+}
+
+.sub-item-point {
+    padding: 0.125rem;
 }
 </style>
