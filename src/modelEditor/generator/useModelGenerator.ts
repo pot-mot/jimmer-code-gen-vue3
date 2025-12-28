@@ -1,5 +1,5 @@
 import {createStore} from "@/utils/store/createStore.ts";
-import {modelGenerate} from "@/modelEditor/generator/modelGenerate.ts";
+import {modelGenerate, type ModelGenerateResult} from "@/modelEditor/generator/modelGenerate.ts";
 import {useDialogOpenState} from "@/components/dialog/DialogOpenState.ts";
 import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 import {ref} from "vue";
@@ -15,7 +15,7 @@ export const useModelGenerator = createStore(() => {
         generate: (
             context: DeepReadonly<ModelContext>,
             selectedIds: DeepReadonly<Partial<ModelSubIds>>,
-        ): Record<string, string> | undefined => {
+        ): ModelGenerateResult | undefined => {
             const modelEditor = useModelEditor()
             modelEditor.diagnose()
             if (modelEditor.modelDiagnoseInfo.total > 0) {

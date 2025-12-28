@@ -129,7 +129,7 @@ const handleCopy = () => {
 	overflow: scroll;
     display: grid;
     grid-template-columns: auto 1fr;
-    padding: 0.5em 0;
+    padding-top: 0.5rem;
 }
 
 .code {

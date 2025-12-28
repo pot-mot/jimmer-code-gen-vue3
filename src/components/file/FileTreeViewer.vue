@@ -42,6 +42,7 @@ const currentLanguage = computed(() => {
                     :paths="paths"
                     v-model:current-file-path="currentFilePath"
                     v-model:selected-path-set="selectedPathSet"
+                    style="padding-left: 0.5rem; overflow-x: auto;"
                 />
             </div>
         </Pane>
@@ -51,6 +52,7 @@ const currentLanguage = computed(() => {
                     v-if="currentFileContent !== undefined && currentLanguage !== undefined"
                     :code="currentFileContent"
                     :language="currentLanguage"
+                    style="padding-left: 0.5rem;"
                 />
             </div>
         </Pane>
@@ -61,7 +63,6 @@ const currentLanguage = computed(() => {
 .pane-content {
     height: 100%;
     width: 100%;
-    padding: 0.5rem;
-    overflow: auto;
+    overflow: hidden;
 }
 </style>

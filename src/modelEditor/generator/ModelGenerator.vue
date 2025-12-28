@@ -14,6 +14,7 @@ import IconEdit from "@/components/icons/IconEdit.vue";
 import IconDownload from "@/components/icons/IconDownload.vue";
 import {downloadZip} from "@/utils/file/zipDownload.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
+import type {ModelGenerateError} from "@/modelEditor/generator/modelGenerate.ts";
 
 const {
     getContext,
@@ -29,7 +30,9 @@ const {
     open: openGenerateScriptEditor,
 } = useScriptDialog()
 
-const generateResult = ref<Record<string, string>>()
+const generateFiles = ref<Record<string, string>>()
+// TODO add generateErrors preview
+const generateErrors = ref<ModelGenerateError[] | undefined>()
 const errorMessage = ref<string>()
 
 const receiveError = (error: any) => {
@@ -48,17 +51,21 @@ const receiveError = (error: any) => {
 
 
 const handleGenerate = async () => {
-    generateResult.value = undefined
+    generateFiles.value = undefined
+    generateErrors.value = undefined
     errorMessage.value = undefined
     await withLoading("Generating...", async () => {
         try {
-            generateResult.value = generate(
+            const generateResult = generate(
                 getContext(),
                 subIdSetToSubIds(selectedIdSets.value)
             )
+            generateFiles.value = generateResult?.files
+            generateErrors.value = generateResult?.errors
         } catch (e) {
             receiveError(e)
-            generateResult.value = undefined
+            generateFiles.value = undefined
+            generateErrors.value = undefined
         }
     })
 }
@@ -68,18 +75,18 @@ const downloadScope = ref<"ALL" | "SELECTED">("ALL")
 const handleDownloadFiles = (selectedPathSet?: Set<string>) => {
     try {
         withLoading(translate('download'), async () => {
-            if (generateResult.value === undefined || Object.keys(generateResult.value).length === 0) {
+            if (generateFiles.value === undefined || Object.keys(generateFiles.value).length === 0) {
                 return
             }
 
             if (selectedPathSet !== undefined && selectedPathSet.size > 0) {
                 const files: Record<string, string | undefined> = {}
                 for (const path of selectedPathSet) {
-                    files[path] = generateResult.value[path]
+                    files[path] = generateFiles.value[path]
                 }
                 await downloadZip(downloadFileName, files)
             } else {
-                await downloadZip(downloadFileName, generateResult.value)
+                await downloadZip(downloadFileName, generateFiles.value)
             }
             sendMessage(translate({key: 'download_success', args: [downloadFileName]}), {type: 'success'})
         })
@@ -109,10 +116,14 @@ watch(() => openState.value, async () => {
             v-if="errorMessage"
         >
             {{ errorMessage }}
+            <button @click="openGenerateScriptEditor">
+                <IconEdit/>
+                {{ translate('script_dialog_button') }}
+            </button>
         </div>
         <FileTreeViewer
-            v-if="generateResult"
-            :files="generateResult"
+            v-if="generateFiles"
+            :files="generateFiles"
         >
             <template #left-top="{selectedPathSet}">
                 <div class="file-toolbar">
@@ -152,11 +163,14 @@ watch(() => openState.value, async () => {
 <style scoped>
 .error-message-content {
     color: var(--danger-color);
+    padding: 1rem;
 }
 
 .file-toolbar {
     display: flex;
     gap: 0.5rem;
+    width: 100%;
+    overflow-x: auto;
 }
 
 .file-toolbar > button {
