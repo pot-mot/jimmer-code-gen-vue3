@@ -493,7 +493,7 @@ export const entityToTable = (
         }
 
         for (const [key, columnNames] of keyColumnNamesMap.entries()) {
-            const idxName = INDEX_PREFIX + key
+            const idxName = INDEX_PREFIX + table.name + key
             table.indexes.push({
                 name: idxName,
                 columnNames,
