@@ -577,7 +577,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                     const actualParamType = typeChecker.getTypeAtLocation(actualParam.type)
 
                     // 检查参数类型是否匹配
-                    if (!typeChecker.isTypeAssignableTo(actualParamType, declareParam.type)) {
+                    if (!typeChecker.isTypeAssignableTo(declareParam.type, actualParamType)) {
                         markers.push(createMarker(actualParam,
                             translate({
                                 key: "parameter_type_mismatch",
