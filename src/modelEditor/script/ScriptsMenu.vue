@@ -3,7 +3,7 @@ import type {ScriptInfo, ScriptsStore} from "@/modelEditor/script/ScriptsStore.t
 import {translate} from "@/store/i18nStore.ts";
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import IconAdd from "@/components/icons/IconAdd.vue";
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import JvmLanguageNullableSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageNullableSelect.vue";
 import DatabaseTypeNullableSelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeNullableSelect.vue";
 import SelectableTree from "@/components/tree/SelectableTree.vue";
@@ -65,6 +65,9 @@ const selectScript = (id: string) => {
 }
 
 const selectedIdSet = ref<Set<string>>(new Set())
+watch(() => props.currentId, (currentId) => {
+    selectedIdSet.value = new Set([currentId])
+}, {immediate: true})
 
 const selectedScriptIds = computed(() => {
     return [...selectedIdSet.value].filter(it => props.scriptStore.scriptInfoMap.has(it))
@@ -91,7 +94,8 @@ const removeScripts = () => {
             class="script-items-wrapper"
             :data="filterableTree"
             v-model:selected-id-set="selectedIdSet"
-            @item-click="(node: ScriptTreeNode) => {
+            @item-click="(node: ScriptTreeNode, e: MouseEvent) => {
+                if (e.ctrlKey) return
                 if (node.data.type === 'Script') selectScript(node.id)
             }"
         >
