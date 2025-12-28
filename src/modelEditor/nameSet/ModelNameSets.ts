@@ -298,8 +298,6 @@ export const useModelNameSets = (
     const associationNameMap = new Map<string, string>()
     const syncAssociation = (association: DeepReadonly<AssociationIdOnly>) => {
         if ("name" in association) {
-            console.log(association.name)
-            console.log(new Error())
             syncNameSetAndNameMap(
                 association,
                 [
