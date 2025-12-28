@@ -15,6 +15,11 @@ import IconDownload from "@/components/icons/IconDownload.vue";
 import {downloadZip} from "@/utils/file/zipDownload.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import type {ModelGenerateError} from "@/modelEditor/generator/modelGenerate.ts";
+import EntityViewer from "@/modelEditor/viewer/EntityViewer.vue";
+import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.vue";
+import EmbeddableTypeViewer from "@/modelEditor/viewer/EmbeddableTypeViewer.vue";
+import EnumerationViewer from "@/modelEditor/viewer/EnumerationViewer.vue";
+import AssociationViewer from "@/modelEditor/viewer/AssociationViewer.vue";
 
 const {
     getContext,
@@ -31,21 +36,20 @@ const {
 } = useScriptDialog()
 
 const generateFiles = ref<Record<string, string>>()
-// TODO add generateErrors preview
 const generateErrors = ref<ModelGenerateError[] | undefined>()
-const errorMessage = ref<string>()
+const unexpectErrorMessage = ref<string>()
 
 const receiveError = (error: any) => {
     if (typeof error === 'string') {
-        errorMessage.value = error
+        unexpectErrorMessage.value = error
     } else if (error instanceof Error) {
         console.error(error)
-        errorMessage.value = error.message
+        unexpectErrorMessage.value = error.message
     } else if (typeof error === 'object') {
         console.error(error)
-        errorMessage.value = jsonPrettyFormat(error)
+        unexpectErrorMessage.value = jsonPrettyFormat(error)
     } else {
-        errorMessage.value = String(error)
+        unexpectErrorMessage.value = String(error)
     }
 }
 
@@ -53,7 +57,7 @@ const receiveError = (error: any) => {
 const handleGenerate = async () => {
     generateFiles.value = undefined
     generateErrors.value = undefined
-    errorMessage.value = undefined
+    unexpectErrorMessage.value = undefined
     await withLoading("Generating...", async () => {
         try {
             const generateResult = generate(
@@ -111,16 +115,50 @@ watch(() => openState.value, async () => {
         <template #title>
             {{ translate('generateResult') }}
         </template>
+
         <div
-            class="error-message-content no-drag"
-            v-if="errorMessage"
+            class="error-content no-drag"
+            v-if="unexpectErrorMessage"
         >
-            {{ errorMessage }}
+            <div class="error-message">
+                {{ unexpectErrorMessage }}
+            </div>
             <button @click="openGenerateScriptEditor">
                 <IconEdit/>
                 {{ translate('script_dialog_button') }}
             </button>
         </div>
+
+        <div
+            class="error-content no-drag"
+            v-if="generateErrors && generateErrors.length > 0"
+        >
+            <div
+                v-for="(error, index) in generateErrors"
+                :key="index"
+                class="error-item"
+            >
+                <div class="error-script">{{ translate({key: 'script_execute_error', args: [error.scriptName]}) }}</div>
+                <div class="error-type" v-if="error.target.type === 'Entity'">
+                    <EntityViewer :entity="error.target.entity"/>
+                </div>
+                <div class="error-type" v-else-if="error.target.type === 'MappedSuperClass'">
+                    <MappedSuperClassViewer :mapped-super-class="error.target.mappedSuperClass"/>
+                </div>
+                <div class="error-type" v-else-if="error.target.type === 'EmbeddableType'">
+                    <EmbeddableTypeViewer :embeddable-type="error.target.embeddableType"/>
+                </div>
+                <div class="error-type" v-else-if="error.target.type === 'Enumeration'">
+                    <EnumerationViewer :enumeration="error.target.enumeration"/>
+                </div>
+                <div class="error-type" v-else-if="error.target.type === 'Association'">
+                    <AssociationViewer :association="error.target.association"/>
+                </div>
+                <div class="error-type" v-else>{{ error.target.type }}</div>
+                <div class="error-message">{{ error.message }}</div>
+            </div>
+        </div>
+
         <FileTreeViewer
             v-if="generateFiles"
             :files="generateFiles"
@@ -161,16 +199,42 @@ watch(() => openState.value, async () => {
 </template>
 
 <style scoped>
-.error-message-content {
-    color: var(--danger-color);
+.error-content {
     padding: 1rem;
+}
+
+.error-item {
+    border: var(--border);
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.error-item > * {
+    flex-shrink: 0;
+}
+
+.error-script {
+    width: 12rem;
+}
+
+.error-message {
+    color: var(--danger-color);
+    white-space: pre-line;
 }
 
 .file-toolbar {
     display: flex;
     gap: 0.5rem;
-    width: 100%;
+    width: calc(100% - 1rem);
     overflow-x: auto;
+    margin: 0 0.5rem 0.25rem;
 }
 
 .file-toolbar > button {

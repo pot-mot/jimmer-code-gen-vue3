@@ -130,6 +130,7 @@ export type MainLocale = {
     script_dialog_button: string
     script_dialog_title: string
     script_error: string
+    script_execute_error: (scriptName: string) => string
 
     script_declare_type_not_found: (scriptType: string) => string
     script_can_contains_only_one_arrow_function_and_type_declares: string

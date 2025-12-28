@@ -134,6 +134,7 @@ export const localeZhCn: MainLocale = {
     script_dialog_button: "脚本管理",
     script_dialog_title: "脚本管理",
     script_error: "脚本错误",
+    script_execute_error: (scriptName: string) => `脚本 [${scriptName}] 执行错误：`,
 
     script_declare_type_not_found: (scriptType: string) => `未找到声明的类型: ${scriptType}`,
     script_can_contains_only_one_arrow_function_and_type_declares: "脚本只能包含一个箭头函数和类型声明",

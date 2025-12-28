@@ -134,6 +134,7 @@ export const localeEn: MainLocale = {
     script_dialog_button: "Script Manage",
     script_dialog_title: "Script Manage",
     script_error: "Script Error",
+    script_execute_error: (scriptName: string) => `Script [${scriptName}] execute error: `,
 
     script_declare_type_not_found: (scriptType: string) => `Script type declaration not found: ${scriptType}`,
     script_can_contains_only_one_arrow_function_and_type_declares: "Script can only contain one arrow function and type declarations",
