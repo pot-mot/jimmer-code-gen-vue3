@@ -44,12 +44,14 @@ const dangerMessages = computed(() => props.messages?.filter(message => message.
     border: var(--border);
     border-color: var(--background-color-hover);
     border-radius: 0.25rem;
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
 .count-label {
     font-size: 0.8rem;
     padding: 0 0.2rem;
+    min-width: 0.5rem;
 }
 
 .count-label.error {
