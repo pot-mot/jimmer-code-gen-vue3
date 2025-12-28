@@ -9,14 +9,12 @@ import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import LabelPositionEditor from "@/modelEditor/edge/tool/LabelPositionEditor.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import {
-    tmp_abstractMidTableName,
-    tmpl_abstractFkName,
-    tmpl_fkComment,
     tmpl_mappedPropertyComment,
-    tmpl_mappedPropertyName, tmpl_midTableComment
+    tmpl_mappedPropertyName
 } from "@/type/context/utils/AssociationTemplate.ts";
 import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
 import NameCommentTemplateOnlyEditor from "@/modelEditor/nameComment/NameCommentTemplateOnlyEditor.vue";
+import {useIdViewNameComment} from "@/modelEditor/viewer/association/nameComment.ts";
 
 const props = defineProps<EdgeProps<AbstractAssociationEdge["data"]>>()
 
@@ -31,10 +29,6 @@ const sourceProperty = computed(() => {
     })
 })
 
-const referencedEntity = computed(() => {
-    return contextData.entityMap.get(props.data.edgedAssociation.association.referencedEntityId)
-})
-
 const associationEdgeRef = useTemplateRef("associationEdgeRef")
 const getPath = computed(() => {
     return associationEdgeRef.value?.getPath ?? (() => {
@@ -42,38 +36,7 @@ const getPath = computed(() => {
     })
 })
 
-const associationNameCommentView = computed(() => {
-    if (
-        props.data.edgedAssociation.association.type === "ManyToOne_Abstract" ||
-        props.data.edgedAssociation.association.type === "OneToOne_Abstract"
-    ) {
-        return {
-            name: tmpl_abstractFkName(
-                props.data.edgedAssociation.association.nameTemplate,
-                {name: sourceAbstractEntity.value ? sourceAbstractEntity.value.name : '[NOT_EXISTED]'},
-                {name: sourceProperty.value ? sourceProperty.value.name : '[NOT_EXISTED]'}
-            ),
-            comment: tmpl_fkComment(
-                props.data.edgedAssociation.association.commentTemplate,
-                {comment: sourceAbstractEntity.value ? `$${sourceAbstractEntity.value.comment}$` : '[NOT_EXISTED]'},
-                {comment: sourceProperty.value ? sourceProperty.value.comment : '[NOT_EXISTED]'}
-            ),
-        }
-    } else {
-        return {
-            name: tmp_abstractMidTableName(
-                props.data.edgedAssociation.association.nameTemplate,
-                {name: sourceAbstractEntity.value ? sourceAbstractEntity.value.name : '[NOT_EXISTED]'},
-                {name: referencedEntity.value ? referencedEntity.value.name : '[NOT_EXISTED]'}
-            ),
-            comment: tmpl_midTableComment(
-                props.data.edgedAssociation.association.commentTemplate,
-                {comment: sourceAbstractEntity.value ? `$${sourceAbstractEntity.value.comment}$` : '[NOT_EXISTED]'},
-                {comment: referencedEntity.value ? referencedEntity.value.comment : '[NOT_EXISTED]'}
-            )
-        }
-    }
-})
+const associationNameCommentView = useIdViewNameComment(() => props.data.edgedAssociation.association)
 
 const mappedPropertyNameCommentView = computed(() => {
     const mappedProperty = props.data.edgedAssociation.association.mappedProperty
@@ -111,8 +74,8 @@ const mappedPropertyNameCommentView = computed(() => {
                     <div class="foreign-key-info">
                         <NameCommentTemplateOnlyEditor
                             v-model="data.edgedAssociation.association"
-                            :name="associationNameCommentView.name"
-                            :comment="associationNameCommentView.comment"
+                            :name="associationNameCommentView?.name ?? '[Empty]'"
+                            :comment="associationNameCommentView?.comment ?? '[Empty]'"
                             class="with-border-bg"
                             :font-size="12"
                         />

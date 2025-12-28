@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed} from "vue";
-import AssociationViewer from "@/modelEditor/viewer/AssociationViewer.vue";
+import AssociationIdOnlyViewer from "@/modelEditor/viewer/AssociationIdOnlyViewer.vue";
 
 const {contextData} = useModelEditor()
 
@@ -19,7 +19,7 @@ const association = computed(() => {
 </script>
 
 <template>
-    <AssociationViewer
+    <AssociationIdOnlyViewer
         :association="association"
         :hide-comment="hideComment"
         :ctrl-focus="ctrlFocus"

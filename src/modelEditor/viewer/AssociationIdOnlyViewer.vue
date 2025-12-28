@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {useNameComment} from "@/modelEditor/viewer/association/nameComment.ts";
+import {useIdViewNameComment} from "@/modelEditor/viewer/association/nameComment.ts";
 
 const props = withDefaults(defineProps<{
-    association: DeepReadonly<Association> | undefined
+    association: DeepReadonly<AssociationIdOnly> | undefined
     ctrlFocus?: boolean
     hideComment?: boolean
 }>(), {
@@ -21,7 +21,7 @@ const handleFocus = () => {
     focusEdge(props.association.id)
 }
 
-const associationNameComment = useNameComment(() => props.association)
+const associationNameComment = useIdViewNameComment(() => props.association)
 </script>
 
 <template>
