@@ -30,6 +30,7 @@ const {
     toggleDefaultMouseAction,
     modelSelectionCount,
     modelDiagnoseInfo,
+    diagnose,
 } = useModelEditor()
 
 const {
@@ -51,6 +52,7 @@ const {
 } = useDiagnoseDialog()
 
 const handleGenerate = () => {
+    diagnose()
     if (modelDiagnoseInfo.total > 0) {
         sendMessage(translate("generate_fail_because_of_some_checked_questions"), {type: "warning"})
         openDiagnoseDialog()
