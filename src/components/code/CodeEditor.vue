@@ -25,11 +25,18 @@ const editorContainer = ref<HTMLElement>()
 
 const options: IStandaloneEditorConstructionOptions = {
     ...defaultOptions,
+    ...props.options,
 	value: textValue.value,
 	language: props.language,
 }
 
 const editorInstance = shallowRef<IStandaloneCodeEditor>()
+
+watch(() => props.options, () => {
+    editorInstance.value?.updateOptions({
+        ...props.options
+    })
+}, {immediate: false})
 
 onMounted(() => {
     if (!editorContainer.value) {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useTemplateRef, computed, onUnmounted, watch} from 'vue';
-import {Uri} from "monaco-editor";
+import {editor, Uri} from "monaco-editor";
 import {v7} from "uuid"
 import {
     addJsonSchemaFile,
@@ -9,6 +9,7 @@ import {
 } from "@/components/code/jsonEditor/JsonSchemaStore.ts";
 import DiffEditor from "@/components/code/diffEditor/DiffEditor.vue";
 import type {JsonSchemaKey} from "@/type/__generated/jsonSchema";
+type IStandaloneDiffEditorConstructionOptions = editor.IStandaloneDiffEditorConstructionOptions;
 
 const diffEditorRef = useTemplateRef<InstanceType<typeof DiffEditor>>("diffEditorRef")
 const editorInstance = computed(() => {
@@ -26,10 +27,14 @@ const modifiedValue = defineModel<string>({
     default: '',
 })
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     jsonType: JsonSchemaKey,
     originValue: string,
-}>()
+    originalEditable?: boolean,
+    options?: Omit<Partial<IStandaloneDiffEditorConstructionOptions>, 'language' | 'originalEditable'>,
+}>(), {
+    originalEditable: false
+})
 
 const originFilePath = `${v7()}.json`
 const originFileUri = Uri.parse(originFilePath)
@@ -63,7 +68,8 @@ defineExpose({
     <DiffEditor
         ref="diffEditorRef"
         :origin-value="originValue"
-        :original-editable="false"
+        :original-editable="originalEditable"
+        :options="options"
         v-model:modified-value="modifiedValue"
         :language="'json'"
         :origin-model-uri="originFileUri"

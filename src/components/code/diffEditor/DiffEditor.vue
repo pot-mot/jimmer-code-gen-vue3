@@ -31,6 +31,7 @@ const editorContainer = ref<HTMLElement>()
 
 const options: IStandaloneDiffEditorConstructionOptions = {
     ...defaultOptions,
+    ...props.options,
     originalEditable: props.originalEditable,
 }
 
@@ -38,11 +39,17 @@ const editorInstance = shallowRef<IDiffEditor>()
 const originModel = shallowRef<ITextModel>()
 const modifiedModel = shallowRef<ITextModel>()
 
+watch(() => props.options, () => {
+    editorInstance.value?.updateOptions({
+        ...props.options
+    })
+}, {immediate: false})
+
 watch(() => props.originalEditable, () => {
     editorInstance.value?.updateOptions({
         originalEditable: props.originalEditable
     })
-})
+}, {immediate: false})
 
 onMounted(() => {
     if (!editorContainer.value) {

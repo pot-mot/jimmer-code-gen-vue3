@@ -9,6 +9,7 @@ import {
     validateJsonSchemaString
 } from "@/components/code/jsonEditor/JsonSchemaStore.ts";
 import type {JsonSchemaKey} from "@/type/__generated/jsonSchema";
+type IStandaloneEditorConstructionOptions = editor.IStandaloneEditorConstructionOptions;
 
 const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")
 const editorInstance = computed(() => {
@@ -22,6 +23,7 @@ const textValue = defineModel<string>({
 
 const props = defineProps<{
     jsonType: JsonSchemaKey,
+    options?: Omit<Partial<IStandaloneEditorConstructionOptions>, 'language' | 'value' | 'model'>,
 }>()
 
 const filePath = `${v7()}.json`
@@ -55,6 +57,6 @@ defineExpose({
         ref="editorRef"
         v-model="textValue"
         :language="'json'"
-        :options="{model}"
+        :options="{...options, model}"
     />
 </template>
