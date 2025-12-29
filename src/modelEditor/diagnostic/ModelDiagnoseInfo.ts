@@ -12,6 +12,7 @@ import {
 } from "@/modelEditor/diagnostic/mappedSuperClassDiagnose.ts";
 import {groupDiagnose, type GroupDiagnose} from "@/modelEditor/diagnostic/groupDiagnose.ts";
 import {type AssociationDiagnose, associationDiagnose} from "@/modelEditor/diagnostic/associationDiagnose.ts";
+import {defaultModelSubIdSets} from "@/modelEditor/utils/ModelSubIds.ts";
 
 export type DiagnoseType = "warning" | "error" | "info"
 
@@ -147,42 +148,80 @@ export const useModelDiagnoseInfo = (
         modelDiagnoseInfo.associationMap.delete(id)
     }
 
-    // TODO diagnose add collect and finally setDiagnose
-
-    const syncSameNameGroup = (name: string) => {
-        for (const group of contextData.groupMap.values()) {
-            if (group.name === name) setGroupDiagnose(group)
+    const syncDiagnoseByIdSets = (idSets: DeepReadonly<ModelSubIdSets>) => {
+        for (const id of idSets.entityIdSet) {
+            const entity = contextData.entityMap.get(id)
+            if (entity) setEntityDiagnose(entity)
+        }
+        for (const id of idSets.mappedSuperClassIdSet) {
+            const mappedSuperClass = contextData.mappedSuperClassMap.get(id)
+            if (mappedSuperClass) setMappedSuperClassDiagnose(mappedSuperClass)
+        }
+        for (const id of idSets.embeddableTypeIdSet) {
+            const embeddableType = contextData.embeddableTypeMap.get(id)
+            if (embeddableType) setEmbeddableTypeDiagnose(embeddableType)
+        }
+        for (const id of idSets.enumerationIdSet) {
+            const enumeration = contextData.enumerationMap.get(id)
+            if (enumeration) setEnumerationDiagnose(enumeration)
+        }
+        for (const id of idSets.associationIdSet) {
+            const edgedAssociation = contextData.associationMap.get(id)
+            if (edgedAssociation) setAssociationDiagnose(edgedAssociation.association)
+        }
+        for (const id of idSets.groupIdSet) {
+            const group = contextData.groupMap.get(id)
+            if (group) setGroupDiagnose(group)
         }
     }
 
-    const syncSameNameGroupItem = (name: string) => {
+    const addSameNameGroup = (
+        name: string,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
+        for (const group of contextData.groupMap.values()) {
+            if (group.name === name) subIdSets.groupIdSet.add(group.id)
+        }
+        return subIdSets
+    }
+
+    const addSameNameGroupItems = (
+        name: string,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
         for (const entity of contextData.entityMap.values()) {
-            if (entity.name === name) setEntityDiagnose(entity)
+            if (entity.name === name) subIdSets.entityIdSet.add(entity.id)
         }
         for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
-            if (mappedSuperClass.name === name) setMappedSuperClassDiagnose(mappedSuperClass)
+            if (mappedSuperClass.name === name) subIdSets.mappedSuperClassIdSet.add(mappedSuperClass.id)
         }
         for (const embeddableType of contextData.embeddableTypeMap.values()) {
-            if (embeddableType.name === name) setEmbeddableTypeDiagnose(embeddableType)
+            if (embeddableType.name === name) subIdSets.embeddableTypeIdSet.add(embeddableType.id)
         }
         for (const enumeration of contextData.enumerationMap.values()) {
-            if (enumeration.name === name) setEnumerationDiagnose(enumeration)
+            if (enumeration.name === name) subIdSets.enumerationIdSet.add(enumeration.id)
         }
+        return subIdSets
     }
 
-    const syncSameNameAssociation = (name: string) => {
+    const addSameNameAssociation = (
+        name: string,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
         for (const {association} of contextData.associationMap.values()) {
-            if ("name" in association && association.name === name) setAssociationDiagnose(association)
+            if ("name" in association && association.name === name) subIdSets.associationIdSet.add(association.id)
         }
+        return subIdSets
     }
 
-    const syncEntityReferences = (
+    const collectEntityReferences = (
         entityId: string,
-    ) => {
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
         for (const entity of contextData.entityMap.values()) {
             for (const property of entity.properties) {
                 if ("referencedEntityId" in property && property.referencedEntityId === entityId) {
-                    setEntityDiagnose(entity)
+                    subIdSets.entityIdSet.add(entity.id)
                     break
                 }
             }
@@ -190,37 +229,88 @@ export const useModelDiagnoseInfo = (
         for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
             for (const property of mappedSuperClass.properties) {
                 if ("referencedEntityId" in property && property.referencedEntityId === entityId) {
-                    setMappedSuperClassDiagnose(mappedSuperClass)
+                    subIdSets.mappedSuperClassIdSet.add(mappedSuperClass.id)
                     break
                 }
             }
         }
         for (const {association} of contextData.associationMap.values()) {
             if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
-                setAssociationDiagnose(association)
+                subIdSets.associationIdSet.add(association.id)
             } else if (association.referencedEntityId === entityId) {
-                setAssociationDiagnose(association)
+                subIdSets.associationIdSet.add(association.id)
             }
         }
+
+        return subIdSets
     }
 
-    const syncMappedSuperClassReferences = (
+    const collectMappedSuperClassReferences = (
         mappedSuperClassId: string,
-    ) => {
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets(),
+        unvisitedIdSet: Set<string> = new Set<string>()
+    ): ModelSubIdSets => {
         for (const {association} of contextData.associationMap.values()) {
             if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
-                setAssociationDiagnose(association)
+                subIdSets.associationIdSet.add(association.id)
             }
         }
+
+        const inheritItem = inheritInfo.abstractInheritInfoMap.get(mappedSuperClassId)
+        if (inheritItem !== undefined) {
+            for (const childId of inheritItem.concreteChildIdSet) {
+                if (!unvisitedIdSet.has(childId)) {
+                    unvisitedIdSet.add(childId)
+                    const child = contextData.entityMap.get(childId)
+                    if (child !== undefined) collectEntityNeedDiagnose(child, undefined, subIdSets)
+                }
+            }
+            for (const childId of inheritItem.abstractChildIdSet) {
+                if (!unvisitedIdSet.has(childId)) {
+                    unvisitedIdSet.add(childId)
+                    const child  = contextData.mappedSuperClassMap.get(childId)
+                    if (child !== undefined) collectMappedSuperClassNeedDiagnose(child,  undefined, subIdSets, unvisitedIdSet)
+                }
+            }
+        }
+
+        return subIdSets
     }
 
-    const syncEmbeddableTypeReferences = (
+    const collectMissingMapperSuperClassChildren = (
+        mappedSuperClassId: string,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets(),
+        unvisitedIdSet: Set<string> = new Set<string>()
+    ): ModelSubIdSets => {
+        for (const [missingId, missingDependency] of inheritInfo.missingDependencies) {
+            if (missingDependency.has(mappedSuperClassId)) {
+                if (contextData.entityMap.has(missingId)) {
+                    if (!unvisitedIdSet.has(missingId)) {
+                        unvisitedIdSet.add(missingId)
+                        const child = contextData.entityMap.get(missingId)
+                        if (child !== undefined) collectEntityNeedDiagnose(child, undefined, subIdSets)
+                    }
+                } else if (contextData.mappedSuperClassMap.has(missingId)) {
+                    if (!unvisitedIdSet.has(missingId)) {
+                        unvisitedIdSet.add(missingId)
+                        const child = contextData.mappedSuperClassMap.get(missingId)
+                        if (child !== undefined) collectMappedSuperClassNeedDiagnose(child, undefined, subIdSets, unvisitedIdSet)
+                    }
+                }
+            }
+        }
+
+        return subIdSets
+    }
+
+    const collectEmbeddableTypeReferences = (
         embeddableTypeId: string,
-    ) => {
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
         for (const entity of contextData.entityMap.values()) {
             for (const property of entity.properties) {
                 if ("embeddableTypeId" in property && property.embeddableTypeId === embeddableTypeId) {
-                    setEntityDiagnose(entity)
+                    subIdSets.entityIdSet.add(entity.id)
                     break
                 }
             }
@@ -228,7 +318,7 @@ export const useModelDiagnoseInfo = (
         for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
             for (const property of mappedSuperClass.properties) {
                 if ("embeddableTypeId" in property && property.embeddableTypeId === embeddableTypeId) {
-                    setMappedSuperClassDiagnose(mappedSuperClass)
+                    subIdSets.mappedSuperClassIdSet.add(mappedSuperClass.id)
                     break
                 }
             }
@@ -236,20 +326,23 @@ export const useModelDiagnoseInfo = (
         for (const embeddableType of contextData.embeddableTypeMap.values()) {
             for (const property of embeddableType.properties) {
                 if ("embeddableTypeId" in property && property.embeddableTypeId === embeddableTypeId) {
-                    setEmbeddableTypeDiagnose(embeddableType)
+                    subIdSets.embeddableTypeIdSet.add(embeddableType.id)
                     break
                 }
             }
         }
+
+        return subIdSets
     }
 
-    const syncEnumerationReferences = (
+    const collectEnumerationReferences = (
         enumerationId: string,
-    ) => {
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
         for (const entity of contextData.entityMap.values()) {
             for (const property of entity.properties) {
                 if ("enumId" in property && property.enumId === enumerationId) {
-                    setEntityDiagnose(entity)
+                    subIdSets.entityIdSet.add(entity.id)
                     break
                 }
             }
@@ -257,7 +350,7 @@ export const useModelDiagnoseInfo = (
         for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
             for (const property of mappedSuperClass.properties) {
                 if ("enumId" in property && property.enumId === enumerationId) {
-                    setMappedSuperClassDiagnose(mappedSuperClass)
+                    subIdSets.mappedSuperClassIdSet.add(mappedSuperClass.id)
                     break
                 }
             }
@@ -265,166 +358,187 @@ export const useModelDiagnoseInfo = (
         for (const embeddableType of contextData.embeddableTypeMap.values()) {
             for (const property of embeddableType.properties) {
                 if ("enumId" in property && property.enumId === enumerationId) {
-                    setEmbeddableTypeDiagnose(embeddableType)
+                    subIdSets.embeddableTypeIdSet.add(embeddableType.id)
                     break
                 }
             }
         }
+
+        return subIdSets
+    }
+
+    const collectGroupNeedDiagnose = (
+        group: DeepReadonly<Group>,
+        oldGroup?: DeepReadonly<Group>,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
+        if (oldGroup !== undefined && oldGroup.name !== group.name) {
+            addSameNameGroup(oldGroup.name, subIdSets)
+        }
+        addSameNameGroup(group.name, subIdSets)
+        return subIdSets
+    }
+
+    const collectEntityNeedDiagnose = (
+        entity: DeepReadonly<EntityWithProperties>,
+        oldEntity?: DeepReadonly<EntityWithProperties>,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
+        if (oldEntity !== undefined && oldEntity.name !== entity.name) {
+            addSameNameGroupItems(oldEntity.name, subIdSets)
+        }
+        addSameNameGroupItems(entity.name, subIdSets)
+        collectEntityReferences(entity.id, subIdSets)
+        return subIdSets
+    }
+
+    const collectMappedSuperClassNeedDiagnose = (
+        mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>,
+        oldMappedSuperClass?: DeepReadonly<MappedSuperClassWithProperties>,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets(),
+        unvisitedIdSet: Set<string> = new Set<string>()
+    ): ModelSubIdSets => {
+        if (oldMappedSuperClass !== undefined && oldMappedSuperClass.name !== mappedSuperClass.name) {
+            addSameNameGroupItems(oldMappedSuperClass.name, subIdSets)
+        }
+        addSameNameGroupItems(mappedSuperClass.name, subIdSets)
+        collectMappedSuperClassReferences(mappedSuperClass.id, subIdSets, unvisitedIdSet)
+        collectMissingMapperSuperClassChildren(mappedSuperClass.id, subIdSets, unvisitedIdSet)
+        return subIdSets
+    }
+
+    const collectEmbeddableTypeNeedDiagnose = (
+        embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
+        oldEmbeddableType?: DeepReadonly<EmbeddableTypeWithProperties>,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
+        if (oldEmbeddableType !== undefined && oldEmbeddableType.name !== embeddableType.name) {
+            addSameNameGroupItems(oldEmbeddableType.name, subIdSets)
+        }
+        addSameNameGroupItems(embeddableType.name, subIdSets)
+        collectEmbeddableTypeReferences(embeddableType.id, subIdSets)
+        return subIdSets
+    }
+
+    const collectEnumerationNeedDiagnose = (
+        enumeration: DeepReadonly<Enumeration>,
+        oldEnumeration?: DeepReadonly<Enumeration>,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
+        if (oldEnumeration !== undefined && oldEnumeration.name !== enumeration.name) {
+            addSameNameGroupItems(oldEnumeration.name, subIdSets)
+        }
+        addSameNameGroupItems(enumeration.name, subIdSets)
+        collectEnumerationReferences(enumeration.id, subIdSets)
+        return subIdSets
+    }
+
+    const collectAssociationNeedDiagnose = (
+        association: DeepReadonly<AssociationIdOnly>,
+        oldAssociation?: DeepReadonly<AssociationIdOnly>,
+        subIdSets: ModelSubIdSets = defaultModelSubIdSets()
+    ): ModelSubIdSets => {
+        if (oldAssociation !== undefined) {
+            if (
+                "name" in oldAssociation &&
+                (
+                    ("name" in association && oldAssociation.name !== association.name) ||
+                    (!("name" in association))
+                )
+            ) {
+                addSameNameAssociation(oldAssociation.name, subIdSets)
+            }
+        }
+        if ("name" in association) {
+            addSameNameAssociation(association.name, subIdSets)
+        } else {
+            subIdSets.associationIdSet.add(association.id)
+        }
+        subIdSets.entityIdSet.add(association.referencedEntityId)
+        for (const other of contextData.associationMap.values()) {
+            if (other.association.referencedEntityId === association.referencedEntityId) subIdSets.associationIdSet.add(other.association.id)
+        }
+
+        return subIdSets
     }
 
     const syncGroup = (
         group: DeepReadonly<Group>,
         oldGroup?: DeepReadonly<Group>
     ) => {
-        if (oldGroup !== undefined && oldGroup.name !== group.name) {
-            syncSameNameGroup(oldGroup.name)
-        }
-        syncSameNameGroup(group.name)
+        const subIdSets = collectGroupNeedDiagnose(group, oldGroup)
+        syncDiagnoseByIdSets(subIdSets)
     }
     const removeGroup = (group: DeepReadonly<Group>) => {
+        const subIdSets = collectGroupNeedDiagnose(group)
+        syncDiagnoseByIdSets(subIdSets)
         removeGroupDiagnose(group.id)
-        syncSameNameGroup(group.name)
     }
 
     const syncEntity = (
         entity: DeepReadonly<EntityWithProperties>,
         oldEntity?: DeepReadonly<EntityWithProperties>
     ) => {
-        if (oldEntity !== undefined && oldEntity.name !== entity.name) {
-            syncSameNameGroupItem(oldEntity.name)
-        }
-        syncSameNameGroupItem(entity.name)
-        syncEntityReferences(entity.id)
+        const subIdSets = collectEntityNeedDiagnose(entity, oldEntity)
+        syncDiagnoseByIdSets(subIdSets)
     }
     const removeEntity = (entity: DeepReadonly<EntityWithProperties>) => {
+        const subIdSets = collectEntityNeedDiagnose(entity)
+        syncDiagnoseByIdSets(subIdSets)
         removeEntityDiagnose(entity.id)
-        syncSameNameGroupItem(entity.name)
-        syncEntityReferences(entity.id)
     }
 
     const syncMappedSuperClass = (
         mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>,
         oldMappedSuperClass?: DeepReadonly<MappedSuperClassWithProperties>
     ) => {
-        if (oldMappedSuperClass !== undefined && oldMappedSuperClass.name !== mappedSuperClass.name) {
-            syncSameNameGroupItem(oldMappedSuperClass.name)
-        }
-        syncSameNameGroupItem(mappedSuperClass.name)
-        syncMappedSuperClassReferences(mappedSuperClass.id)
-        const inheritItem = inheritInfo.abstractInheritInfoMap.get(mappedSuperClass.id)
-        if (inheritItem) {
-            for (const childId of inheritItem.concreteChildIdSet) {
-                const child = contextData.entityMap.get(childId)
-                if (child) syncEntity(child)
-            }
-            for (const childId of inheritItem.abstractChildIdSet) {
-                const child = contextData.mappedSuperClassMap.get(childId)
-                if (child) syncMappedSuperClass(child)
-            }
-        }
+        const subIdSets = collectMappedSuperClassNeedDiagnose(mappedSuperClass, oldMappedSuperClass)
+        syncDiagnoseByIdSets(subIdSets)
     }
     const removeMappedSuperClass = (mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>) => {
+        const subIdSets = collectMappedSuperClassNeedDiagnose(mappedSuperClass)
+        syncDiagnoseByIdSets(subIdSets)
         removeMappedSuperClassDiagnose(mappedSuperClass.id)
-        syncSameNameGroupItem(mappedSuperClass.name)
-        syncMappedSuperClassReferences(mappedSuperClass.id)
-        for (const [missingId, missingDependency] of inheritInfo.missingDependencies) {
-            if (missingDependency.has(mappedSuperClass.id)) {
-                if (contextData.entityMap.has(missingId)) {
-                    const child = contextData.entityMap.get(missingId)
-                    if (child) setEntityDiagnose(child)
-                } else if (contextData.mappedSuperClassMap.has(missingId)) {
-                    const child = contextData.mappedSuperClassMap.get(missingId)
-                    const inheritItem = inheritInfo.abstractInheritInfoMap.get(missingId)
-                    if (child && inheritItem) {
-                        setMappedSuperClassDiagnose(child)
-                        for (const childId of inheritItem.concreteChildIdSet) {
-                            const child = contextData.entityMap.get(childId)
-                            if (child) syncEntity(child)
-                        }
-                        for (const childId of inheritItem.abstractChildIdSet) {
-                            const child = contextData.mappedSuperClassMap.get(childId)
-                            if (child) syncMappedSuperClass(child)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     const syncEmbeddableType = (
         embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
         oldEmbeddableType?: DeepReadonly<EmbeddableTypeWithProperties>
     ) => {
-        if (oldEmbeddableType !== undefined && oldEmbeddableType.name !== embeddableType.name) {
-            syncSameNameGroupItem(oldEmbeddableType.name)
-        }
-        syncSameNameGroupItem(embeddableType.name)
-        syncEmbeddableTypeReferences(embeddableType.id)
+        const subIdSets = collectEmbeddableTypeNeedDiagnose(embeddableType, oldEmbeddableType)
+        syncDiagnoseByIdSets(subIdSets)
     }
     const removeEmbeddableType = (embeddableType: DeepReadonly<EmbeddableTypeWithProperties>) => {
+        const subIdSets = collectEmbeddableTypeNeedDiagnose(embeddableType)
+        syncDiagnoseByIdSets(subIdSets)
         removeEmbeddableTypeDiagnose(embeddableType.id)
-        syncSameNameGroupItem(embeddableType.name)
-        syncEmbeddableTypeReferences(embeddableType.id)
     }
 
     const syncEnumeration = (
         enumeration: DeepReadonly<Enumeration>,
         oldEnumeration?: DeepReadonly<Enumeration>
     ) => {
-        if (oldEnumeration !== undefined && oldEnumeration.name !== enumeration.name) {
-            syncSameNameGroupItem(oldEnumeration.name)
-        }
-        syncSameNameGroupItem(enumeration.name)
-        syncEnumerationReferences(enumeration.id)
+        const subIdSets = collectEnumerationNeedDiagnose(enumeration, oldEnumeration)
+        syncDiagnoseByIdSets(subIdSets)
     }
     const removeEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
+        const subIdSets = collectEnumerationNeedDiagnose(enumeration)
+        syncDiagnoseByIdSets(subIdSets)
         removeEnumerationDiagnose(enumeration.id)
-        syncSameNameGroupItem(enumeration.name)
-        syncEnumerationReferences(enumeration.id)
     }
 
     const syncAssociation = (
         association: DeepReadonly<AssociationIdOnly>,
         oldAssociation?: DeepReadonly<AssociationIdOnly>
     ) => {
-        if (oldAssociation !== undefined) {
-            if ("name" in oldAssociation && "name" in association && oldAssociation.name !== association.name) {
-                syncSameNameAssociation(oldAssociation.name)
-            }
-        }
-        if ("name" in association) {
-            syncSameNameAssociation(association.name)
-        } else {
-            setAssociationDiagnose(association)
-        }
-        const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
-        if (referencedEntity) {
-            setEntityDiagnose(referencedEntity)
-            for (const {association} of contextData.associationMap.values()) {
-                if (association.referencedEntityId === referencedEntity.id) setAssociationDiagnose(association)
-            }
-        }
+        const subIdSets = collectAssociationNeedDiagnose(association, oldAssociation)
+        syncDiagnoseByIdSets(subIdSets)
     }
     const removeAssociation = (association: DeepReadonly<AssociationIdOnly>) => {
+        const subIdSets = collectAssociationNeedDiagnose(association)
+        syncDiagnoseByIdSets(subIdSets)
         removeAssociationDiagnose(association.id)
-        if ("name" in association) {
-            syncSameNameAssociation(association.name)
-        }
-        const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
-        if (referencedEntity) {
-            setEntityDiagnose(referencedEntity)
-            for (const {association} of contextData.associationMap.values()) {
-                if (association.referencedEntityId === referencedEntity.id) setAssociationDiagnose(association)
-            }
-        }
     }
-
-    for (const it of contextData.groupMap.values()) syncGroup(it)
-    for (const it of contextData.entityMap.values()) syncEntity(it)
-    for (const it of contextData.mappedSuperClassMap.values()) syncMappedSuperClass(it)
-    for (const it of contextData.embeddableTypeMap.values()) syncEmbeddableType(it)
-    for (const it of contextData.enumerationMap.values()) syncEnumeration(it)
-    for (const {association} of contextData.associationMap.values()) syncAssociation(association)
 
     const getGroup = (id: string) => {
         const group = contextData.groupMap.get(id)
@@ -474,7 +588,7 @@ export const useModelDiagnoseInfo = (
         } else if (data.key === "enumeration:add") {
             if (data.type === "apply") syncEnumeration(getEnumeration(data.options.enumeration.id))
             else if (data.type === "revert") removeEnumeration(data.options.enumeration)
-        }  else if (data.key === "association:add") {
+        } else if (data.key === "association:add") {
             if (data.type === "apply") syncAssociation(getAssociation(data.options.association.id))
             else if (data.type === "revert") removeAssociation(data.options.association)
         }
@@ -503,12 +617,14 @@ export const useModelDiagnoseInfo = (
         // 导入
         else if (data.key === "import") {
             if (data.type === "apply") {
-                for (const group of data.options.data.groups) syncGroup(getGroup(group.id))
-                for (const {data: enumeration} of data.options.data.enumerations) syncEnumeration(getEnumeration(enumeration.id))
-                for (const {data: embeddableType} of data.options.data.embeddableTypes) syncEmbeddableType(getEmbeddableType(embeddableType.id))
-                for (const {data: mappedSuperClass} of data.options.data.mappedSuperClasses) syncMappedSuperClass(getMappedSuperClass(mappedSuperClass.id))
-                for (const {data: entity} of data.options.data.entities) syncEntity(getEntity(entity.id))
-                for (const {data: association} of data.options.data.associations) syncAssociation(getAssociation(association.id))
+                const subIdSets = defaultModelSubIdSets()
+                for (const group of data.options.data.groups) collectGroupNeedDiagnose(group, undefined, subIdSets)
+                for (const {data: enumeration} of data.options.data.enumerations) collectEnumerationNeedDiagnose(enumeration, undefined, subIdSets)
+                for (const {data: embeddableType} of data.options.data.embeddableTypes) collectEmbeddableTypeNeedDiagnose(embeddableType, undefined, subIdSets)
+                for (const {data: mappedSuperClass} of data.options.data.mappedSuperClasses) collectMappedSuperClassNeedDiagnose(mappedSuperClass, undefined, subIdSets)
+                for (const {data: entity} of data.options.data.entities) collectEntityNeedDiagnose(entity, undefined, subIdSets)
+                for (const {data: association} of data.options.data.associations) collectAssociationNeedDiagnose(association, undefined, subIdSets)
+                syncDiagnoseByIdSets(subIdSets)
             } else {
                 for (const {data: association} of data.options.data.associations) removeAssociation(association)
                 for (const {data: entity} of data.options.data.entities) removeEntity(entity)
@@ -529,12 +645,14 @@ export const useModelDiagnoseInfo = (
                 for (const {data: enumeration} of data.revertOptions.enumerations) removeEnumeration(enumeration)
                 for (const group of data.revertOptions.groups) removeGroup(group)
             } else {
-                for (const group of data.revertOptions.groups) syncGroup(getGroup(group.id))
-                for (const {data: enumeration} of data.revertOptions.enumerations) syncEnumeration(getEnumeration(enumeration.id))
-                for (const {data: embeddableType} of data.revertOptions.embeddableTypes) syncEmbeddableType(getEmbeddableType(embeddableType.id))
-                for (const {data: mappedSuperClass} of data.revertOptions.mappedSuperClasses) syncMappedSuperClass(getMappedSuperClass(mappedSuperClass.id))
-                for (const {data: entity} of data.revertOptions.entities) syncEntity(getEntity(entity.id))
-                for (const {data: association} of data.revertOptions.associations) syncAssociation(getAssociation(association.id))
+                const subIdSets = defaultModelSubIdSets()
+                for (const group of data.revertOptions.groups) collectGroupNeedDiagnose(group, undefined, subIdSets)
+                for (const {data: enumeration} of data.revertOptions.enumerations) collectEnumerationNeedDiagnose(enumeration, undefined, subIdSets)
+                for (const {data: embeddableType} of data.revertOptions.embeddableTypes) collectEmbeddableTypeNeedDiagnose(embeddableType, undefined, subIdSets)
+                for (const {data: mappedSuperClass} of data.revertOptions.mappedSuperClasses) collectMappedSuperClassNeedDiagnose(mappedSuperClass, undefined, subIdSets)
+                for (const {data: entity} of data.revertOptions.entities) collectEntityNeedDiagnose(entity, undefined, subIdSets)
+                for (const {data: association} of data.revertOptions.associations) collectAssociationNeedDiagnose(association, undefined, subIdSets)
+                syncDiagnoseByIdSets(subIdSets)
             }
         }
     })
@@ -547,6 +665,7 @@ export const useModelDiagnoseInfo = (
         for (const entity of contextData.entityMap.values()) setEntityDiagnose(entity)
         for (const {association} of contextData.associationMap.values()) setAssociationDiagnose(association)
     }
+    diagnose()
 
     return {
         modelDiagnoseInfo: readonly(modelDiagnoseInfo),
