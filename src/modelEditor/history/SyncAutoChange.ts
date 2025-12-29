@@ -1,4 +1,4 @@
-import {nameTool} from "@/type/context/utils/NameTool.ts";
+import {nameTool} from "@/modelEditor/utils/NameTool.ts";
 import {generateFkJoinInfo, generateMidTableJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
 import {
     tmpl_fkComment,
@@ -8,7 +8,7 @@ import {
     tmpl_mappedPropertyName,
     tmpl_midTableComment,
     tmpl_midTableName
-} from "@/type/context/utils/AssociationTemplate.ts";
+} from "@/modelEditor/utils/AssociationTemplate.ts";
 
 export const syncEntityAutoChange = (
     entity: EntityWithProperties,

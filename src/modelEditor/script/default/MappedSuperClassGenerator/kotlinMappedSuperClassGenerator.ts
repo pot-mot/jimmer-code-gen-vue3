@@ -1,25 +1,23 @@
 // jvmLanguage=KOTLIN
-export const kotlinEntityGenerator: EntityGenerator = (
-    entity: DeepReadonly<EntityWithInheritInfo>,
+export const kotlinMappedSuperclassGenerator: MappedSuperClassGenerator = (
+    mappedSuperClass: DeepReadonly<MappedSuperClassWithInheritInfo>,
     context: DeepReadonly<ModelContext>
 ): Record<string, string> => {
     const result: Record<string, string> = {}
 
     const builder = context.createJvmFileBuilder({
-        groupId: entity.groupId,
-        subPackagePath: entity.subPackagePath,
+        groupId: mappedSuperClass.groupId,
+        subPackagePath: mappedSuperClass.subPackagePath,
     })
 
-    builder.addImports("org.babyfish.jimmer.sql.Entity")
-    builder.addImports("org.babyfish.jimmer.sql.Table")
-    builder.addImports(entity.extraImports)
+    builder.addImports("org.babyfish.jimmer.sql.MappedSuperclass")
 
-    for (const mappedSuperClassId of entity.extendsIds) {
+    for (const mappedSuperClassId of mappedSuperClass.extendsIds) {
         builder.requireMappedSuperClass(mappedSuperClassId)
     }
 
-    for (const property of entity.properties) {
-        builder.pushProperty(property)
+    for (const property of mappedSuperClass.properties) {
+        builder.pushProperty(property, {type: "MappedSuperClass", mappedSuperClass})
     }
 
     const template = context.createTemplateBuilder({
@@ -44,33 +42,27 @@ export const kotlinEntityGenerator: EntityGenerator = (
         template.appendLine()
     }
 
-    if (entity.comment.length > 0) {
+    if (mappedSuperClass.comment?.length > 0) {
         template.appendLine(`/**`)
-        for (const line of entity.comment.split("\n")) {
+        for (const line of mappedSuperClass.comment.split("\n")) {
             template.appendLine(` * ${line}`)
         }
         template.appendLine(` */`)
     }
 
-    template.appendLine("@Entity")
-    template.appendLine(`@Table(name = "${entity.tableName}")`)
+    template.appendLine("@MappedSuperclass")
+    template.append(`interface ${mappedSuperClass.name}`)
 
-    for (const annotation of entity.extraAnnotations) {
-        template.appendBlock(annotation)
-    }
-
-    template.append(`interface ${entity.name}`)
-
-    if (entity.directExtends.size > 1) {
-        template.append(` :`)
-        for (const extend of entity.directExtends) {
-            template.append(`\n    ${extend.name}`)
+    if (mappedSuperClass.directExtends.size > 0) {
+        template.append(" :")
+        const extendsList = [...mappedSuperClass.directExtends].map(cls => cls.name);
+        for (let i = 0; i < extendsList.length; i++) {
+            template.append(`${i === 0 ? '\n    ' : ',\n    '}${extendsList[i]}`);
         }
-    } else if (entity.directExtends.size === 1) {
-        template.append(` : ${[...entity.directExtends].map(it => it.name).join(", ")}`)
     }
 
     template.startScope()
+
     for (const property of builder.getProperties()) {
         template.appendLine()
 
@@ -90,9 +82,10 @@ export const kotlinEntityGenerator: EntityGenerator = (
 
         template.appendLine(`val ${property.name}: ${property.type}${property.nullable ? "?" : ""}`)
     }
+
     template.endScope()
 
-    result[`/kotlin/${packageDirPath}${entity.name}.kt`] = template.build({cleanEmptyLineIndent: true})
+    result[`/kotlin/${packageDirPath}${mappedSuperClass.name}.kt`] = template.build({cleanEmptyLineIndent: true})
 
     return result
 }

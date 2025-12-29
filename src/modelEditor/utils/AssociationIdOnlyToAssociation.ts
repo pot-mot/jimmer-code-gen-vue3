@@ -1,4 +1,4 @@
-import {getPropertyView} from "@/type/context/utils/PropertyView.ts";
+import {getPropertyView} from "@/modelEditor/utils/PropertyView.ts";
 
 export const oneToOneIdOnlyToAssociation = (
     idOnly: OneToOneAssociationIdOnly,

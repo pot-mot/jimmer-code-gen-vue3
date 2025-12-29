@@ -16,8 +16,8 @@ import {
     type ConcreteAssociationEdge,
     EdgeType_ConcreteAssociation
 } from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
-import {defaultModelSubIds, fillModelSubIds, subIdsToSubIdSets} from "@/type/context/utils/ModelSubIds.ts";
-import {defaultModelGraphSubData} from "@/type/context/utils/ModelGraphSubData.ts";
+import {defaultModelSubIds, fillModelSubIds, subIdsToSubIdSets} from "@/modelEditor/utils/ModelSubIds.ts";
+import {defaultModelGraphSubData} from "@/modelEditor/utils/ModelGraphSubData.ts";
 import {protectRepeatIds} from "@/modelEditor/import/protectRepeatIds.ts";
 import {layoutPosition} from "@/modelEditor/import/layoutPosition.ts";
 import {protectDuplicateNames} from "@/modelEditor/import/protectDuplicateNames.ts";
@@ -30,8 +30,8 @@ import {
     getPropertiesAssociationChange,
 } from "@/modelEditor/property/PropertyAssociationSync.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
-import {nameTool} from "@/type/context/utils/NameTool.ts";
-import {defaultInheritInfo, useInheritInfoSync} from "@/type/context/utils/InheritInfo.ts";
+import {nameTool} from "@/modelEditor/utils/NameTool.ts";
+import {defaultInheritInfo, useInheritInfoSync} from "@/modelEditor/utils/InheritInfo.ts";
 import {
     syncAssociationAutoChange,
     syncEmbeddableTypeAutoChange,

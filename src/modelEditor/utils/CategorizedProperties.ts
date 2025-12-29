@@ -1,5 +1,5 @@
-import {getPropertyView} from "@/type/context/utils/PropertyView.ts";
-import {getAssociationView} from "@/type/context/utils/AssociationView.ts";
+import {getPropertyView} from "@/modelEditor/utils/PropertyView.ts";
+import {getAssociationView} from "@/modelEditor/utils/AssociationView.ts";
 
 const defaultEntityCategorizedProperties = (): Omit<EntityCategorizedProperties, 'idProperty'> => {
     return {

@@ -6,7 +6,7 @@ import IconDelete from "@/components/icons/IconDelete.vue";
 import {translate} from "@/store/i18nStore.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
-import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {subIdSetToSubIds} from "@/modelEditor/utils/ModelSubIds.ts";
 import {useModelEditorPaste} from "@/modelEditor/contextMenu/item/useModelEditorPaste.ts";
 
 const {

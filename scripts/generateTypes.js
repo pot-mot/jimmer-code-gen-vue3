@@ -17,7 +17,7 @@ const contextPath = "src/type/context";
 ensureDirExists(contextPath)
 const scriptPath = "src/type/script";
 ensureDirExists(scriptPath)
-const defaultScriptSourcePath = "src/type/script/default";
+const defaultScriptSourcePath = "src/modelEditor/script/default";
 ensureDirExists(defaultScriptSourcePath)
 
 const typeDeclarePath = "src/type/__generated/typeDeclare";

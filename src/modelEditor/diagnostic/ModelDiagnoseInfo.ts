@@ -1,4 +1,4 @@
-import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
+import type {InheritInfo} from "@/modelEditor/utils/InheritInfo.ts";
 import type {CommandHistory} from "@/history/commandHistory.ts";
 import {type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
 import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
@@ -147,7 +147,7 @@ export const useModelDiagnoseInfo = (
         modelDiagnoseInfo.associationMap.delete(id)
     }
 
-    // TODO diagnose into part
+    // TODO diagnose add collect and finally setDiagnose
 
     const syncSameNameGroup = (name: string) => {
         for (const group of contextData.groupMap.values()) {

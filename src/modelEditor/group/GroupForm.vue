@@ -4,7 +4,7 @@ import {translate} from "@/store/i18nStore.ts";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import IconClose from "@/components/icons/IconClose.vue";
 import {ref, watch} from "vue";
-import {presetColor} from "@/type/context/default/modelDefaults.ts";
+import {presetColor} from "@/modelEditor/default/modelDefaults.ts";
 
 const group = defineModel<T>({
     required: true

@@ -1,7 +1,7 @@
-import {nameTool} from "@/type/context/utils/NameTool.ts";
+import {nameTool} from "@/modelEditor/utils/NameTool.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {firstCaseToLower} from "@/utils/name/firstCase.ts";
-import {ID_VIEW_TEMPLATE} from "@/type/context/utils/AssociationTemplate.ts";
+import {ID_VIEW_TEMPLATE} from "@/modelEditor/utils/AssociationTemplate.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 
 const getDefaultStringSqlType = () => {

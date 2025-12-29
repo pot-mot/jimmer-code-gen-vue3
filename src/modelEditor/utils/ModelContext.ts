@@ -2,29 +2,29 @@ import {
     categorizeAbstractCategorizedProperties,
     categorizeEmbeddableTypeProperties,
     categorizeEntityProperties,
-} from "@/type/context/utils/CategorizedProperties.ts";
-import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
-import {overrideEmbeddableTypePropertiesColumnNames} from "@/type/context/utils/EmbeddableTypeOverride.ts";
+} from "@/modelEditor/utils/CategorizedProperties.ts";
+import {getGroupSubMaps} from "@/modelEditor/utils/GroupSubDataMap.ts";
+import {overrideEmbeddableTypePropertiesColumnNames} from "@/modelEditor/utils/EmbeddableTypeOverride.ts";
 import {
     getAbstractMappedPropertyInfo,
     getMappedPropertyInfo
-} from "@/type/context/utils/MappedPropertyInfo.ts";
+} from "@/modelEditor/utils/MappedPropertyInfo.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
-import {idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnlyToAssociation.ts";
-import {nameTool} from "@/type/context/utils/NameTool.ts";
+import {idOnlyToAssociation} from "@/modelEditor/utils/AssociationIdOnlyToAssociation.ts";
+import {nameTool} from "@/modelEditor/utils/NameTool.ts";
 import {
     manyToManyAbstractToReal,
     oneToManyAbstractToReal,
     oneToOneAbstractToReal
-} from "@/type/context/utils/AbstractAssociationToReal.ts";
-import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
+} from "@/modelEditor/utils/AbstractAssociationToReal.ts";
+import type {InheritInfo} from "@/modelEditor/utils/InheritInfo.ts";
 import {
     syncAssociationAutoChange, syncEmbeddableTypeAutoChange,
     syncEntityAutoChange,
     syncMappedSuperClassAutoChange
 } from "@/modelEditor/history/SyncAutoChange.ts";
-import {createJvmFileBuilder} from "@/type/context/utils/JvmFileBuilder.ts";
-import {createTemplateBuilder} from "@/type/context/utils/TemplateBuilder.ts"
+import {createJvmFileBuilder} from "@/modelEditor/utils/JvmFileBuilder.ts";
+import {createTemplateBuilder} from "@/modelEditor/utils/TemplateBuilder.ts"
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,

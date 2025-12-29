@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest'
-import {createTemplateBuilder} from '../utils/TemplateBuilder'
+import {createTemplateBuilder} from '@/modelEditor/utils/TemplateBuilder.ts'
 
 describe('TemplateBuilder', () => {
     it('append test', () => {

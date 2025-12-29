@@ -1,6 +1,6 @@
 import {buildNameSet, type NameSet} from "@/utils/name/nameSet.ts";
 import {reactive, readonly} from "vue";
-import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
+import type {InheritInfo} from "@/modelEditor/utils/InheritInfo.ts";
 import {type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
 import type {CommandHistory} from "@/history/commandHistory.ts";
 

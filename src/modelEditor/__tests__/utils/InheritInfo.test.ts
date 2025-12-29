@@ -4,7 +4,7 @@ import {
     type InheritInfo,
     type InheritInfoSync,
     type InheritItem, useInheritInfoSync
-} from "@/type/context/utils/InheritInfo.ts";
+} from "@/modelEditor/utils/InheritInfo.ts";
 
 describe('EntityInheritInfo', () => {
     const buildInheritInfo = (

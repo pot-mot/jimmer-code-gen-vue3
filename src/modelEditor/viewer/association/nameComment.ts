@@ -5,7 +5,7 @@ import {
     tmpl_abstractFkName,
     tmpl_fkComment,
     tmpl_midTableComment,
-} from "@/type/context/utils/AssociationTemplate.ts";
+} from "@/modelEditor/utils/AssociationTemplate.ts";
 
 const getAbstractNameComment = (association: DeepReadonly<AbstractAssociation>) => {
     const sourceAbstractEntity = association.sourceAbstractEntity

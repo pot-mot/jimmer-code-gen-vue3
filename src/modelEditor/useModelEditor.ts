@@ -22,23 +22,23 @@ import {
     defaultGroup,
     defaultMappedSuperClass,
     defaultModelContextData
-} from "@/type/context/default/modelDefaults.ts";
+} from "@/modelEditor/default/modelDefaults.ts";
 import {tinycolor} from "vue-color";
-import {contextDataToSubIds, fillModelSubIds, subDataToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {contextDataToSubIds, fillModelSubIds, subDataToSubIds} from "@/modelEditor/utils/ModelSubIds.ts";
 import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {useClipBoard} from "@/utils/clipBoard/useClipBoard.ts";
-import {fillModelGraphSubData, modelSubDataToGraphSubData} from "@/type/context/utils/ModelGraphSubData.ts";
-import {contextDataGetSelectSubData, contextDataToSubData} from "@/type/context/utils/ModelSubData.ts";
+import {fillModelGraphSubData, modelSubDataToGraphSubData} from "@/modelEditor/utils/ModelGraphSubData.ts";
+import {contextDataGetSelectSubData, contextDataToSubData} from "@/modelEditor/utils/ModelSubData.ts";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {tableToEntity} from "@/modelEditor/TableEntityConvert/tableToEntity.ts";
-import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
+import {contextDataToContext} from "@/modelEditor/utils/ModelContext.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import {useModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {useModelDiagnoseInfo} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import {api} from "@/api";
-import {createSqlToJvm} from "@/type/context/utils/TypeTool.ts";
+import {createSqlToJvm} from "@/modelEditor/utils/TypeTool.ts";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import {translate} from "@/store/i18nStore.ts";
 import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";

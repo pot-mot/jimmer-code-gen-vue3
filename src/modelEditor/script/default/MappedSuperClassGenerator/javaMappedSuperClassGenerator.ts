@@ -1,29 +1,23 @@
 // jvmLanguage=JAVA
-export const javaEntityGenerator: EntityGenerator = (
-    entity: DeepReadonly<EntityWithInheritInfo>,
+export const javaMappedSuperClassGenerator: MappedSuperClassGenerator = (
+    mappedSuperClass: DeepReadonly<MappedSuperClassWithInheritInfo>,
     context: DeepReadonly<ModelContext>
 ): Record<string, string> => {
     const result: Record<string, string> = {}
 
     const builder = context.createJvmFileBuilder({
-        groupId: entity.groupId,
-        subPackagePath: entity.subPackagePath,
+        groupId: mappedSuperClass.groupId,
+        subPackagePath: mappedSuperClass.subPackagePath,
     })
 
-    builder.addImports("org.babyfish.jimmer.sql.Entity")
-    builder.addImports("org.babyfish.jimmer.sql.Table")
-    builder.addImports(entity.extraImports)
+    builder.addImports("org.babyfish.jimmer.sql.MappedSuperclass")
 
-    for (const mappedSuperClassId of entity.extendsIds) {
+    for (const mappedSuperClassId of mappedSuperClass.extendsIds) {
         builder.requireMappedSuperClass(mappedSuperClassId)
     }
 
-    for (const property of entity.properties) {
-        const propertyInfo = builder.pushProperty(property)
-        if (property.nullable) {
-            builder.addImports("org.jetbrains.annotations.Nullable")
-            propertyInfo.annotations.push("@Nullable")
-        }
+    for (const property of mappedSuperClass.properties) {
+        builder.pushProperty(property, {type: "MappedSuperClass", mappedSuperClass})
     }
 
     const template = context.createTemplateBuilder({
@@ -35,8 +29,7 @@ export const javaEntityGenerator: EntityGenerator = (
     let packageDirPath = ""
     if (packagePath.length > 0) {
         packageDirPath = packagePath.replace(/\./g, "/") + "/"
-
-        template.appendLine(`package ${builder.getPackagePath()};`)
+        template.appendLine(`package ${packagePath};`)
         template.appendLine()
     }
 
@@ -48,26 +41,24 @@ export const javaEntityGenerator: EntityGenerator = (
         template.appendLine()
     }
 
-    if (entity.comment.length > 0) {
+    if (mappedSuperClass.comment.length > 0) {
         template.appendLine(`/**`)
-        for (const line of entity.comment.split("\n")) {
+        for (const line of mappedSuperClass.comment.split("\n")) {
             template.appendLine(` * ${line}`)
         }
         template.appendLine(` */`)
     }
-    template.appendLine(`@Entity`)
-    template.appendLine(`@Table(name = "${entity.tableName}")`)
-    for (const annotation of entity.extraAnnotations) {
-        template.appendBlock(annotation)
-    }
-    template.append(`public interface ${entity.name}`)
-    if (entity.directExtends.size > 1) {
+
+    template.appendLine(`@MappedSuperclass`)
+    template.append(`public interface ${mappedSuperClass.name}`)
+
+    if (mappedSuperClass.directExtends.size > 1) {
         template.append(` extends`)
-        for (const extend of entity.directExtends) {
+        for (const extend of mappedSuperClass.directExtends) {
             template.append(`\n        ${extend.name}`)
         }
-    } else if (entity.directExtends.size === 1) {
-        template.append(` extends ${[...entity.directExtends].map(it => it.name).join(", ")}`)
+    } else if (mappedSuperClass.directExtends.size === 1) {
+        template.append(` extends ${[...mappedSuperClass.directExtends].map(it => it.name).join(", ")}`)
     }
 
     template.startScope()
@@ -81,23 +72,25 @@ export const javaEntityGenerator: EntityGenerator = (
             }
             template.appendLine(` */`)
         }
+
         if (property.annotations.length > 0) {
             for (const annotation of property.annotations) {
                 template.appendBlock(annotation)
             }
         }
-        template.append(`${property.type} ${property.name}()`)
+
         if (property.body) {
+            template.append(`default ${property.type} ${property.name}()`)
             template.startScope()
             template.appendBlock(property.body)
             template.endScope()
         } else {
-            template.appendLine(`;`)
+            template.appendLine(`${property.type} ${property.name}();`)
         }
     }
     template.endScope()
 
-    result[`/java/${packageDirPath}${entity.name}.java`] = template.build({cleanEmptyLineIndent: true})
+    result[`/java/${packageDirPath}${mappedSuperClass.name}.java`] = template.build({cleanEmptyLineIndent: true})
 
     return result
 }

@@ -7,7 +7,7 @@ import {
     LIST_ID_VIEW_TEMPLATE,
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
     ID_VIEW_TEMPLATE
-} from "@/type/context/utils/AssociationTemplate.ts";
+} from "@/modelEditor/utils/AssociationTemplate.ts";
 import {isKeyProperty} from "@/modelEditor/node/property/PropertyConvert.ts";
 
 export const toManyToOne = async (

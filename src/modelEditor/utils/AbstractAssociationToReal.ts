@@ -3,7 +3,7 @@ import type {
     ManyToManyAbstractMappedPropertyInfo,
     OneToManyAbstractMappedPropertyInfo,
     OneToOneAbstractMappedPropertyInfo
-} from "@/type/context/utils/MappedPropertyInfo.ts";
+} from "@/modelEditor/utils/MappedPropertyInfo.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {
     tmpl_fkComment,
@@ -13,7 +13,7 @@ import {
     tmpl_mappedPropertyName,
     tmpl_midTableComment,
     tmpl_midTableName
-} from "@/type/context/utils/AssociationTemplate.ts";
+} from "@/modelEditor/utils/AssociationTemplate.ts";
 
 export const oneToOneAbstractToReal = (
     abstractPropertyInfo: DeepReadonly<OneToOneAbstractMappedPropertyInfo>,

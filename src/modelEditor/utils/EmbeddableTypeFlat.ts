@@ -1,4 +1,4 @@
-import {overrideEmbeddableTypePropertiesColumnNames} from "@/type/context/utils/EmbeddableTypeOverride.ts";
+import {overrideEmbeddableTypePropertiesColumnNames} from "@/modelEditor/utils/EmbeddableTypeOverride.ts";
 
 const scalarPropertyToColumn = (
     property: DeepReadonly<IdCommonProperty | ScalarCommonProperty | ScalarEnumProperty>

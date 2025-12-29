@@ -3,7 +3,7 @@ import {type NodeProps} from "@vue-flow/core";
 import type {EmbeddableTypeNode} from "@/modelEditor/node/EmbeddableTypeNode.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
+import {defaultScalarProperty} from "@/modelEditor/default/modelDefaults.ts";
 import EmbeddableTypePropertyTypeEditor from "@/modelEditor/node/property/EmbeddableTypePropertyTypeEditor.vue";
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
 import {computed, onBeforeUnmount, onMounted, useTemplateRef} from "vue";

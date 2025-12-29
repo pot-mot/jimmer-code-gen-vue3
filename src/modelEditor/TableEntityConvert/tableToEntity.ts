@@ -7,9 +7,9 @@ import {
     LIST_ID_VIEW_TEMPLATE,
     MAPPED_PROPERTY_NAME_TEMPLATE,
     MAPPED_PROPERTY_COMMENT_TEMPLATE
-} from "@/type/context/utils/AssociationTemplate.ts";
+} from "@/modelEditor/utils/AssociationTemplate.ts";
 import {createId} from "@/modelEditor/useModelEditor.ts";
-import {nameTool} from "@/type/context/utils/NameTool.ts";
+import {nameTool} from "@/modelEditor/utils/NameTool.ts";
 
 const removeLastId = (text: string): string => {
     if (text.length < 2) {

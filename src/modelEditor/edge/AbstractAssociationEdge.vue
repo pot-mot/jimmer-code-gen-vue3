@@ -11,7 +11,7 @@ import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import {
     tmpl_mappedPropertyComment,
     tmpl_mappedPropertyName
-} from "@/type/context/utils/AssociationTemplate.ts";
+} from "@/modelEditor/utils/AssociationTemplate.ts";
 import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
 import NameCommentTemplateOnlyEditor from "@/modelEditor/nameComment/NameCommentTemplateOnlyEditor.vue";
 import {useIdViewNameComment} from "@/modelEditor/viewer/association/nameComment.ts";

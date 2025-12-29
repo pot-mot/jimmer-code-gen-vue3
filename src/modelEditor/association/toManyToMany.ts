@@ -6,7 +6,7 @@ import {
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
     MID_TABLE_COMMENT_TEMPLATE,
     MID_TABLE_NAME_TEMPLATE,
-} from "@/type/context/utils/AssociationTemplate.ts";
+} from "@/modelEditor/utils/AssociationTemplate.ts";
 
 export const toManyToMany = async (
     association: DeepReadonly<ConcreteAssociationIdOnly>,

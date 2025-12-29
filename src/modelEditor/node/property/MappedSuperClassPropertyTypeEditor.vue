@@ -24,7 +24,7 @@ import {
     MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
     LIST_ID_VIEW_TEMPLATE,
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
-} from "@/type/context/utils/AssociationTemplate.ts";
+} from "@/modelEditor/utils/AssociationTemplate.ts";
 import ColorPreview from "@/components/color/ColorPreview.vue";
 import {
     getGroupItemTypeOptionName,

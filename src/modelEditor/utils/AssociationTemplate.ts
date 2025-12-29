@@ -1,5 +1,5 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {nameTool} from "@/type/context/utils/NameTool.ts";
+import {nameTool} from "@/modelEditor/utils/NameTool.ts";
 
 export const PROPERTY = "[[PROPERTY]]"
 

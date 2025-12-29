@@ -1,6 +1,6 @@
-import {nameTool} from "@/type/context/utils/NameTool.ts";
-import {getEntityIdProperties} from "@/type/context/utils/EntityCategorizedProperty.ts";
-import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
+import {nameTool} from "@/modelEditor/utils/NameTool.ts";
+import {getEntityIdProperties} from "@/modelEditor/utils/EntityCategorizedProperty.ts";
+import {flatEmbeddableTypeColumnNames} from "@/modelEditor/utils/EmbeddableTypeFlat.ts";
 
 const _generateFkJoinInfo = (
     property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty>,

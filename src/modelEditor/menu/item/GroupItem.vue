@@ -2,7 +2,7 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed} from "vue";
 import ColorInput from "@/components/color/ColorInput.vue";
-import {presetColor} from "@/type/context/default/modelDefaults.ts";
+import {presetColor} from "@/modelEditor/default/modelDefaults.ts";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import DiagnoseCount from "@/modelEditor/diagnostic/DiagnoseCount.vue";

@@ -13,7 +13,7 @@ import ConcreteAssociationEdge from "@/modelEditor/edge/ConcreteAssociationEdge.
 import AbstractAssociationEdge from "@/modelEditor/edge/AbstractAssociationEdge.vue";
 import ModelEditorSelectionRect from "@/modelEditor/selectionRect/ModelEditorSelectionRect.vue";
 import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
-import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {subIdSetToSubIds} from "@/modelEditor/utils/ModelSubIds.ts";
 
 const {
     initModelEditor,

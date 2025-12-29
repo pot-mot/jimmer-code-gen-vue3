@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest'
-import { nameTool } from '@/type/context/utils/NameTool'
+import { nameTool } from '@/modelEditor/utils/NameTool'
 
 describe('NameTool', () => {
     describe('splitCamel', () => {

@@ -13,7 +13,7 @@ import IconAdd from "@/components/icons/IconAdd.vue";
 import DragContainer from "@/components/draggable/DragContainer.vue";
 import DragTarget from "@/components/draggable/DragTarget.vue";
 import DragSource from "@/components/draggable/DragSource.vue";
-import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {subIdSetToSubIds} from "@/modelEditor/utils/ModelSubIds.ts";
 import IconClose from "@/components/icons/IconClose.vue";
 import IconSearch from "@/components/icons/IconSearch.vue";
 import {translate} from "@/store/i18nStore.ts";

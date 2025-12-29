@@ -1,7 +1,7 @@
 import {readonly, ref} from "vue";
 import type {EdgeChange, NodeChange, VueFlowStore} from "@vue-flow/core";
 import mitt from "mitt";
-import {fillModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {fillModelSubIds} from "@/modelEditor/utils/ModelSubIds.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import type {CommandHistory} from "@/history/commandHistory.ts";
 import {type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";

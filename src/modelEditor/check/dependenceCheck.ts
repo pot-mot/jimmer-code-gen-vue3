@@ -1,4 +1,4 @@
-import {parseEmbeddablePropertyPath, parsePropertyPath} from "@/type/context/utils/parsePropertyPath.ts";
+import {parseEmbeddablePropertyPath, parsePropertyPath} from "@/modelEditor/utils/parsePropertyPath.ts";
 
 type DependenceIds = ModelSubIds & {
     propertyIds: ({ entityId: string, id: string } | { embeddableTypeId: string, id: string })[]

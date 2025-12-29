@@ -4,7 +4,7 @@ import type {MappedSuperClassNode} from "@/modelEditor/node/MappedSuperClassNode
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue";
-import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
+import {defaultScalarProperty} from "@/modelEditor/default/modelDefaults.ts";
 import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import MappedSuperClassPropertyTypeEditor from "@/modelEditor/node/property/MappedSuperClassPropertyTypeEditor.vue";

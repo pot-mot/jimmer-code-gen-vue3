@@ -3,7 +3,7 @@ import {type NodeProps} from "@vue-flow/core";
 import type {EnumerationNode} from "@/modelEditor/node/EnumerationNode.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {defaultEnumerationItem} from "@/type/context/default/modelDefaults.ts";
+import {defaultEnumerationItem} from "@/modelEditor/default/modelDefaults.ts";
 import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
 import {computed, onBeforeUnmount, onMounted, useTemplateRef} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";

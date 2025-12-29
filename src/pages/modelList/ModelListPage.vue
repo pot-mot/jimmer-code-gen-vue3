@@ -34,7 +34,7 @@ import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 import IconLoad from "@/components/icons/IconLoad.vue";
 import {readJson} from "@/utils/file/jsonRead.ts";
 import {validatePartialModelGraphData} from "@/type/context/jsonSchema/PartialModelGraphData.ts";
-import {fillModelGraphSubData} from "@/type/context/utils/ModelGraphSubData.ts";
+import {fillModelGraphSubData} from "@/modelEditor/utils/ModelGraphSubData.ts";
 import IconDownload from "@/components/icons/IconDownload.vue";
 import {downloadJson} from "@/utils/file/jsonDownload.ts";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";

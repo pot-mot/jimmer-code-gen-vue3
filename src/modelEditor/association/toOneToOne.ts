@@ -6,7 +6,7 @@ import {
     MAPPED_PROPERTY_COMMENT_TEMPLATE,
     ID_VIEW_TEMPLATE,
     MAPPED_PROPERTY_NAME_TEMPLATE,
-} from "@/type/context/utils/AssociationTemplate.ts";
+} from "@/modelEditor/utils/AssociationTemplate.ts";
 import {isKeyProperty} from "@/modelEditor/node/property/PropertyConvert.ts";
 
 export const toOneToOne = async (

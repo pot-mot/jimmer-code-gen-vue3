@@ -4,7 +4,7 @@ import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {ref, watch} from "vue";
 import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
-import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {subIdSetToSubIds} from "@/modelEditor/utils/ModelSubIds.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
 import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";

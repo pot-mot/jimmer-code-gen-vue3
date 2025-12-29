@@ -5,7 +5,7 @@ import EntityPropertyTypeEditor from "@/modelEditor/node/property/EntityProperty
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorIsDark, getColorVar, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue";
-import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
+import {defaultScalarProperty} from "@/modelEditor/default/modelDefaults.ts";
 import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/EntityProperty.ts";
