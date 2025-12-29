@@ -66,7 +66,8 @@ const selectScript = (id: string) => {
 
 const selectedIdSet = ref<Set<string>>(new Set())
 watch(() => props.currentId, (currentId) => {
-    selectedIdSet.value = new Set([currentId])
+    if (currentId !== undefined) selectedIdSet.value = new Set([currentId])
+    else selectedIdSet.value.clear()
 }, {immediate: true})
 
 const selectedScriptIds = computed(() => {
