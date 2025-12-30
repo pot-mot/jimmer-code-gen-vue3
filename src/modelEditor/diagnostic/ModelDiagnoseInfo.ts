@@ -12,7 +12,7 @@ import {
 } from "@/modelEditor/diagnostic/mappedSuperClassDiagnose.ts";
 import {groupDiagnose, type GroupDiagnose} from "@/modelEditor/diagnostic/groupDiagnose.ts";
 import {type AssociationDiagnose, associationDiagnose} from "@/modelEditor/diagnostic/associationDiagnose.ts";
-import {defaultModelSubIdSets} from "@/modelEditor/utils/ModelSubIds.ts";
+import {defaultModelSubIdSets, subDataToSubIdSets} from "@/modelEditor/utils/ModelSubIds.ts";
 
 export type DiagnoseType = "warning" | "error" | "info"
 
@@ -172,6 +172,27 @@ export const useModelDiagnoseInfo = (
         for (const id of idSets.groupIdSet) {
             const group = contextData.groupMap.get(id)
             if (group) setGroupDiagnose(group)
+        }
+    }
+
+    const removeDiagnoseByIdSets = (idSets: DeepReadonly<ModelSubIdSets>) => {
+        for (const id of idSets.entityIdSet) {
+            removeEntityDiagnose(id)
+        }
+        for (const id of idSets.mappedSuperClassIdSet) {
+            removeMappedSuperClassDiagnose(id)
+        }
+        for (const id of idSets.embeddableTypeIdSet) {
+            removeEmbeddableTypeDiagnose(id)
+        }
+        for (const id of idSets.enumerationIdSet) {
+            removeEnumerationDiagnose(id)
+        }
+        for (const id of idSets.associationIdSet) {
+            removeAssociationDiagnose(id)
+        }
+        for (const id of idSets.groupIdSet) {
+            removeGroupDiagnose(id)
         }
     }
 
@@ -644,24 +665,32 @@ export const useModelDiagnoseInfo = (
                 for (const {data: association} of data.options.data.associations) collectAssociationNeedDiagnose(association, undefined, subIdSets)
                 syncDiagnoseByIdSets(subIdSets)
             } else {
-                for (const {data: association} of data.options.data.associations) removeAssociation(association)
-                for (const {data: entity} of data.options.data.entities) removeEntity(entity)
-                for (const {data: mappedSuperClass} of data.options.data.mappedSuperClasses) removeMappedSuperClass(mappedSuperClass)
-                for (const {data: embeddableType} of data.options.data.embeddableTypes) removeEmbeddableType(embeddableType)
-                for (const {data: enumeration} of data.options.data.enumerations) removeEnumeration(enumeration)
-                for (const group of data.options.data.groups) removeGroup(group)
+                const removedIdSets = subDataToSubIdSets(data.options.data)
+                const subIdSets = defaultModelSubIdSets()
+                for (const {data: association} of data.options.data.associations) collectAssociationNeedDiagnose(association, undefined, subIdSets)
+                for (const {data: entity} of data.options.data.entities) collectEntityNeedDiagnose(entity, undefined, subIdSets)
+                for (const {data: mappedSuperClass} of data.options.data.mappedSuperClasses) collectMappedSuperClassNeedDiagnose(mappedSuperClass, undefined, subIdSets)
+                for (const {data: embeddableType} of data.options.data.embeddableTypes) collectEmbeddableTypeNeedDiagnose(embeddableType, undefined, subIdSets)
+                for (const {data: enumeration} of data.options.data.enumerations) collectEnumerationNeedDiagnose(enumeration, undefined, subIdSets)
+                for (const group of data.options.data.groups) collectGroupNeedDiagnose(group, undefined, subIdSets)
+                syncDiagnoseByIdSets(subIdSets)
+                removeDiagnoseByIdSets(removedIdSets)
             }
         }
 
         // 删除
         else if (data.key === "remove") {
             if (data.type === "apply") {
-                for (const {data: association} of data.revertOptions.associations) removeAssociation(association)
-                for (const {data: entity} of data.revertOptions.entities) removeEntity(entity)
-                for (const {data: mappedSuperClass} of data.revertOptions.mappedSuperClasses) removeMappedSuperClass(mappedSuperClass)
-                for (const {data: embeddableType} of data.revertOptions.embeddableTypes) removeEmbeddableType(embeddableType)
-                for (const {data: enumeration} of data.revertOptions.enumerations) removeEnumeration(enumeration)
-                for (const group of data.revertOptions.groups) removeGroup(group)
+                const removedIdSets = subDataToSubIdSets(data.revertOptions)
+                const subIdSets = defaultModelSubIdSets()
+                for (const {data: association} of data.revertOptions.associations) collectAssociationNeedDiagnose(association, undefined, subIdSets)
+                for (const {data: entity} of data.revertOptions.entities) collectEntityNeedDiagnose(entity, undefined, subIdSets)
+                for (const {data: mappedSuperClass} of data.revertOptions.mappedSuperClasses) collectMappedSuperClassNeedDiagnose(mappedSuperClass, undefined, subIdSets)
+                for (const {data: embeddableType} of data.revertOptions.embeddableTypes) collectEmbeddableTypeNeedDiagnose(embeddableType, undefined, subIdSets)
+                for (const {data: enumeration} of data.revertOptions.enumerations) collectEnumerationNeedDiagnose(enumeration, undefined, subIdSets)
+                for (const group of data.revertOptions.groups) collectGroupNeedDiagnose(group, undefined, subIdSets)
+                syncDiagnoseByIdSets(subIdSets)
+                removeDiagnoseByIdSets(removedIdSets)
             } else {
                 const subIdSets = defaultModelSubIdSets()
                 for (const group of data.revertOptions.groups) collectGroupNeedDiagnose(group, undefined, subIdSets)

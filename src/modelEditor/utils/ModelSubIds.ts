@@ -144,6 +144,45 @@ export const defaultModelSubIdSets: () => ModelSubIdSets = () => ({
     associationIdSet: new Set(),
 })
 
+export const subDataToSubIdSets = (
+    subData: Partial<DeepReadonly<ModelGraphSubData>>
+): ModelSubIdSets => {
+    const result = defaultModelSubIdSets()
+
+    if (subData.groups !== undefined) {
+        for (const group of subData.groups) {
+            result.groupIdSet.add(group.id)
+        }
+    }
+    if (subData.entities !== undefined) {
+        for (const entity of subData.entities) {
+            result.entityIdSet.add(entity.data.id)
+        }
+    }
+    if (subData.mappedSuperClasses !== undefined) {
+        for (const mappedSuperClass of subData.mappedSuperClasses) {
+            result.mappedSuperClassIdSet.add(mappedSuperClass.data.id)
+        }
+    }
+    if (subData.embeddableTypes !== undefined) {
+        for (const embeddableType of subData.embeddableTypes) {
+            result.embeddableTypeIdSet.add(embeddableType.data.id)
+        }
+    }
+    if (subData.enumerations !== undefined) {
+        for (const enumeration of subData.enumerations) {
+            result.enumerationIdSet.add(enumeration.data.id)
+        }
+    }
+    if (subData.associations !== undefined) {
+        for (const association of subData.associations) {
+            result.associationIdSet.add(association.data.id)
+        }
+    }
+
+    return result
+}
+
 export const subIdsToSubIdSets = (
     subIds: Partial<DeepReadonly<ModelSubIds>>
 ): ModelSubIdSets => {
