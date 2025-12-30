@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<{
 })
 
 const dropdownRef = useTemplateRef("dropdownRef")
+const dropdownBodyMaskRef = useTemplateRef("dropdownBodyMaskRef")
 const dropdownBodyRef = useTemplateRef("dropdownBodyRef")
 
 const menuPosition = ref({
@@ -32,7 +33,9 @@ const toggleDropdown = () => {
 
 watch(() => isOpen.value, async (value) => {
     await nextTick()
-    if (value && dropdownRef.value && dropdownBodyRef.value) {
+    if (value && dropdownRef.value && dropdownBodyMaskRef.value && dropdownBodyRef.value) {
+        dropdownBodyMaskRef.value.focus()
+
         const triggerRect = dropdownRef.value.getBoundingClientRect()
         const menuRect = dropdownBodyRef.value.getBoundingClientRect()
 
@@ -73,7 +76,10 @@ watch(() => isOpen.value, async (value) => {
         <Teleport to="body">
             <div
                 v-if="isOpen"
+                ref="dropdownBodyMaskRef"
                 class="dropdown-mask"
+                tabindex="-1"
+                @keydown.esc="isOpen = false"
                 @click.self="isOpen = false"
             >
                 <div
