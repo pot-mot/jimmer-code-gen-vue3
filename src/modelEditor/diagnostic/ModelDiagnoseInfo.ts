@@ -458,6 +458,24 @@ export const useModelDiagnoseInfo = (
         for (const other of contextData.associationMap.values()) {
             if (other.association.referencedEntityId === association.referencedEntityId) subIdSets.associationIdSet.add(other.association.id)
         }
+        for (const entity of contextData.entityMap.values()) {
+            for (const property of entity.properties) {
+                if ("associationId" in property) {
+                    if (property.associationId === association.id) {
+                        subIdSets.entityIdSet.add(entity.id)
+                    }
+                }
+            }
+        }
+        for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
+            for (const property of mappedSuperClass.properties) {
+                if ("associationId" in property) {
+                    if (property.associationId === association.id) {
+                        subIdSets.mappedSuperClassIdSet.add(mappedSuperClass.id)
+                    }
+                }
+            }
+        }
 
         return subIdSets
     }
