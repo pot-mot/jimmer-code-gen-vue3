@@ -32,18 +32,12 @@ const options: IStandaloneEditorConstructionOptions = {
 
 const editorInstance = shallowRef<IStandaloneCodeEditor>()
 
-watch(() => props.options, () => {
-    editorInstance.value?.updateOptions({
-        ...props.options
-    })
-}, {immediate: false})
-
 onMounted(() => {
     if (!editorContainer.value) {
         throw new Error('editorContainer is null')
     }
 
-	editorInstance.value = editor.create(editorContainer.value, {...options, ...props.options})
+	editorInstance.value = editor.create(editorContainer.value, options)
 
 	editorInstance.value.onDidChangeModelContent(() => {
         if (editorInstance.value) {

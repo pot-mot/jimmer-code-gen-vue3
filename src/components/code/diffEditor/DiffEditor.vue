@@ -39,24 +39,12 @@ const editorInstance = shallowRef<IDiffEditor>()
 const originModel = shallowRef<ITextModel>()
 const modifiedModel = shallowRef<ITextModel>()
 
-watch(() => props.options, () => {
-    editorInstance.value?.updateOptions({
-        ...props.options
-    })
-}, {immediate: false})
-
-watch(() => props.originalEditable, () => {
-    editorInstance.value?.updateOptions({
-        originalEditable: props.originalEditable
-    })
-}, {immediate: false})
-
 onMounted(() => {
     if (!editorContainer.value) {
         throw new Error('editorContainer is null')
     }
 
-    editorInstance.value = editor.createDiffEditor(editorContainer.value, {...options, ...props.options})
+    editorInstance.value = editor.createDiffEditor(editorContainer.value, options)
 
     // 设置左右两侧的模型
     const unwrapOriginModel = editor.createModel(originValue.value, props.language, props.originModelUri)
