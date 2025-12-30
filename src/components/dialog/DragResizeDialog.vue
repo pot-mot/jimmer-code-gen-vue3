@@ -29,8 +29,6 @@ const props = withDefaults(defineProps<{
     canExitFullScreen?: boolean
     initFullScreen?: boolean
 }>(), {
-    initW: window.innerWidth * 0.8,
-    initH: window.innerHeight * 0.8,
     to: "body",
     canResize: false,
     canDrag: true,
@@ -80,6 +78,8 @@ const getParent = (): HTMLElement | null => {
 }
 
 const initXW = () => {
+    const initW = props.initW ?? window.innerWidth * 0.8
+
     let tempX = position.x
     let tempW = size.value.width
 
@@ -94,15 +94,15 @@ const initXW = () => {
     } else {
         maxWidth = document.documentElement.clientWidth
     }
-    if (maxWidth < props.initW) {
+    if (maxWidth < initW) {
         tempX = 0
         tempW = maxWidth
     } else if (props.initX !== undefined) {
-        tempX = props.initW + props.initX > maxWidth ? maxWidth - props.initW : props.initX
-        tempW = props.initW
+        tempX = initW + props.initX > maxWidth ? maxWidth - initW : props.initX
+        tempW = initW
     } else {
-        tempX = (maxWidth - props.initW) / 2
-        tempW = props.initW
+        tempX = (maxWidth - initW) / 2
+        tempW = initW
     }
 
     position.x = tempX
@@ -110,6 +110,8 @@ const initXW = () => {
 }
 
 const initYH = () => {
+    const initH = props.initH ?? window.innerHeight * 0.8
+
     let tempY = position.y
     let tempH = size.value.height
 
@@ -123,15 +125,15 @@ const initYH = () => {
     } else {
         maxHeight = document.documentElement.clientHeight
     }
-    if (maxHeight < props.initH) {
+    if (maxHeight < initH) {
         tempY = 0
         tempH = maxHeight
     } else if (props.initY !== undefined) {
         tempY = props.initY
-        tempH = props.initH
+        tempH = initH
     } else {
-        tempY = (maxHeight - props.initH) / 2
-        tempH = props.initH
+        tempY = (maxHeight - initH) / 2
+        tempH = initH
     }
 
     position.y = tempY
