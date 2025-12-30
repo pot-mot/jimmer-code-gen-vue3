@@ -60,6 +60,9 @@ const beforeCopy = (properties: MappedSuperClassProperty[]) => {
 const beforePaste = (properties: MappedSuperClassProperty[]) => {
     for (const property of properties) {
         property.id = createId("Property")
+        if ("associationId" in property) {
+            property.associationId = createId("Association")
+        }
     }
 }
 

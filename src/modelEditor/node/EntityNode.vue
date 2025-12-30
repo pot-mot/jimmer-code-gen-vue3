@@ -59,6 +59,9 @@ const beforeCopy = (properties: EntityProperty[]) => {
 const beforePaste = (properties: EntityProperty[]) => {
     for (const property of properties) {
         property.id = createId("Property")
+        if ("associationId" in property) {
+            property.associationId = createId("Association")
+        }
     }
 }
 
