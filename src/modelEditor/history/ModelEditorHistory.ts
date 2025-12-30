@@ -319,7 +319,8 @@ export const useModelEditorHistory = (
                 history.executeBatch(Symbol("entity change with association sync"), () => {
                     const {needRemoveIds} = getPropertiesAssociationChange(
                         oldEntity.properties,
-                        newEntity.properties
+                        newEntity.properties,
+                        (id) => contextData.associationMap.has(id)
                     )
                     if (needRemoveIds.length > 0) {
                         history.executeCommand("remove", fillModelSubIds({
@@ -504,7 +505,8 @@ export const useModelEditorHistory = (
                 history.executeBatch(Symbol("mapped-super-class change with association sync"), () => {
                     const {needRemoveIds} = getPropertiesAssociationChange(
                         oldMappedSuperClass.properties,
-                        newMappedSuperClass.properties
+                        newMappedSuperClass.properties,
+                        (id) => contextData.associationMap.has(id)
                     )
                     if (needRemoveIds.length > 0) {
                         history.executeCommand("remove", fillModelSubIds({

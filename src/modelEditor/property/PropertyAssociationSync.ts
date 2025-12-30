@@ -6,6 +6,7 @@ export type PropertyAssociationChangeInfo = {
 export const getPropertiesAssociationChange = (
     oldProperties: DeepReadonly<Property[]>,
     newProperties: DeepReadonly<Property[]>,
+    isAssociationExisted: (id: string) => boolean,
 ): PropertyAssociationChangeInfo => {
     const result: PropertyAssociationChangeInfo = {
         needRemoveIds: [],
@@ -26,12 +27,12 @@ export const getPropertiesAssociationChange = (
     }
 
     for (const oldAssociationId of oldAssociationIdSet) {
-        if (!newAssociationIdSet.has(oldAssociationId)) {
+        if (!newAssociationIdSet.has(oldAssociationId) && isAssociationExisted(oldAssociationId)) {
             result.needRemoveIds.push(oldAssociationId)
         }
     }
     for (const newAssociationId of newAssociationIdSet) {
-        if (!oldAssociationIdSet.has(newAssociationId)) {
+        if (!oldAssociationIdSet.has(newAssociationId) && !isAssociationExisted(newAssociationId)) {
             result.needCheckExistIds.push(newAssociationId)
         }
     }
