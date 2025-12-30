@@ -152,6 +152,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         tabindex="-1"
         class="model-editor-wrapper"
         @keydown="handleKeyDown"
+        @mouseenter="focus"
     >
         <ModelEditorBackground :viewport="viewport"/>
 

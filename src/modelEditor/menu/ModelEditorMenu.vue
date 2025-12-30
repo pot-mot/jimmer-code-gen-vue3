@@ -150,6 +150,10 @@ const handleKeyDown = async (e: KeyboardEvent) => {
     }
 }
 
+const handleMouseEnter = () => {
+    menuRef.value?.focus()
+}
+
 const handleClick = (e: MouseEvent) => {
     if (!judgeTarget(e, (el) => el.classList.contains("tree-select"))) {
         if (!canMultiSelect.value) {
@@ -286,6 +290,7 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
         tabindex="-1"
         ref="menuRef"
         @keydown="handleKeyDown($event)"
+        @mouseenter="handleMouseEnter()"
         @click="handleClick($event)"
         class="model-editor-menu"
 
