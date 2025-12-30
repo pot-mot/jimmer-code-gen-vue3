@@ -58,7 +58,7 @@ const position = reactive({
 })
 const positionX = computed(() => position.x + 'px')
 const positionY = computed(() => position.y + 'px')
-const size = reactive({
+const size = ref({
     width: 0,
     height: 0
 })
@@ -81,7 +81,7 @@ const getParent = (): HTMLElement | null => {
 
 const initXW = () => {
     let tempX = position.x
-    let tempW = size.width
+    let tempW = size.value.width
 
     let maxWidth: number
 
@@ -106,12 +106,12 @@ const initXW = () => {
     }
 
     position.x = tempX
-    size.width = tempW
+    size.value.width = tempW
 }
 
 const initYH = () => {
     let tempY = position.y
-    let tempH = size.height
+    let tempH = size.value.height
 
     let maxHeight: number
 
@@ -135,14 +135,14 @@ const initYH = () => {
     }
 
     position.y = tempY
-    size.height = tempH
+    size.value.height = tempH
 }
 
 const isFullScreen = computed<boolean>(() =>
     position.x === 0 &&
     position.y === 0 &&
-    size.height === document.documentElement.offsetHeight &&
-    size.width === document.documentElement.offsetWidth
+    size.value.height === document.documentElement.offsetHeight &&
+    size.value.width === document.documentElement.offsetWidth
 )
 
 watch(() => isFullScreen.value, (value) => {
@@ -156,8 +156,8 @@ watch(() => isFullScreen.value, (value) => {
 const enterFullScreen = () => {
     position.x = 0
     position.y = 0
-    size.height = document.documentElement.offsetHeight
-    size.width = document.documentElement.offsetWidth
+    size.value.height = document.documentElement.offsetHeight
+    size.value.width = document.documentElement.offsetWidth
 }
 
 const exitFullScreen = () => {
