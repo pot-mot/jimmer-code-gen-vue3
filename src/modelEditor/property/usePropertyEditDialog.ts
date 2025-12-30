@@ -5,9 +5,9 @@ import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 
 export type PropertyWithSource =
-    | { entityId: string, entityProperty: EntityProperty }
-    | { mappedSuperClassId: string, mappedSuperClassProperty: MappedSuperClassProperty }
-    | { embeddableTypeId: string, embeddableTypeProperty: EmbeddableTypeProperty }
+    | { entityId: string, property: EntityProperty }
+    | { mappedSuperClassId: string, property: MappedSuperClassProperty }
+    | { embeddableTypeId: string, property: EmbeddableTypeProperty }
 
 export const usePropertyEditDialog = createStore(() => {
     const {open, close, ...dialogOpenState} = useDialogOpenState()
@@ -28,11 +28,11 @@ export const usePropertyEditDialog = createStore(() => {
             propertyState.value = cloneDeepReadonlyRaw<PropertyWithSource>(propertyWithSource)
             open()
         },
-        submit() {
-            if (propertyState.value) {
-                if ("entityId" in propertyState.value) {
-                    const property = propertyState.value.entityProperty
-                    const entity = contextData.entityMap.get(propertyState.value.entityId)
+        submit(propertyWithSource: PropertyWithSource) {
+            if (propertyWithSource) {
+                if ("entityId" in propertyWithSource) {
+                    const property = propertyWithSource.property
+                    const entity = contextData.entityMap.get(propertyWithSource.entityId)
                     if (entity) {
                         changeEntity({
                             ...entity,
@@ -42,9 +42,9 @@ export const usePropertyEditDialog = createStore(() => {
                             })
                         })
                     }
-                } else if ("mappedSuperClassId" in propertyState.value) {
-                    const property = propertyState.value.mappedSuperClassProperty
-                    const mappedSuperClass = contextData.mappedSuperClassMap.get(propertyState.value.mappedSuperClassId)
+                } else if ("mappedSuperClassId" in propertyWithSource) {
+                    const property = propertyWithSource.property
+                    const mappedSuperClass = contextData.mappedSuperClassMap.get(propertyWithSource.mappedSuperClassId)
                     if (mappedSuperClass) {
                         changeMappedSuperClass({
                             ...mappedSuperClass,
@@ -54,9 +54,9 @@ export const usePropertyEditDialog = createStore(() => {
                             })
                         })
                     }
-                } else if ("embeddableTypeId" in propertyState.value) {
-                    const property = propertyState.value.embeddableTypeProperty
-                    const embeddableType = contextData.embeddableTypeMap.get(propertyState.value.embeddableTypeId)
+                } else if ("embeddableTypeId" in propertyWithSource) {
+                    const property = propertyWithSource.property
+                    const embeddableType = contextData.embeddableTypeMap.get(propertyWithSource.embeddableTypeId)
                     if (embeddableType) {
                         changeEmbeddableType({
                             ...embeddableType,

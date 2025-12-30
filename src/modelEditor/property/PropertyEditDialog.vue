@@ -19,7 +19,7 @@ const {
     >
         <PropertyForm
             v-if="propertyState"
-            v-model="propertyState"
+            :property-with-source="propertyState"
             @submit="submit"
             @cancel="close"
         />

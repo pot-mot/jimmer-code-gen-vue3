@@ -192,7 +192,7 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                     class="type-editor-button"
                     @click.stop="openPropertyEditDialog({
                         embeddableTypeId: embeddableType.id,
-                        embeddableTypeProperty: property
+                        property: property
                     })"
                 >
                     <IconEdit/>

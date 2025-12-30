@@ -364,7 +364,7 @@ const association = computed(() => {
                     class="type-editor-button"
                     @click.stop="openPropertyEditDialog({
                         mappedSuperClassId: mappedSuperClass.id,
-                        mappedSuperClassProperty: property
+                        property: property
                     })"
                 >
                     <IconEdit/>
