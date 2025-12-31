@@ -61,7 +61,6 @@ export default defineConfig({
                     'lodash': ['lodash-es'],
                     'monaco-editor': ['monaco-editor'],
                     'prismjs': ['prismjs'],
-                    'html-to-image': ['html-to-image'],
                     'typescript': ['typescript'],
                 }
             }
