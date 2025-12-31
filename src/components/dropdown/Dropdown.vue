@@ -34,7 +34,9 @@ const toggleDropdown = () => {
 watch(() => isOpen.value, async (value) => {
     await nextTick()
     if (value && dropdownRef.value && dropdownBodyMaskRef.value && dropdownBodyRef.value) {
-        dropdownBodyMaskRef.value.focus()
+        if (!document.activeElement || document.activeElement === document.body) {
+            dropdownBodyMaskRef.value.focus()
+        }
 
         const triggerRect = dropdownRef.value.getBoundingClientRect()
         const menuRect = dropdownBodyRef.value.getBoundingClientRect()
