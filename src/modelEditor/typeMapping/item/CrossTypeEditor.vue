@@ -6,7 +6,7 @@ import JvmTypeSelect from "@/modelEditor/typeMapping/select/JvmTypeSelect.vue";
 import SqlTypeSelect from "@/modelEditor/typeMapping/select/SqlTypeSelect.vue";
 import TsTypeSelect from "@/modelEditor/typeMapping/select/TsTypeSelect.vue";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
-import FilterableSelect from "@/components/select/FilterableSelect.vue";
+import NullableLimitSelect from "@/modelEditor/typeMapping/select/NullableLimitSelect.vue";
 
 const crossTypeInput = defineModel<CrossTypeInput>({
     required: true
@@ -73,22 +73,7 @@ defineExpose({
             <div v-if="errors.tsTypeId" class="error-message">{{ errors.tsTypeId }}</div>
         </div>
         <div>
-            <FilterableSelect
-                v-model="crossTypeInput.nullable"
-                :options="[true, false, undefined]"
-                :get-id="(it) => `${it}`"
-            >
-                <template #selected="{option}">
-                    <span v-if="option === true">{{ translate('nullableLimit_true') }}</span>
-                    <span v-else-if="option === false">{{ translate('nullableLimit_false') }}</span>
-                    <span v-else-if="option === undefined">{{ translate('nullableLimit_undefined') }}</span>
-                </template>
-                <template #option="{option}">
-                    <span v-if="option === true">{{ translate('nullableLimit_true') }}</span>
-                    <span v-else-if="option === false">{{ translate('nullableLimit_false') }}</span>
-                    <span v-else-if="option === undefined">{{ translate('nullableLimit_undefined') }}</span>
-                </template>
-            </FilterableSelect>
+            <NullableLimitSelect v-model="crossTypeInput.nullable"/>
         </div>
     </div>
 </template>

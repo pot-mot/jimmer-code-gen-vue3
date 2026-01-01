@@ -41,21 +41,27 @@ const options = computed(() => {
         :filter="(option, filterText) => option?.type.includes(filterText) ?? false"
     >
         <template #selected="{option}">
-            <span class="sql-type-selected-option">{{ option?.type }}</span>
+            <div class="sql-type-selected-option">{{ option?.type }}</div>
         </template>
         <template #option="{option}">
-            <span class="sql-type-option">{{ option?.type }}</span>
+            <div class="sql-type-option">{{ option?.type }}</div>
         </template>
     </FilterableSelect>
 </template>
 
 <style scoped>
 .sql-type-selected-option {
-    padding: 0.125rem 0.25rem;
+    height: 1.5rem;
+    padding: 0.25rem;
+    line-height: 1rem;
+    font-size: 0.8rem;
 }
 
 .sql-type-option {
-    padding: 0.125rem 0.25rem;
+    height: 1.2rem;
+    line-height: 0.8rem;
+    padding: 0.2rem 0;
+    font-size: 0.8rem;
     min-width: 5rem;
 }
 </style>
