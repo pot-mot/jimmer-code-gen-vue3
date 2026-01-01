@@ -94,7 +94,10 @@ onMounted(async () => {
 const showComment = computed(() => model.value.comment.length > 0 || nameFocused.value || commentFocused.value)
 
 const handleDoubleClick = (event: MouseEvent) => {
-    if (editorFocused.value || nameFocused.value || commentFocused.value) return
+    if (editorFocused.value || nameFocused.value || commentFocused.value) {
+        event.stopPropagation()
+        return
+    }
 
     // 判断点击位置是否在name区域
     if (event.target === nameSpan.value) {
@@ -109,17 +112,25 @@ const handleDoubleClick = (event: MouseEvent) => {
         focusNameInput();
     }
 }
+
+const handleSpanClick = (event: MouseEvent) => {
+    if (editorFocused.value || nameFocused.value || commentFocused.value) {
+        event.stopPropagation()
+        return
+    }
+}
 </script>
 
 <template>
     <span
         class="name-comment-editor"
-        @dblclick.stop="handleDoubleClick"
+        @dblclick="handleDoubleClick"
         ref="editorRef"
     >
         <span
             ref="nameSpan"
             class="name"
+            @click="handleSpanClick"
         >
             <span
                 v-if="!model.name && !nameFocused"
@@ -145,6 +156,7 @@ const handleDoubleClick = (event: MouseEvent) => {
             v-if="showComment"
             ref="commentSpan"
             class="comment"
+            @click="handleSpanClick"
         >
             [<FitSizeLineInput
             ref="commentInput"
