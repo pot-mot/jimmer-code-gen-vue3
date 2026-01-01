@@ -41,7 +41,7 @@ const editListBody = useTemplateRef("editListBody")
 
 const listSelection = useListSelection<number>()
 
-const  {
+const {
     lastSelect,
     selectedItemSet,
     isSelected,
@@ -107,7 +107,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
         lines.value = unselectedItems
     }
 
-    if (e.ctrlKey || e.metaKey) {
+    else if (e.ctrlKey || e.metaKey) {
         if (e.key === 'a') {
             e.preventDefault()
             e.stopPropagation()
@@ -183,7 +183,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
         }
     }
 
-    if (e.key === 'ArrowUp') {
+    else if (e.key === 'ArrowUp') {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
