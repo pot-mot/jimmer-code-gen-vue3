@@ -32,25 +32,19 @@ export type ContextMenuTarget_EmbeddableType = DeepReadonly<{
     id: string
 }>
 
-export type ContextMenuTarget_ConcreteAssociation = DeepReadonly<{
-    type: "ConcreteAssociation"
+export type ContextMenuTarget_Association = DeepReadonly<{
+    type: "Association"
     id: string
 }>
 
-export type ContextMenuTarget_AbstractAssociation = DeepReadonly<{
-    type: "AbstractAssociation"
-    id: string
-}>
-
-type ContextMenuTarget =
+export type ContextMenuTarget =
     | ContextMenuTarget_Model
     | ContextMenuTarget_Group
     | ContextMenuTarget_Entity
     | ContextMenuTarget_MappedSuperClass
     | ContextMenuTarget_Enumeration
     | ContextMenuTarget_EmbeddableType
-    | ContextMenuTarget_ConcreteAssociation
-    | ContextMenuTarget_AbstractAssociation
+    | ContextMenuTarget_Association
 
 export const useModelContextMenu = createStore(() => {
     const {open, close, ...dialogOpenState} = useDialogOpenState()

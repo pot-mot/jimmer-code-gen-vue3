@@ -54,9 +54,17 @@ const isDisabled = computed(() => {
 
 // 点击处理
 const handleClick = (event: MouseEvent) => {
-    treeSelect.treeItemClick(props.node.id, event)
+    treeSelect.handleItemClick(props.node.id, event)
     if (isDisabled.value) return
     treeSelect.toggleSelection(props.node.id, event)
+}
+
+const handleDoubleClick = (event: MouseEvent) => {
+    treeSelect.handleItemDoubleClick(props.node.id, event)
+}
+
+const handleContextMenu = (event: MouseEvent) => {
+    treeSelect.handleItemContextMenu(props.node.id, event)
 }
 
 defineSlots<{
@@ -71,6 +79,8 @@ defineSlots<{
             trigger-position="left"
             :disabled="!hasChildren"
             @header-click="handleClick"
+            @dblclick.stop="handleDoubleClick"
+            @contextmenu.stop="handleContextMenu"
         >
             <template #head>
                 <div class="tree-node">
