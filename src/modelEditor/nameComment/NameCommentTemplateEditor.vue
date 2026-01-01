@@ -239,6 +239,7 @@ const handleSpanClick = (event: MouseEvent) => {
 
 .name-comment-editor .untouchable {
     pointer-events: none;
+    user-select: none;
 }
 
 .name-comment-editor > .name > .empty-name {
