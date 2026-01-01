@@ -130,6 +130,7 @@ const handleSpanClick = (event: MouseEvent) => {
         <span
             ref="nameSpan"
             class="name"
+            :class="{unselectable: !editorFocused && !nameFocused}"
             @click="handleSpanClick"
         >
             <span
@@ -156,6 +157,7 @@ const handleSpanClick = (event: MouseEvent) => {
             v-if="showComment"
             ref="commentSpan"
             class="comment"
+            :class="{unselectable: !editorFocused && !commentFocused}"
             @click="handleSpanClick"
         >
             [<FitSizeLineInput
@@ -182,6 +184,10 @@ const handleSpanClick = (event: MouseEvent) => {
 
 .name-comment-editor .untouchable {
     pointer-events: none;
+    user-select: none;
+}
+
+.name-comment-editor .unselectable {
     user-select: none;
 }
 
