@@ -47,49 +47,61 @@ const emits = defineEmits<{
     (event: "blur"): void
 }>()
 
+const editorRef = useTemplateRef("editorRef")
 const nameInput = useTemplateRef("nameInput")
 const commentInput = useTemplateRef("commentInput")
-const nameCommentEditorRef = useTemplateRef("nameCommentEditorRef")
+const nameSpan = useTemplateRef("nameSpan")
+const commentSpan = useTemplateRef("commentSpan")
 
-const wrapperFocused = ref(false)
+const editorFocused = ref(false)
 const nameFocused = ref(false)
 const commentFocused = ref(false)
 
-useClickOutside(() => nameCommentEditorRef.value, () => {
-    wrapperFocused.value = false
+useClickOutside(() => editorRef.value, () => {
+    editorFocused.value = false
     nameFocused.value = false
     commentFocused.value = false
 })
 
 const focusNameInput = () => {
-    wrapperFocused.value = true
-    nameInput.value?.$el.focus()
+    editorFocused.value = true
+    nameFocused.value = true
+    commentFocused.value = false
+    nextTick(() => {
+        nameInput.value?.$el.focus()
+    })
 }
 const focusCommentInput = () => {
-    wrapperFocused.value = true
-    commentInput.value?.$el.focus()
+    editorFocused.value = true
+    nameFocused.value = false
+    commentFocused.value = true
+    nextTick(() => {
+        commentInput.value?.$el.focus()
+    })
 }
 
 const handleNameFocus = () => {
+    editorFocused.value = true
     nameFocused.value = true
 }
 const handleNameBlur = () => {
     window.setTimeout(() => {
         nameFocused.value = false
         if (!commentFocused.value) {
-            wrapperFocused.value = false
+            editorFocused.value = false
             emits("blur")
         }
     }, props.blurDelay)
 }
 const handleCommentFocus = () => {
+    editorFocused.value = true
     commentFocused.value = true
 }
 const handleCommentBlur = () => {
     window.setTimeout(() => {
         commentFocused.value = false
         if (!nameFocused.value) {
-            wrapperFocused.value = false
+            editorFocused.value = false
             emits("blur")
         }
     }, props.blurDelay)
@@ -103,28 +115,46 @@ onMounted(async () => {
 })
 
 const showComment = computed(() => props.comment.length > 0 || nameFocused.value || commentFocused.value)
+
+const handleDoubleClick = (event: MouseEvent) => {
+    if (editorFocused.value || nameFocused.value || commentFocused.value) return
+
+    // 判断点击位置是否在name区域
+    if (event.target === nameSpan.value) {
+        focusNameInput();
+    }
+    // 判断点击位置是否在comment区域
+    else if (event.target === commentSpan.value) {
+        focusCommentInput();
+    }
+    // 如果点击在其他区域，可以选择默认聚焦nameInput
+    else {
+        focusNameInput();
+    }
+}
 </script>
 
 <template>
     <span
         class="name-comment-editor"
-        @click="wrapperFocused = true"
-        ref="nameCommentEditorRef"
+        @dblclick.stop="handleDoubleClick"
+        ref="editorRef"
     >
         <span
+            ref="nameSpan"
             class="name"
-            :class="{untouchable: !wrapperFocused && !nameFocused}"
-            @click.stop="focusNameInput"
         >
             <span
                 v-if="!props.name && !nameFocused"
                 class="empty-name"
+                :class="{untouchable: !editorFocused && !nameFocused}"
             >
                 [Please Enter Name]
             </span>
             <FitSizeLineInput
                 ref="nameInput"
                 class="no-drag"
+                :class="{untouchable: !editorFocused && !nameFocused}"
                 :padding="{top: 4, bottom: 4, left: 0, right: 0}"
                 :line-height="fontSize"
                 :font-size="fontSize"
@@ -136,21 +166,21 @@ const showComment = computed(() => props.comment.length > 0 || nameFocused.value
         </span>
         <span
             v-if="showComment"
+            ref="commentSpan"
             class="comment"
-            :class="{untouchable: !wrapperFocused && !commentFocused}"
-            @click.stop="focusCommentInput"
         >
             [<FitSizeLineInput
-                ref="commentInput"
-                class="no-drag"
-                :padding="{top: 4, bottom: 4, left: 0, right: 0}"
-                :line-height="fontSize"
-                :font-size="fontSize"
-                v-model="commentModel"
-                @change="emits('change')"
-                @focus="handleCommentFocus"
-                @blur="handleCommentBlur"
-            />]
+            ref="commentInput"
+            class="no-drag"
+            :class="{untouchable: !editorFocused && !commentFocused}"
+            :padding="{top: 4, bottom: 4, left: 0, right: 0}"
+            :line-height="fontSize"
+            :font-size="fontSize"
+            v-model="commentModel"
+            @change="emits('change')"
+            @focus="handleCommentFocus"
+            @blur="handleCommentBlur"
+        />]
         </span>
     </span>
 </template>
@@ -161,7 +191,7 @@ const showComment = computed(() => props.comment.length > 0 || nameFocused.value
     white-space: nowrap;
 }
 
-.name-comment-editor > .untouchable {
+.name-comment-editor .untouchable {
     pointer-events: none;
 }
 
