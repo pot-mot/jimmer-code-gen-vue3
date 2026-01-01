@@ -659,7 +659,6 @@ export const useModelEditor = createStore(() => {
         vueFlow.panOnDrag.value = [0, 2]
         selectionRectMouseButton = 2
         selectionRectEnable = false
-        focus()
     }
     // 默认操作为框选，通过鼠标右键拖拽
     const setDefaultSelectionRect = (
@@ -669,7 +668,6 @@ export const useModelEditor = createStore(() => {
         vueFlow.panOnDrag.value = [2]
         selectionRectMouseButton = 0
         selectionRectEnable = true
-        focus()
     }
     const toggleDefaultMouseAction = (
         vueFlow: VueFlowStore = getVueFlow()
@@ -905,7 +903,6 @@ export const useModelEditor = createStore(() => {
                 const rectY = clientRect.y
 
                 e.preventDefault()
-                focus()
 
                 vueFlow.multiSelectionActive.value = true
                 clearGraphSelection()
@@ -1217,7 +1214,6 @@ export const useModelEditor = createStore(() => {
             } else {
                 sendMessage(translate("cannot_undo"), {type: "warning"})
             }
-            focus()
         },
         redo: () => {
             if (canRedo.value) {
@@ -1231,7 +1227,6 @@ export const useModelEditor = createStore(() => {
             } else {
                 sendMessage(translate("cannot_redo"), {type: "warning"})
             }
-            focus()
         },
         waitChangeSync,
 
@@ -1321,7 +1316,6 @@ export const useModelEditor = createStore(() => {
             try {
                 const result = await clipBoard.copy(data)
                 sendMessage(translate("copy_success_tip"), {type: "success"})
-                focus()
                 return result
             } catch (e) {
                 sendMessage(translate("copy_fail_tip"), {type: "warning"})
@@ -1334,7 +1328,6 @@ export const useModelEditor = createStore(() => {
             try {
                 const result = await clipBoard.paste(data)
                 sendMessage(translate("paste_success_tip"), {type: "success"})
-                focus()
                 return result
             } catch (e) {
                 sendMessage(translate("paste_fail_tip"), {type: "warning"})
@@ -1347,7 +1340,6 @@ export const useModelEditor = createStore(() => {
             try {
                 const result = await clipBoard.cut(data)
                 sendMessage(translate("cut_success_tip"), {type: "success"})
-                focus()
                 return result
             } catch (e) {
                 sendMessage(translate("cut_fail_tip"), {type: "warning"})

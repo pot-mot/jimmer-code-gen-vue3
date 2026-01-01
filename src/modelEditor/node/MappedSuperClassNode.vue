@@ -122,7 +122,6 @@ watch(() => handleIndexMap.value, () => {
             :json-schema-validate="validateMappedSuperClassProperty"
             :before-copy="beforeCopy"
             :before-paste="beforePaste"
-            @keydown.stop
         >
             <template #line="{item, index}">
                 <div class="mapped-super-class-property">

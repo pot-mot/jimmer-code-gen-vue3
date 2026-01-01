@@ -121,7 +121,6 @@ watch(() => handleIndexMap.value, () => {
             :json-schema-validate="validateEntityProperty"
             :before-copy="beforeCopy"
             :before-paste="beforePaste"
-            @keydown.stop
         >
             <template #line="{item, index}">
                 <div class="entity-property">

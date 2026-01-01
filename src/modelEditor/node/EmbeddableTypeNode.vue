@@ -78,7 +78,6 @@ const beforePaste = (properties: Property[]) => {
             :default-line="defaultScalarProperty"
             :json-schema-validate="validateEmbeddableTypeProperty"
             :before-paste="beforePaste"
-            @keydown.stop
         >
             <template #line="{item, index}">
                 <div class="embeddable-type-property">

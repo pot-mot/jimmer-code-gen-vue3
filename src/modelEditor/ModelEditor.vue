@@ -54,7 +54,6 @@ const handleKeyDown = async (e: KeyboardEvent) => {
 
         e.preventDefault()
         remove(subIdSetToSubIds(modelSelection.selectedIdSets.value))
-        focus()
     }
 
     // 按下 Ctrl 键进入多选模式，直到松开 Ctrl 键
@@ -62,7 +61,6 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         if (judgeTargetIsInteraction(e)) return
 
         enableMultiSelect()
-        focus()
         document.documentElement.addEventListener('keyup', (e) => {
             if (e.key === "Control" || e.ctrlKey) {
                 disableMultiSelect()
@@ -75,7 +73,6 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         if (judgeTargetIsInteraction(e)) return
 
         toggleDefaultMouseAction()
-        focus()
         document.documentElement.addEventListener('keyup', (e) => {
             if (e.key === "Shift" || e.shiftKey) {
                 toggleDefaultMouseAction()
@@ -95,20 +92,17 @@ const handleKeyDown = async (e: KeyboardEvent) => {
                 e.preventDefault()
                 undo()
             }
-            focus()
         } else if (e.key === 'y' || e.key === "Y") {
             if (judgeTargetIsInteraction(e)) return
 
             e.preventDefault()
             redo()
-            focus()
         }
 
         // 按下 Ctrl + s 键，保存模型
         else if (e.key === "s" || e.key === "S") {
             e.preventDefault()
             await saveModel()
-            focus()
         }
 
         // 剪切板快捷键
@@ -118,20 +112,17 @@ const handleKeyDown = async (e: KeyboardEvent) => {
 
             e.preventDefault()
             await copy()
-            focus()
         } else if (e.key === "x" || e.key === "X") {
             if (judgeTargetIsInteraction(e)) return
             if (graphSelection.selectedCount.value < 1) return
 
             e.preventDefault()
             await cut()
-            focus()
         } else if (e.key === "v" || e.key === "V") {
             if (judgeTargetIsInteraction(e)) return
 
             e.preventDefault()
             await paste()
-            focus()
         }
 
         // 全选
@@ -141,7 +132,6 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             e.preventDefault()
 
             graphSelection.selectAll()
-            focus()
         }
     }
 }

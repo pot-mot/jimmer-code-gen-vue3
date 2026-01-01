@@ -94,7 +94,6 @@ const handleKeyDown = async (e: KeyboardEvent) => {
 
         e.preventDefault()
         remove(subIdSetToSubIds(modelSelection.selectedIdSets.value))
-        menuRef.value?.focus()
     } else if (e.ctrlKey || e.metaKey) {
         if (e.key === "f" || e.key === "F") {
             e.preventDefault()
@@ -112,43 +111,36 @@ const handleKeyDown = async (e: KeyboardEvent) => {
                 e.preventDefault()
                 undo()
             }
-            menuRef.value?.focus()
         } else if (e.key === 'y' || e.key === "Y") {
             if (judgeTargetIsInteraction(e)) return
 
             e.preventDefault()
             redo()
-            menuRef.value?.focus()
         } else if (e.key === "s" || e.key === "S") {
             e.preventDefault()
             await saveModel()
-            menuRef.value?.focus()
         } else if (e.key === "c" || e.key === "C") {
             if (judgeTargetIsInteraction(e)) return
             if (modelSelectionCount.value === 0) return
 
             e.preventDefault()
             await copy()
-            menuRef.value?.focus()
         } else if (e.key === "x" || e.key === "X") {
             if (judgeTargetIsInteraction(e)) return
             if (modelSelectionCount.value === 0) return
 
             e.preventDefault()
             await cut()
-            menuRef.value?.focus()
         } else if (e.key === "v" || e.key === "V") {
             if (judgeTargetIsInteraction(e)) return
 
             e.preventDefault()
             await paste()
-            menuRef.value?.focus()
         } else if (e.key === "a" || e.key === "A") {
             if (judgeTargetIsInteraction(e)) return
 
             e.preventDefault()
             modelSelection.selectAll()
-            menuRef.value?.focus()
         }
     }
 }

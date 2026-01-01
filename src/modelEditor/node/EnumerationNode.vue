@@ -101,7 +101,6 @@ const beforePaste = (items: EnumerationItem[]) => {
             :default-line="createEnumItem"
             :json-schema-validate="validateEnumerationItem"
             :before-paste="beforePaste"
-            @keydown.stop
         >
             <template #line="{item, index}">
                 <div class="enumeration-item">
