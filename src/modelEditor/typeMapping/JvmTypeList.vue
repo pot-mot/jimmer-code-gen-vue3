@@ -43,13 +43,14 @@ const history = useCommandHistory<{
 
 let oldJvmTypeInputs: DeepReadonly<JvmTypeInput[]> | undefined
 const debounceSynUpdate = debounce(async (inputs: JvmTypeInput[]) => {
+    const clonedInputs = cloneDeepReadonlyRaw<JvmTypeInput[]>(inputs)
     if (oldJvmTypeInputs !== undefined) {
         history.executeCommand('change', {
-            newValue: inputs,
+            newValue: clonedInputs,
             oldValue: oldJvmTypeInputs,
         })
     }
-    oldJvmTypeInputs = cloneDeepReadonlyRaw(inputs)
+    oldJvmTypeInputs = clonedInputs
 }, 500)
 
 let stopWatch: WatchStopHandle | undefined

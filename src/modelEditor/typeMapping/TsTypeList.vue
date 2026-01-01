@@ -42,13 +42,14 @@ const history = useCommandHistory<{
 
 let oldTsTypeInputs: DeepReadonly<TsTypeInput[]> | undefined
 const debounceSynUpdate = debounce(async (inputs: TsTypeInput[]) => {
+    const clonedInputs = cloneDeepReadonlyRaw<TsTypeInput[]>(inputs)
     if (oldTsTypeInputs !== undefined) {
         history.executeCommand('change', {
-            newValue: inputs,
+            newValue: clonedInputs,
             oldValue: oldTsTypeInputs,
         })
     }
-    oldTsTypeInputs = cloneDeepReadonlyRaw(inputs)
+    oldTsTypeInputs = clonedInputs
 }, 500)
 
 let stopWatch: WatchStopHandle | undefined

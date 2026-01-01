@@ -45,13 +45,14 @@ const history = useCommandHistory<{
 
 let oldCrossTypeInputs: DeepReadonly<CrossTypeInput[]> | undefined
 const debounceSynUpdate = debounce(async (inputs: CrossTypeInput[]) => {
+    const clonedInputs = cloneDeepReadonlyRaw<CrossTypeInput[]>(inputs)
     if (oldCrossTypeInputs !== undefined) {
         history.executeCommand('change', {
-            newValue: inputs,
+            newValue: clonedInputs,
             oldValue: oldCrossTypeInputs,
         })
     }
-    oldCrossTypeInputs = cloneDeepReadonlyRaw(inputs)
+    oldCrossTypeInputs = clonedInputs
 }, 500)
 
 let stopWatch: WatchStopHandle | undefined

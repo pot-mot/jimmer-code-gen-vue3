@@ -42,13 +42,14 @@ const history = useCommandHistory<{
 
 let oldSqlTypeInputs: DeepReadonly<SqlTypeInput[]> | undefined
 const debounceSynUpdate = debounce(async (inputs: SqlTypeInput[]) => {
+    const clonedInputs = cloneDeepReadonlyRaw<SqlTypeInput[]>(inputs)
     if (oldSqlTypeInputs !== undefined) {
         history.executeCommand('change', {
-            newValue: inputs,
+            newValue: clonedInputs,
             oldValue: oldSqlTypeInputs,
         })
     }
-    oldSqlTypeInputs = cloneDeepReadonlyRaw(inputs)
+    oldSqlTypeInputs = clonedInputs
 }, 500)
 
 let stopWatch: WatchStopHandle | undefined
