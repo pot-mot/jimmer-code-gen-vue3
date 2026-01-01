@@ -100,7 +100,7 @@ defineExpose({el: inputRef, isFocus})
         class="fit-size-line-input"
         ref="inputRef"
         :style="{
-             paddingLeft: `${fullPadding.left}px`,
+            paddingLeft: `${fullPadding.left}px`,
             paddingRight: `${fullPadding.right}px`,
             paddingTop: `${fullPadding.top}px`,
             paddingBottom: `${fullPadding.bottom}px`,
