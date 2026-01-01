@@ -79,7 +79,7 @@ export const checkElementParent = (el: Element | null, parent: Element) => {
     return false
 }
 
-export const getMatchedElementOrParent = (el: Element | null, match: (el: Element) => boolean) => {
+export const checkElementParentMatch = (el: Element | null, match: (el: Element) => boolean) => {
     while (el) {
         if (match(el)) {
             return el
@@ -87,10 +87,4 @@ export const getMatchedElementOrParent = (el: Element | null, match: (el: Elemen
         el = el.parentElement
     }
     return null
-}
-
-export const blurActiveElement = () => {
-    if (document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur()
-    }
 }
