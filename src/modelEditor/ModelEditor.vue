@@ -252,7 +252,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
                         modelSelection.unselectAll()
                         modelSelection.selectAssociation(edgeProps.id)
                         openContextMenu(
-                            {type: 'ConcreteAssociation', id: edgeProps.id},
+                            {type: 'Association', id: edgeProps.id},
                             {x: e.clientX, y: e.clientY}
                         )
                     }"
@@ -267,7 +267,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
                         modelSelection.unselectAll()
                         modelSelection.selectAssociation(edgeProps.id)
                         openContextMenu(
-                            {type: 'AbstractAssociation', id: edgeProps.id},
+                            {type: 'Association', id: edgeProps.id},
                             {x: e.clientX, y: e.clientY}
                         )
                     }"
