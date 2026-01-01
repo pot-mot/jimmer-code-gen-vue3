@@ -31,7 +31,6 @@ export const useModelEditorPaste = (
                 validateData = json
             }
         } catch (e) {
-            console.warn(e)
             canPaste.value = false
         }
     }
