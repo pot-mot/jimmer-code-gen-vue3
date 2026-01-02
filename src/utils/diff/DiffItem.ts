@@ -1,4 +1,4 @@
-import type {ObjectDiff} from "@donedeal0/superdiff";
+import type {Diff} from "@donedeal0/superdiff";
 
 export type AddedItem<T> = {
     data: T,
@@ -10,7 +10,7 @@ export type UpdatedItem<T> = {
     prevIndex: number,
     nextData: T,
     nextIndex: number,
-    diff: ObjectDiff
+    diff: Diff[]
 }
 
 export type DeletedItem<T> = {

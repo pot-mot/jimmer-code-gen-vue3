@@ -170,24 +170,20 @@ describe('listDiff', () => {
         ]
 
         const result = listDiff<TestItem>(prevList, nextList, itemToKey)
-        expect(result.updated).toEqual([
+        expect(result.updated).toStrictEqual([
             {
                 prevData: {name: 'item1', value: 'oldValue'},
                 prevIndex: 0,
                 nextData: {name: 'item1', value: 'newValue'},
                 nextIndex: 0,
-                diff: {
-                    type: "object",
-                    status: "updated",
-                    diff: [
-                        {
-                            property: "value",
-                            previousValue: 'oldValue',
-                            currentValue: 'newValue',
-                            status: "updated",
-                        }
-                    ],
-                }
+                diff: [
+                    {
+                        property: "value",
+                        previousValue: 'oldValue',
+                        currentValue: 'newValue',
+                        status: "updated",
+                    }
+                ]
             }
         ])
         expect(result.equals).toEqual([
@@ -276,31 +272,27 @@ describe('listDiff', () => {
         expect(result.updated[0]?.prevData.details.description).toBe('old description')
         expect(result.updated[0]?.nextData.name).toBe('item1')
         expect(result.updated[0]?.nextData.details.description).toBe('new description')
-        expect(result.updated[0]?.diff).toStrictEqual({
-            type: "object",
-            status: "updated",
-            diff: [
-                {
-                    property: "details",
-                    previousValue: {
-                        id: 1,
-                        description: 'old description'
-                    },
-                    currentValue: {
-                        id: 1,
-                        description: 'new description'
-                    },
-                    status: "updated",
-                    diff: [
-                        {
-                            property: "description",
-                            previousValue: 'old description',
-                            currentValue: 'new description',
-                            status: "updated",
-                        }
-                    ]
-                }
-            ]
-        })
+        expect(result.updated[0]?.diff).toStrictEqual([
+            {
+                property: "details",
+                previousValue: {
+                    id: 1,
+                    description: 'old description'
+                },
+                currentValue: {
+                    id: 1,
+                    description: 'new description'
+                },
+                status: "updated",
+                diff: [
+                    {
+                        property: "description",
+                        previousValue: 'old description',
+                        currentValue: 'new description',
+                        status: "updated",
+                    }
+                ]
+            }
+        ])
     })
 })

@@ -54,14 +54,14 @@ export const listDiff = <T extends Record<string, unknown>>(
 
         if (prevItemData) {
             // 键存在，检查内容是否有变化
-            const diff = getObjectDiff(prevItemData.item, nextItemData.item, options)
-            if (diff.status !== 'equal') {
+            const objectDiff = getObjectDiff(prevItemData.item, nextItemData.item, options)
+            if (objectDiff.status !== 'equal') {
                 updated.push({
                     prevData: prevItemData.item,
                     prevIndex: prevItemData.index,
                     nextData: nextItemData.item,
                     nextIndex: nextItemData.index,
-                    diff
+                    diff: objectDiff.diff
                 })
             } else if (prevItemData.index !== nextItemData.index) {
                 moved.push({
