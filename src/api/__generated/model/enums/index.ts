@@ -12,6 +12,8 @@ export type {JvmLanguageOrAny} from './JvmLanguageOrAny';
 export {JvmLanguageOrAny_CONSTANTS} from './JvmLanguageOrAny';
 export type {ModelForeignKeyType} from './ModelForeignKeyType';
 export {ModelForeignKeyType_CONSTANTS} from './ModelForeignKeyType';
+export type {ModelHistoryOrder} from './ModelHistoryOrder';
+export {ModelHistoryOrder_CONSTANTS} from './ModelHistoryOrder';
 export type {ModelOrder} from './ModelOrder';
 export {ModelOrder_CONSTANTS} from './ModelOrder';
 export type {ScriptType} from './ScriptType';

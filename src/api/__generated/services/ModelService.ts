@@ -1,5 +1,5 @@
 import type {Executor} from '../';
-import type {ModelOrder} from '../model/enums/';
+import type {ModelHistoryOrder, ModelOrder} from '../model/enums/';
 import type {
     ModelHistoryNoJsonView, 
     ModelHistoryView, 
@@ -51,6 +51,11 @@ export class ModelService {
         _value = options.modelId;
         _uri += _separator
         _uri += 'modelId='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
+        _value = options.modelHistoryOrder;
+        _uri += _separator
+        _uri += 'modelHistoryOrder='
         _uri += encodeURIComponent(_value);
         _separator = '&';
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<ModelHistoryNoJsonView>>;
@@ -128,7 +133,8 @@ export type ModelServiceOptions = {
         body: ModelUpdateInput
     }, 
     'fetchHistories': {
-        modelId: string
+        modelId: string, 
+        modelHistoryOrder: ModelHistoryOrder
     }, 
     'getHistory': {
         modelHistoryId: string
