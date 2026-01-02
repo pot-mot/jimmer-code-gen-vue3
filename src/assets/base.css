@@ -145,6 +145,7 @@ select:focus {
 button {
     outline: none;
     color: var(--text-color);
+    font-size: 0.8rem;
     font-weight: inherit;
     font-family: inherit;
     background-color: var(--background-color);
