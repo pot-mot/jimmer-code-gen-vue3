@@ -17,6 +17,8 @@ import {translate} from "@/store/i18nStore.ts";
 import {useDiagnoseDialog} from "@/modelEditor/diagnostic/useDiagnoseDialog.ts";
 import {watch} from "vue";
 import {sendMessage} from "@/components/message/messageApi.ts";
+import {useModelVersionDialog} from "@/modelEditor/multiVersion/useModelVersionDialog.ts";
+import IconHistory from "@/components/icons/IconHistory.vue";
 
 const {
     getModelGraphData,
@@ -50,6 +52,10 @@ const {
 const {
     open: openDiagnoseDialog
 } = useDiagnoseDialog()
+
+const {
+    open: openVersionDialog
+} = useModelVersionDialog()
 
 const handleGenerate = () => {
     diagnose()
@@ -96,6 +102,9 @@ const exportModelJson = () => {
         </div>
 
         <div class="right">
+            <button @click="openVersionDialog()">
+                <IconHistory/>
+            </button>
             <button @click="openDiagnoseDialog()">
                 <IconDiagnostic/>
                 {{ translate('diagnose_dialog_button') }}
