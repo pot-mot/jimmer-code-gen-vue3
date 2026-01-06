@@ -1,6 +1,5 @@
 import {describe, it, expect} from 'vitest'
 import {arrayDiff} from "../arrayDiff";
-import {commonDiffKey} from "../commonDiffKey";
 
 // 定义测试数据类型
 type TestItem = DeepReadonly<{
@@ -21,12 +20,24 @@ type NestTestItem = DeepReadonly<{
     }
 }>
 
-const itemToKey = (item: TestItem) => item.name
+const nameMatch = [
+    (a: { name: string }, b: { name: string }) => a.name === b.name
+]
+
+const customNameMatch = [
+    (a: any, b: any): boolean => {
+        if (
+            "name" in a && typeof a.name === "string" &&
+            "name" in b && typeof b.name === "string"
+        ) return a.name === b.name
+        return false
+    }
+]
 
 describe('arrayDiff', () => {
     // 测试两个列表都为空的情况
     it('empty/null/undefined', () => {
-        const result = arrayDiff<TestItem>([], [], itemToKey)
+        const result = arrayDiff<TestItem>([], [], nameMatch)
         expect(result).toEqual({
             added: [],
             updated: [],
@@ -35,7 +46,7 @@ describe('arrayDiff', () => {
             equals: []
         })
 
-        const result1 = arrayDiff<TestItem>(null, null, itemToKey)
+        const result1 = arrayDiff<TestItem>(null, null, nameMatch)
         expect(result1).toEqual({
             added: [],
             updated: [],
@@ -44,7 +55,7 @@ describe('arrayDiff', () => {
             equals: []
         })
 
-        const result2 = arrayDiff<TestItem>(undefined, undefined, itemToKey)
+        const result2 = arrayDiff<TestItem>(undefined, undefined, nameMatch)
         expect(result2).toEqual({
             added: [],
             updated: [],
@@ -61,7 +72,7 @@ describe('arrayDiff', () => {
             {name: 'item2', value: 'value2'}
         ]
 
-        const result = arrayDiff<TestItem>(null, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(null, nextList, nameMatch)
         expect(result.added).toEqual([
             {data: {name: 'item1', value: 'value1'}, nextIndex: 0},
             {data: {name: 'item2', value: 'value2'}, nextIndex: 1}
@@ -79,7 +90,7 @@ describe('arrayDiff', () => {
             {name: 'item2', value: 'value2'}
         ]
 
-        const result = arrayDiff<TestItem>(prevList, null, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, null, nameMatch)
         expect(result.deleted).toEqual([
             {data: {name: 'item1', value: 'value1'}, prevIndex: 0},
             {data: {name: 'item2', value: 'value2'}, prevIndex: 1}
@@ -102,7 +113,7 @@ describe('arrayDiff', () => {
             {name: 'item2', value: 'value2'}
         ]
 
-        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, nameMatch)
         expect(result.equals).toEqual([
             {data: {name: 'item1', value: 'value1'}, index: 0},
             {data: {name: 'item2', value: 'value2'}, index: 1}
@@ -127,11 +138,11 @@ describe('arrayDiff', () => {
             {name: 'item2', value: 'value2'}  // 从index 1移动到index 2
         ]
 
-        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
-        expect(result.moved).toEqual([
-            {data: {name: 'item3', value: 'value3'}, prevIndex: 2, nextIndex: 0},
+        const result = arrayDiff<TestItem>(prevList, nextList, nameMatch)
+        expect(result.moved).toStrictEqual([
             {data: {name: 'item1', value: 'value1'}, prevIndex: 0, nextIndex: 1},
-            {data: {name: 'item2', value: 'value2'}, prevIndex: 1, nextIndex: 2}
+            {data: {name: 'item2', value: 'value2'}, prevIndex: 1, nextIndex: 2},
+            {data: {name: 'item3', value: 'value3'}, prevIndex: 2, nextIndex: 0},
         ])
         expect(result.equals).toEqual([]) // 所有项目都移动了，没有保持原位置的
         expect(result.added).toEqual([])
@@ -150,7 +161,7 @@ describe('arrayDiff', () => {
             {name: 'item3', value: 'value3'}  // 新增
         ]
 
-        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, nameMatch)
         expect(result.added).toEqual([
             {data: {name: 'item2', value: 'value2'}, nextIndex: 1},
             {data: {name: 'item3', value: 'value3'}, nextIndex: 2}
@@ -174,7 +185,7 @@ describe('arrayDiff', () => {
             {name: 'item2', value: 'value2'}     // 相等
         ]
 
-        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, nameMatch)
         const updatedExpect: ArrayUpdatedDiffItem<TestItem>[] = [
             {
                 prevData: {name: 'item1', value: 'oldValue'},
@@ -213,7 +224,7 @@ describe('arrayDiff', () => {
             {name: 'item1', value: 'value1'} // 只保留了item1
         ]
 
-        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, nameMatch)
         expect(result.deleted).toEqual([
             {data: {name: 'item2', value: 'value2'}, prevIndex: 1},
             {data: {name: 'item3', value: 'value3'}, prevIndex: 2}
@@ -241,7 +252,7 @@ describe('arrayDiff', () => {
             {name: 'item5', value: 'value5'},           // 新增
         ]
 
-        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, nameMatch)
 
         // 验证各个数组的长度
         expect(result.equals.length).toBe(1)
@@ -292,11 +303,8 @@ describe('arrayDiff', () => {
         const result = arrayDiff<NestTestItem>(
             prevList,
             nextList,
-            it => it.name,
-            it => {
-                if ("name" in it && typeof it.name === "string") return it.name
-                return commonDiffKey(it)
-            }
+            nameMatch,
+            customNameMatch,
         )
         expect(result.updated.length).toBe(1)
         const nestDiffExpect: ObjectDiff<NestTestItem> = {
@@ -330,7 +338,7 @@ describe('arrayDiff', () => {
                             },
                             nestArray: {
                                 propertyName: 'nestArray',
-                                prevValue:  [
+                                prevValue: [
                                     {name: 'item1', value: 'value1'},
                                     {name: 'item2', value: 'value2'},
                                     {name: 'item3', value: 'value3'}

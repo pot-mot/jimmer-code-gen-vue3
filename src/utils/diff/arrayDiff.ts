@@ -1,12 +1,11 @@
 import {objectDiff} from "@/utils/diff/objectDiff.ts";
 import {deepEquals} from "@/utils/diff/deepEquals.ts";
-import {commonDiffKey} from "@/utils/diff/commonDiffKey.ts";
 
 export const arrayDiff = <T extends Record<string, unknown>>(
     prevList: ReadonlyArray<T> | undefined | null,
     nextList: ReadonlyArray<T> | undefined | null,
-    keyFn: (item: T) => string | number,
-    deepKeyFn: (item: any) => string | number = commonDiffKey,
+    matchFnList: ((a: T, b: T) => boolean)[],
+    deepMatchFnList: ((a: any, b: any) => boolean)[] = [deepEquals],
     visitedOld: WeakSet<object> = new WeakSet<object>(),
     visitedNew: WeakSet<object> = new WeakSet<object>(),
 ): ArrayDiff<T> => {
@@ -39,57 +38,52 @@ export const arrayDiff = <T extends Record<string, unknown>>(
         return result
     }
 
-    const prevKeyMap = new Map(prevList.map((item, index) => [keyFn(item), {item, index}]))
-    const nextKeyMap = new Map(nextList.map((item, index) => [keyFn(item), {item, index}]))
+    const prevWithIndex = prevList.map((item, index) => ({item: item, index}))
+    let nextWithIndex = nextList.map((item, index) => ({item, index}))
 
-    for (const [key, nextItemData] of nextKeyMap) {
-        const prevItemData = prevKeyMap.get(key)
-
-        if (prevItemData) {
-            if (deepEquals(prevItemData.item, nextItemData.item)) {
-                if (prevItemData.index === nextItemData.index) {
+    for (const {item: prevItem, index: prevIndex} of prevWithIndex) {
+        const matchedNextItem = nextWithIndex.find(it => matchFnList.some(fn => fn(it.item, prevItem)))
+        if (matchedNextItem !== undefined) {
+            const nextItem = matchedNextItem.item
+            const nextIndex = matchedNextItem.index
+    
+            if (deepEquals(prevItem, nextItem)) {
+                if (prevIndex === nextIndex) {
                     result.equals.push({
-                        data: nextItemData.item,
-                        index: nextItemData.index
+                        data: nextItem,
+                        index: nextIndex
                     })
                 } else {
                     result.moved.push({
-                        data: nextItemData.item,
-                        prevIndex: prevItemData.index,
-                        nextIndex: nextItemData.index
+                        data: nextItem,
+                        prevIndex: prevIndex,
+                        nextIndex: nextIndex
                     })
                 }
             } else {
-                const diffResult = Array.isArray(prevItemData.item) && Array.isArray(nextItemData.item) ?
-                    arrayDiff(prevItemData.item, nextItemData.item, deepKeyFn, deepKeyFn, visitedOld, visitedNew) :
-                    typeof prevItemData.item === "object" && typeof nextItemData.item === "object" ?
-                        objectDiff(prevItemData.item, nextItemData.item, deepKeyFn, visitedOld, visitedNew) :
+                const diffResult = Array.isArray(prevItem) && Array.isArray(nextItem) ?
+                    arrayDiff(prevItem, nextItem, deepMatchFnList, deepMatchFnList, visitedOld, visitedNew) :
+                    typeof prevItem === "object" && typeof nextItem === "object" ?
+                        objectDiff(prevItem, nextItem, deepMatchFnList, visitedOld, visitedNew) :
                         undefined
                 result.updated.push({
-                    prevData: prevItemData.item,
-                    prevIndex: prevItemData.index,
-                    nextData: nextItemData.item,
-                    nextIndex: nextItemData.index,
+                    prevData: prevItem,
+                    prevIndex: prevIndex,
+                    nextData: nextItem,
+                    nextIndex: nextIndex,
                     diff: diffResult as any
                 })
             }
+
+            nextWithIndex = nextWithIndex.filter(it => it !== matchedNextItem)
         } else {
-            result.added.push({
-                data: nextItemData.item,
-                nextIndex: nextItemData.index
-            })
+            result.deleted.push({data: prevItem, prevIndex})
         }
     }
 
-    for (const [key, prevItemData] of prevKeyMap) {
-        if (!nextKeyMap.has(key)) {
-            // 键不存在于新列表中，表示删除
-            result.deleted.push({
-                data: prevItemData.item,
-                prevIndex: prevItemData.index
-            })
-        }
-    }
+    nextWithIndex.forEach(({item, index}) => {
+        result.added.push({data: item, nextIndex: index})
+    })
 
     return result
 }

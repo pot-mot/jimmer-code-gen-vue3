@@ -1,11 +1,10 @@
 import {deepEquals} from "@/utils/diff/deepEquals.ts";
 import {arrayDiff} from "@/utils/diff/arrayDiff.ts";
-import {commonDiffKey} from "@/utils/diff/commonDiffKey.ts";
 
 export const objectDiff = <T extends Record<string, unknown>, U extends Record<string, unknown> = T>(
     oldVal: T | undefined | null,
     newVal: U | undefined | null,
-    deepKeyFn: (item: any) => string | number = commonDiffKey,
+    deepMatchFnList: ((a: any, b: any) => boolean)[] = [deepEquals],
     visitedOld: WeakSet<object> = new WeakSet<object>(),
     visitedNew: WeakSet<object> = new WeakSet<object>(),
 ): ObjectDiff<T, U> => {
@@ -108,14 +107,14 @@ export const objectDiff = <T extends Record<string, unknown>, U extends Record<s
 
                 // 检查是否为数组
                 if (Array.isArray(oldValue) && Array.isArray(newValue)) {
-                    diff = arrayDiff(oldValue, newValue, deepKeyFn);
+                    diff = arrayDiff(oldValue, newValue, deepMatchFnList);
                 } else if (
                     typeof oldValue === 'object' && typeof newValue === 'object' &&
                     oldValue !== null && newValue !== null &&
                     oldValue !== undefined && newValue !== undefined
                 ) {
                     // 传递已访问的 WeakMap 以处理嵌套对象的循环引用
-                    diff = objectDiff(oldValue as Record<string, any>, newValue as Record<string, any>, deepKeyFn, visitedOld, visitedNew);
+                    diff = objectDiff(oldValue as Record<string, any>, newValue as Record<string, any>, deepMatchFnList, visitedOld, visitedNew);
                 }
 
                 updated[key] = {

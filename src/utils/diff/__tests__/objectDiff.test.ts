@@ -1,6 +1,5 @@
 import {describe, it, expect} from 'vitest';
 import {objectDiff} from '../objectDiff';
-import {commonDiffKey} from "../commonDiffKey";
 
 describe('objectDiff', () => {
     it('empty object', () => {
@@ -250,10 +249,16 @@ describe('objectDiff', () => {
     });
 
     it('custom deepKeyFn', () => {
-        const customKeyFn = (item: any) => {
-            if ("name" in item && typeof item.name === "string") return item.name
-            return commonDiffKey(item)
-        };
+        const customNameMatch = [
+            (a: any, b: any): boolean => {
+                if (
+                    "name" in a && typeof a.name === "string" &&
+                    "name" in b && typeof b.name === "string"
+                ) return a.name === b.name
+                return false
+            }
+        ]
+
         const result = objectDiff(
             {
                 a: [
@@ -287,7 +292,7 @@ describe('objectDiff', () => {
                     }
                 ]
             },
-            customKeyFn
+            customNameMatch
         );
 
         expect(result.updated?.a?.diff?.updated?.[0]?.diff?.updated?.nestArray?.diff).toStrictEqual({
