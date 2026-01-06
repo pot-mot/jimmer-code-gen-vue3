@@ -38,49 +38,54 @@ export const arrayDiff = <T extends Record<string, unknown>>(
         return result
     }
 
-    const prevWithIndex = prevList.map((item, index) => ({item: item, index}))
+    let prevWithIndex = prevList.map((item, index) => ({item: item, index}))
     let nextWithIndex = nextList.map((item, index) => ({item, index}))
 
-    for (const {item: prevItem, index: prevIndex} of prevWithIndex) {
-        const matchedNextItem = nextWithIndex.find(it => matchFnList.some(fn => fn(it.item, prevItem)))
-        if (matchedNextItem !== undefined) {
-            const nextItem = matchedNextItem.item
-            const nextIndex = matchedNextItem.index
-    
-            if (deepEquals(prevItem, nextItem)) {
-                if (prevIndex === nextIndex) {
-                    result.equals.push({
-                        data: nextItem,
-                        index: nextIndex
-                    })
+    for (const fn of matchFnList) {
+        for (const prev of prevWithIndex) {
+            const {item: prevItem, index: prevIndex} = prev
+
+            const matchedNext = nextWithIndex.find(it => fn(it.item, prevItem))
+            if (matchedNext !== undefined) {
+                const {item: nextItem, index: nextIndex} = matchedNext
+
+                if (deepEquals(prevItem, nextItem)) {
+                    if (prevIndex === nextIndex) {
+                        result.equals.push({
+                            data: nextItem,
+                            index: nextIndex
+                        })
+                    } else {
+                        result.moved.push({
+                            data: nextItem,
+                            prevIndex: prevIndex,
+                            nextIndex: nextIndex
+                        })
+                    }
                 } else {
-                    result.moved.push({
-                        data: nextItem,
+                    const diffResult = Array.isArray(prevItem) && Array.isArray(nextItem) ?
+                        arrayDiff(prevItem, nextItem, deepMatchFnList, deepMatchFnList, visitedOld, visitedNew) :
+                        typeof prevItem === "object" && typeof nextItem === "object" ?
+                            objectDiff(prevItem, nextItem, deepMatchFnList, visitedOld, visitedNew) :
+                            undefined
+                    result.updated.push({
+                        prevData: prevItem,
                         prevIndex: prevIndex,
-                        nextIndex: nextIndex
+                        nextData: nextItem,
+                        nextIndex: nextIndex,
+                        diff: diffResult as any
                     })
                 }
-            } else {
-                const diffResult = Array.isArray(prevItem) && Array.isArray(nextItem) ?
-                    arrayDiff(prevItem, nextItem, deepMatchFnList, deepMatchFnList, visitedOld, visitedNew) :
-                    typeof prevItem === "object" && typeof nextItem === "object" ?
-                        objectDiff(prevItem, nextItem, deepMatchFnList, visitedOld, visitedNew) :
-                        undefined
-                result.updated.push({
-                    prevData: prevItem,
-                    prevIndex: prevIndex,
-                    nextData: nextItem,
-                    nextIndex: nextIndex,
-                    diff: diffResult as any
-                })
-            }
 
-            nextWithIndex = nextWithIndex.filter(it => it !== matchedNextItem)
-        } else {
-            result.deleted.push({data: prevItem, prevIndex})
+                prevWithIndex = prevWithIndex.filter(it => it !== prev)
+                nextWithIndex = nextWithIndex.filter(it => it !== matchedNext)
+            }
         }
     }
 
+    prevWithIndex.forEach(({item, index}) => {
+        result.deleted.push({data: item, prevIndex: index})
+    })
     nextWithIndex.forEach(({item, index}) => {
         result.added.push({data: item, nextIndex: index})
     })

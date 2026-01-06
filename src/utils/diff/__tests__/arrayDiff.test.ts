@@ -24,6 +24,11 @@ const nameMatch = [
     (a: { name: string }, b: { name: string }) => a.name === b.name
 ]
 
+const nameValueMatch = [
+    (a: { name: string }, b: { name: string }) => a.name === b.name,
+    (a: { value: string }, b: { value: string }) => a.value === b.value
+]
+
 const customNameMatch = [
     (a: any, b: any): boolean => {
         if (
@@ -267,6 +272,89 @@ describe('arrayDiff', () => {
         expect(result.updated[0]?.prevData.name).toBe('item2')
         expect(result.deleted[0]?.data.name).toBe('item3')
         expect(result.moved[0]?.data.name).toBe('item4')
+    })
+
+    it('multi match', () => {
+        const prevList: TestItem[] = [
+            {name: 'item1', value: 'value1'},          // 相等
+            {name: 'item2', value: 'value2'},          // 更新
+            {name: 'item3', value: 'value3'},          // 删除
+            {name: 'item4', value: 'value4'}           // 移动
+        ]
+
+        const nextList: TestItem[] = [
+            {name: 'item1', value: 'value1'},           // 相等
+            {name: 'new item2', value: 'value2'},       // 更新，但有name匹配的，因此不实际新增
+            {name: 'item2', value: 'newValue'},         // 更新 by value
+            {name: 'item5', value: 'value4'},           // 更新 by name
+        ]
+
+        const result = arrayDiff<TestItem>(prevList, nextList, nameValueMatch)
+
+        // 验证各个数组的长度
+        expect(result.equals.length).toBe(1)
+        expect(result.added.length).toBe(1)
+        expect(result.updated.length).toBe(2)
+        expect(result.deleted.length).toBe(1)
+        expect(result.moved.length).toBe(0)
+
+        expect(result.updated).toStrictEqual([
+            {
+                prevData: {
+                    name: "item2",
+                    value: "value2",
+                },
+                prevIndex: 1,
+                nextData: {
+                    name: "item2",
+                    value: "newValue",
+                },
+                nextIndex: 2,
+                diff: {
+                    updated: {
+                        value: {
+                            propertyName: "value",
+                            prevValue: "value2",
+                            nextValue: "newValue",
+                            diff: undefined,
+                        },
+                    },
+                },
+            },
+            {
+
+                prevData: {
+                    name: "item4",
+                    value: "value4",
+                },
+                prevIndex: 3,
+                nextData: {
+                    name: "item5",
+                    value: "value4",
+                },
+                nextIndex: 3,
+                diff: {
+                    updated: {
+                        name: {
+                            propertyName: "name",
+                            prevValue: "item4",
+                            nextValue: "item5",
+                            diff: undefined,
+                        },
+                    },
+                },
+            },
+        ])
+
+        expect(result.added).toStrictEqual([
+            {
+                data: {
+                    name: "new item2",
+                    value: "value2",
+                },
+                nextIndex: 1,
+            }
+        ])
     })
 
     // 测试具有嵌套对象的复杂更新
