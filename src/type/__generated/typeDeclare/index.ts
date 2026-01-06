@@ -2,6 +2,12 @@ import AbstractAssociationDeclare from "./items/AbstractAssociation.ts";
 import AbstractAssociationIdOnlyDeclare from "./items/AbstractAssociationIdOnly.ts";
 import AbstractCategorizedPropertiesDeclare from "./items/AbstractCategorizedProperties.ts";
 import AbstractEdgedAssociationDeclare from "./items/AbstractEdgedAssociation.ts";
+import ArrayAddedDiffItemDeclare from "./items/ArrayAddedDiffItem.ts";
+import ArrayDeletedDiffItemDeclare from "./items/ArrayDeletedDiffItem.ts";
+import ArrayDiffDeclare from "./items/ArrayDiff.ts";
+import ArrayEqualsDiffItemDeclare from "./items/ArrayEqualsDiffItem.ts";
+import ArrayMovedDiffItemDeclare from "./items/ArrayMovedDiffItem.ts";
+import ArrayUpdatedDiffItemDeclare from "./items/ArrayUpdatedDiffItem.ts";
 import AssociationDeclare from "./items/Association.ts";
 import AssociationIdOnlyDeclare from "./items/AssociationIdOnly.ts";
 import AssociationSourceDeclare from "./items/AssociationSource.ts";
@@ -111,6 +117,7 @@ import ModelViewportDeclare from "./items/ModelViewport.ts";
 import MultiColumnJoinInfoDeclare from "./items/MultiColumnJoinInfo.ts";
 import NameStrategyDeclare from "./items/NameStrategy.ts";
 import NameToolDeclare from "./items/NameTool.ts";
+import ObjectDiffDeclare from "./items/ObjectDiff.ts";
 import OnDissociationActionDeclare from "./items/OnDissociationAction.ts";
 import OneToManyAbstractPropertyDeclare from "./items/OneToManyAbstractProperty.ts";
 import OneToManyPropertyDeclare from "./items/OneToManyProperty.ts";
@@ -125,6 +132,7 @@ import OrderDirectionDeclare from "./items/OrderDirection.ts";
 import PartialModelGraphDataDeclare from "./items/PartialModelGraphData.ts";
 import PositionDeclare from "./items/Position.ts";
 import PropertyDeclare from "./items/Property.ts";
+import PropertyDiffItemDeclare from "./items/PropertyDiffItem.ts";
 import PropertyInfoDeclare from "./items/PropertyInfo.ts";
 import PropertyOwnerDeclare from "./items/PropertyOwner.ts";
 import PropertyWithInheritSourceDeclare from "./items/PropertyWithInheritSource.ts";
@@ -312,6 +320,12 @@ export const typeDeclares = Object.freeze({
     AbstractAssociationIdOnly: AbstractAssociationIdOnlyDeclare,
     AbstractCategorizedProperties: AbstractCategorizedPropertiesDeclare,
     AbstractEdgedAssociation: AbstractEdgedAssociationDeclare,
+    ArrayAddedDiffItem: ArrayAddedDiffItemDeclare,
+    ArrayDeletedDiffItem: ArrayDeletedDiffItemDeclare,
+    ArrayDiff: ArrayDiffDeclare,
+    ArrayEqualsDiffItem: ArrayEqualsDiffItemDeclare,
+    ArrayMovedDiffItem: ArrayMovedDiffItemDeclare,
+    ArrayUpdatedDiffItem: ArrayUpdatedDiffItemDeclare,
     Association: AssociationDeclare,
     AssociationIdOnly: AssociationIdOnlyDeclare,
     AssociationSource: AssociationSourceDeclare,
@@ -421,6 +435,7 @@ export const typeDeclares = Object.freeze({
     MultiColumnJoinInfo: MultiColumnJoinInfoDeclare,
     NameStrategy: NameStrategyDeclare,
     NameTool: NameToolDeclare,
+    ObjectDiff: ObjectDiffDeclare,
     OnDissociationAction: OnDissociationActionDeclare,
     OneToManyAbstractProperty: OneToManyAbstractPropertyDeclare,
     OneToManyProperty: OneToManyPropertyDeclare,
@@ -435,6 +450,7 @@ export const typeDeclares = Object.freeze({
     PartialModelGraphData: PartialModelGraphDataDeclare,
     Position: PositionDeclare,
     Property: PropertyDeclare,
+    PropertyDiffItem: PropertyDiffItemDeclare,
     PropertyInfo: PropertyInfoDeclare,
     PropertyOwner: PropertyOwnerDeclare,
     PropertyWithInheritSource: PropertyWithInheritSourceDeclare,
