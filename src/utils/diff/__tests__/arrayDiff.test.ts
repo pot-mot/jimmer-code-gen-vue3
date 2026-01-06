@@ -1,5 +1,6 @@
 import {describe, it, expect} from 'vitest'
-import {listDiff} from "../listDiff";
+import {arrayDiff} from "../arrayDiff";
+import {commonDiffKey} from "../commonDiffKey";
 
 // 定义测试数据类型
 type TestItem = DeepReadonly<{
@@ -12,16 +13,20 @@ type NestTestItem = DeepReadonly<{
     name: string
     details: {
         id: number
-        description: string
+        description: string,
+        nestArray: {
+            name: string,
+            value: string
+        }[]
     }
 }>
 
 const itemToKey = (item: TestItem) => item.name
 
-describe('listDiff', () => {
+describe('arrayDiff', () => {
     // 测试两个列表都为空的情况
     it('empty/null/undefined', () => {
-        const result = listDiff<TestItem>([], [], itemToKey)
+        const result = arrayDiff<TestItem>([], [], itemToKey)
         expect(result).toEqual({
             added: [],
             updated: [],
@@ -30,7 +35,7 @@ describe('listDiff', () => {
             equals: []
         })
 
-        const result1 = listDiff<TestItem>(null, null, itemToKey)
+        const result1 = arrayDiff<TestItem>(null, null, itemToKey)
         expect(result1).toEqual({
             added: [],
             updated: [],
@@ -39,7 +44,7 @@ describe('listDiff', () => {
             equals: []
         })
 
-        const result2 = listDiff<TestItem>(undefined, undefined, itemToKey)
+        const result2 = arrayDiff<TestItem>(undefined, undefined, itemToKey)
         expect(result2).toEqual({
             added: [],
             updated: [],
@@ -56,7 +61,7 @@ describe('listDiff', () => {
             {name: 'item2', value: 'value2'}
         ]
 
-        const result = listDiff<TestItem>(null, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(null, nextList, itemToKey)
         expect(result.added).toEqual([
             {data: {name: 'item1', value: 'value1'}, nextIndex: 0},
             {data: {name: 'item2', value: 'value2'}, nextIndex: 1}
@@ -74,7 +79,7 @@ describe('listDiff', () => {
             {name: 'item2', value: 'value2'}
         ]
 
-        const result = listDiff<TestItem>(prevList, null, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, null, itemToKey)
         expect(result.deleted).toEqual([
             {data: {name: 'item1', value: 'value1'}, prevIndex: 0},
             {data: {name: 'item2', value: 'value2'}, prevIndex: 1}
@@ -97,7 +102,7 @@ describe('listDiff', () => {
             {name: 'item2', value: 'value2'}
         ]
 
-        const result = listDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
         expect(result.equals).toEqual([
             {data: {name: 'item1', value: 'value1'}, index: 0},
             {data: {name: 'item2', value: 'value2'}, index: 1}
@@ -122,7 +127,7 @@ describe('listDiff', () => {
             {name: 'item2', value: 'value2'}  // 从index 1移动到index 2
         ]
 
-        const result = listDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
         expect(result.moved).toEqual([
             {data: {name: 'item3', value: 'value3'}, prevIndex: 2, nextIndex: 0},
             {data: {name: 'item1', value: 'value1'}, prevIndex: 0, nextIndex: 1},
@@ -145,7 +150,7 @@ describe('listDiff', () => {
             {name: 'item3', value: 'value3'}  // 新增
         ]
 
-        const result = listDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
         expect(result.added).toEqual([
             {data: {name: 'item2', value: 'value2'}, nextIndex: 1},
             {data: {name: 'item3', value: 'value3'}, nextIndex: 2}
@@ -169,23 +174,26 @@ describe('listDiff', () => {
             {name: 'item2', value: 'value2'}     // 相等
         ]
 
-        const result = listDiff<TestItem>(prevList, nextList, itemToKey)
-        expect(result.updated).toStrictEqual([
+        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
+        const updatedExpect: ArrayUpdatedDiffItem<TestItem>[] = [
             {
                 prevData: {name: 'item1', value: 'oldValue'},
                 prevIndex: 0,
                 nextData: {name: 'item1', value: 'newValue'},
                 nextIndex: 0,
-                diff: [
-                    {
-                        property: "value",
-                        previousValue: 'oldValue',
-                        currentValue: 'newValue',
-                        status: "updated",
+                diff: {
+                    updated: {
+                        value: {
+                            propertyName: 'value',
+                            prevValue: 'oldValue',
+                            nextValue: 'newValue',
+                            diff: undefined
+                        }
                     }
-                ]
+                }
             }
-        ])
+        ]
+        expect(result.updated).toStrictEqual(updatedExpect)
         expect(result.equals).toEqual([
             {data: {name: 'item2', value: 'value2'}, index: 1}
         ])
@@ -205,7 +213,7 @@ describe('listDiff', () => {
             {name: 'item1', value: 'value1'} // 只保留了item1
         ]
 
-        const result = listDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
         expect(result.deleted).toEqual([
             {data: {name: 'item2', value: 'value2'}, prevIndex: 1},
             {data: {name: 'item3', value: 'value3'}, prevIndex: 2}
@@ -233,7 +241,7 @@ describe('listDiff', () => {
             {name: 'item5', value: 'value5'},           // 新增
         ]
 
-        const result = listDiff<TestItem>(prevList, nextList, itemToKey)
+        const result = arrayDiff<TestItem>(prevList, nextList, itemToKey)
 
         // 验证各个数组的长度
         expect(result.equals.length).toBe(1)
@@ -255,44 +263,116 @@ describe('listDiff', () => {
         const prevList: NestTestItem[] = [
             {
                 name: 'item1',
-                details: {id: 1, description: 'old description'}
+                details: {
+                    id: 1,
+                    description: 'old description',
+                    nestArray: [
+                        {name: 'item1', value: 'value1'},
+                        {name: 'item2', value: 'value2'},
+                        {name: 'item3', value: 'value3'}
+                    ]
+                }
             }
         ]
 
         const nextList: NestTestItem[] = [
             {
                 name: 'item1',
-                details: {id: 1, description: 'new description'}  // 仅description变化
+                details: {
+                    id: 1,
+                    description: 'new description',  // updated
+                    nestArray: [
+                        {name: 'item1', value: 'value1'},
+                        {name: 'item3', value: 'new value'}, // moved, changed, item2 deleted
+                    ]
+                }
             }
         ]
 
-        const result = listDiff<NestTestItem>(prevList, nextList, it => it.name)
-        expect(result.updated.length).toBe(1)
-        expect(result.updated[0]?.prevData.name).toBe('item1')
-        expect(result.updated[0]?.prevData.details.description).toBe('old description')
-        expect(result.updated[0]?.nextData.name).toBe('item1')
-        expect(result.updated[0]?.nextData.details.description).toBe('new description')
-        expect(result.updated[0]?.diff).toStrictEqual([
-            {
-                property: "details",
-                previousValue: {
-                    id: 1,
-                    description: 'old description'
-                },
-                currentValue: {
-                    id: 1,
-                    description: 'new description'
-                },
-                status: "updated",
-                diff: [
-                    {
-                        property: "description",
-                        previousValue: 'old description',
-                        currentValue: 'new description',
-                        status: "updated",
-                    }
-                ]
+        const result = arrayDiff<NestTestItem>(
+            prevList,
+            nextList,
+            it => it.name,
+            it => {
+                if ("name" in it && typeof it.name === "string") return it.name
+                return commonDiffKey(it)
             }
-        ])
+        )
+        expect(result.updated.length).toBe(1)
+        const nestDiffExpect: ObjectDiff<NestTestItem> = {
+            updated: {
+                details: {
+                    propertyName: 'details',
+                    prevValue: {
+                        id: 1,
+                        description: 'old description',
+                        nestArray: [
+                            {name: 'item1', value: 'value1'},
+                            {name: 'item2', value: 'value2'},
+                            {name: 'item3', value: 'value3'}
+                        ]
+                    },
+                    nextValue: {
+                        id: 1,
+                        description: 'new description',
+                        nestArray: [
+                            {name: 'item1', value: 'value1'},
+                            {name: 'item3', value: 'new value'},
+                        ]
+                    },
+                    diff: {
+                        updated: {
+                            description: {
+                                propertyName: 'description',
+                                prevValue: 'old description',
+                                nextValue: 'new description',
+                                diff: undefined
+                            },
+                            nestArray: {
+                                propertyName: 'nestArray',
+                                prevValue:  [
+                                    {name: 'item1', value: 'value1'},
+                                    {name: 'item2', value: 'value2'},
+                                    {name: 'item3', value: 'value3'}
+                                ],
+                                nextValue: [
+                                    {name: 'item1', value: 'value1'},
+                                    {name: 'item3', value: 'new value'},
+                                ],
+                                diff: {
+                                    added: [],
+                                    updated: [
+                                        {
+                                            prevData: {name: 'item3', value: 'value3'},
+                                            prevIndex: 2,
+                                            nextData: {name: 'item3', value: 'new value'},
+                                            nextIndex: 1,
+                                            diff: {
+                                                updated: {
+                                                    value: {
+                                                        propertyName: 'value',
+                                                        prevValue: 'value3',
+                                                        nextValue: 'new value',
+                                                        diff: undefined
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    deleted: [
+                                        {data: {name: 'item2', value: 'value2'}, prevIndex: 1},
+                                    ],
+                                    moved: [],
+                                    equals: [
+                                        {data: {name: 'item1', value: 'value1'}, index: 0}
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        }
+        expect(result.updated[0]?.diff).toStrictEqual(nestDiffExpect)
     })
 })

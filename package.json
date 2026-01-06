@@ -14,7 +14,6 @@
     "type-gen": "node scripts/generateTypes.js && vue-tsc --build --force"
   },
   "dependencies": {
-    "@donedeal0/superdiff": "^3.1.2",
     "@progress/jszip-esm": "^1.0.4",
     "@typescript/vfs": "^1.6.1",
     "@vue-flow/core": "^1.46.5",
