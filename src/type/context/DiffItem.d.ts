@@ -1,4 +1,9 @@
+type CircularReferenceDiff = {
+    type: "circular reference"
+}
+
 type ObjectDiff<T extends Record<string, unknown>, U extends Record<string, unknown> = T> = {
+    type: "object"
     // 属性更新（现有属性的值变化）
     updated?: {
         [K in keyof T & keyof U]?: PropertyUpdatedDiffItem<T, U, K>
@@ -13,24 +18,28 @@ type ObjectDiff<T extends Record<string, unknown>, U extends Record<string, unkn
     }
 }
 
-type PropertyAddedDiffItem<T, K extends keyof T = keyof T> = {
+type PropertyAddedDiffItem<T extends Record<string, unknown>, K extends keyof T = keyof T> = {
     propertyName: K,
     value: T[K]
 }
 
-type PropertyDeletedDiffItem<T, K extends keyof T = keyof T> = {
+type PropertyDeletedDiffItem<T extends Record<string, unknown>, K extends keyof T = keyof T> = {
     propertyName: K,
     value: T[K]
 }
 
-type PropertyUpdatedDiffItem<T, U, K extends (keyof T & keyof U) = (keyof T & keyof U)> = {
+type PropertyUpdatedDiffItem<
+    T extends Record<string, unknown>,
+    U extends Record<string, unknown> = T,
+    K extends (keyof T & keyof U) = (keyof T & keyof U)
+> = {
     propertyName: K,
     prevValue: T[K],
     nextValue: U[K],
     diff?: (T[K] & U[K]) extends Array<infer Item> | ReadonlyArray<infer Item>
         ? ArrayDiff<Item>
         : (T[K] & U[K]) extends Record<string, unknown>
-            ? ObjectDiff<T[K], U[K]>
+            ? ObjectDiff<T[K], U[K]> | CircularReferenceDiff
             : never
 }
 
@@ -47,7 +56,7 @@ type ArrayUpdatedDiffItem<T> = {
     diff: T extends Array<infer Item> | ReadonlyArray<infer Item>
         ? ArrayDiff<Item>
         : T extends Record<string, unknown>
-            ? ObjectDiff<T>
+            ? ObjectDiff<T> | CircularReferenceDiff
             : never
 }
 
@@ -68,6 +77,7 @@ type ArrayEqualsDiffItem<T> = {
 }
 
 type ArrayDiff<T> = {
+    type: "array"
     added: ArrayAddedDiffItem<T>[],
     updated: ArrayUpdatedDiffItem<T>[],
     deleted: ArrayDeletedDiffItem<T>[],

@@ -7,13 +7,13 @@ export const objectDiff = <T extends Record<string, unknown>, U extends Record<s
     deepMatchFnList: ((a: any, b: any) => boolean)[] = [deepEquals],
     visitedOld: WeakSet<object> = new WeakSet<object>(),
     visitedNew: WeakSet<object> = new WeakSet<object>(),
-): ObjectDiff<T, U> => {
+): ObjectDiff<T, U> | CircularReferenceDiff => {
     // 如果两个值都为空，返回空对象
     if (
         (oldVal === undefined || oldVal === null || Object.keys(oldVal).length === 0) &&
         (newVal === undefined || newVal === null || Object.keys(newVal).length === 0)
     ) {
-        return {};
+        return {type: "object"};
     }
 
     // 如果旧值为空，所有属性都是新增的
@@ -28,7 +28,7 @@ export const objectDiff = <T extends Record<string, unknown>, U extends Record<s
                 };
             });
         }
-        return {added}
+        return {type: "object", added}
     }
 
     // 如果新值为空，所有属性都是删除的
@@ -41,27 +41,27 @@ export const objectDiff = <T extends Record<string, unknown>, U extends Record<s
                 value: oldVal[k]
             };
         });
-        return {deleted}
+        return {type: "object", deleted}
     }
 
     // 检查循环引用
     if (typeof oldVal === 'object') {
         if (visitedOld.has(oldVal)) {
-            // 检测到旧值中的循环引用，返回空 diff
-            return {};
+            // 检测到旧值中的循环引用
+            return {type: "circular reference"};
         }
         visitedOld.add(oldVal);
     }
 
     if (typeof newVal === 'object') {
         if (visitedNew.has(newVal)) {
-            // 检测到新值中的循环引用，返回空 diff
-            return {};
+            // 检测到新值中的循环引用
+            return {type: "circular reference"};
         }
         visitedNew.add(newVal);
     }
 
-    const result: ObjectDiff<T, U> = {};
+    const result: ObjectDiff<T, U> = {type: "object"};
 
     // 检查属性删除
     const deleted: { [K in keyof T]?: PropertyDeletedDiffItem<T, K> } = {};
@@ -103,7 +103,7 @@ export const objectDiff = <T extends Record<string, unknown>, U extends Record<s
                 const oldValue = oldVal[oldKey];
                 const newValue = newVal[newKey];
 
-                let diff: ObjectDiff<any> | ArrayDiff<any> | undefined = undefined;
+                let diff: ObjectDiff<any> | ArrayDiff<any> | CircularReferenceDiff | undefined = undefined;
 
                 // 检查是否为数组
                 if (Array.isArray(oldValue) && Array.isArray(newValue)) {

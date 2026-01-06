@@ -10,6 +10,7 @@ export const arrayDiff = <T extends Record<string, unknown>>(
     visitedNew: WeakSet<object> = new WeakSet<object>(),
 ): ArrayDiff<T> => {
     const result: ArrayDiff<T> = {
+        type: "array",
         added: [],
         updated: [],
         deleted: [],

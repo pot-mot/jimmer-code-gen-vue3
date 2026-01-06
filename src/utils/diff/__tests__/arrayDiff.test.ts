@@ -42,32 +42,20 @@ const customNameMatch = [
 describe('arrayDiff', () => {
     // 测试两个列表都为空的情况
     it('empty/null/undefined', () => {
+        const emptyArrayDiff: ArrayDiff<TestItem> = {
+            type: "array",
+            added: [],
+            updated: [],
+            deleted: [],
+            moved: [],
+            equals: []
+        }
         const result = arrayDiff<TestItem>([], [], nameMatch)
-        expect(result).toEqual({
-            added: [],
-            updated: [],
-            deleted: [],
-            moved: [],
-            equals: []
-        })
-
+        expect(result).toStrictEqual(emptyArrayDiff)
         const result1 = arrayDiff<TestItem>(null, null, nameMatch)
-        expect(result1).toEqual({
-            added: [],
-            updated: [],
-            deleted: [],
-            moved: [],
-            equals: []
-        })
-
+        expect(result1).toStrictEqual(emptyArrayDiff)
         const result2 = arrayDiff<TestItem>(undefined, undefined, nameMatch)
-        expect(result2).toEqual({
-            added: [],
-            updated: [],
-            deleted: [],
-            moved: [],
-            equals: []
-        })
+        expect(result2).toStrictEqual(emptyArrayDiff)
     })
 
     // 测试前一个列表为空，后一个列表有数据
@@ -78,14 +66,14 @@ describe('arrayDiff', () => {
         ]
 
         const result = arrayDiff<TestItem>(null, nextList, nameMatch)
-        expect(result.added).toEqual([
+        expect(result.added).toStrictEqual([
             {data: {name: 'item1', value: 'value1'}, nextIndex: 0},
             {data: {name: 'item2', value: 'value2'}, nextIndex: 1}
         ])
-        expect(result.updated).toEqual([])
-        expect(result.deleted).toEqual([])
-        expect(result.moved).toEqual([])
-        expect(result.equals).toEqual([])
+        expect(result.updated).toStrictEqual([])
+        expect(result.deleted).toStrictEqual([])
+        expect(result.moved).toStrictEqual([])
+        expect(result.equals).toStrictEqual([])
     })
 
     // 测试后一个列表为空，前一个列表有数据
@@ -96,14 +84,14 @@ describe('arrayDiff', () => {
         ]
 
         const result = arrayDiff<TestItem>(prevList, null, nameMatch)
-        expect(result.deleted).toEqual([
+        expect(result.deleted).toStrictEqual([
             {data: {name: 'item1', value: 'value1'}, prevIndex: 0},
             {data: {name: 'item2', value: 'value2'}, prevIndex: 1}
         ])
-        expect(result.added).toEqual([])
-        expect(result.updated).toEqual([])
-        expect(result.moved).toEqual([])
-        expect(result.equals).toEqual([])
+        expect(result.added).toStrictEqual([])
+        expect(result.updated).toStrictEqual([])
+        expect(result.moved).toStrictEqual([])
+        expect(result.equals).toStrictEqual([])
     })
 
     // 测试相等的项目
@@ -119,14 +107,14 @@ describe('arrayDiff', () => {
         ]
 
         const result = arrayDiff<TestItem>(prevList, nextList, nameMatch)
-        expect(result.equals).toEqual([
+        expect(result.equals).toStrictEqual([
             {data: {name: 'item1', value: 'value1'}, index: 0},
             {data: {name: 'item2', value: 'value2'}, index: 1}
         ])
-        expect(result.added).toEqual([])
-        expect(result.updated).toEqual([])
-        expect(result.deleted).toEqual([])
-        expect(result.moved).toEqual([])
+        expect(result.added).toStrictEqual([])
+        expect(result.updated).toStrictEqual([])
+        expect(result.deleted).toStrictEqual([])
+        expect(result.moved).toStrictEqual([])
     })
 
     // 测试项目位置移动
@@ -149,10 +137,10 @@ describe('arrayDiff', () => {
             {data: {name: 'item2', value: 'value2'}, prevIndex: 1, nextIndex: 2},
             {data: {name: 'item3', value: 'value3'}, prevIndex: 2, nextIndex: 0},
         ])
-        expect(result.equals).toEqual([]) // 所有项目都移动了，没有保持原位置的
-        expect(result.added).toEqual([])
-        expect(result.updated).toEqual([])
-        expect(result.deleted).toEqual([])
+        expect(result.equals).toStrictEqual([]) // 所有项目都移动了，没有保持原位置的
+        expect(result.added).toStrictEqual([])
+        expect(result.updated).toStrictEqual([])
+        expect(result.deleted).toStrictEqual([])
     })
 
     it('added', () => {
@@ -167,16 +155,16 @@ describe('arrayDiff', () => {
         ]
 
         const result = arrayDiff<TestItem>(prevList, nextList, nameMatch)
-        expect(result.added).toEqual([
+        expect(result.added).toStrictEqual([
             {data: {name: 'item2', value: 'value2'}, nextIndex: 1},
             {data: {name: 'item3', value: 'value3'}, nextIndex: 2}
         ])
-        expect(result.equals).toEqual([
+        expect(result.equals).toStrictEqual([
             {data: {name: 'item1', value: 'value1'}, index: 0}
         ])
-        expect(result.deleted).toEqual([])
-        expect(result.updated).toEqual([])
-        expect(result.moved).toEqual([])
+        expect(result.deleted).toStrictEqual([])
+        expect(result.updated).toStrictEqual([])
+        expect(result.moved).toStrictEqual([])
     })
 
     it('updated', () => {
@@ -198,6 +186,7 @@ describe('arrayDiff', () => {
                 nextData: {name: 'item1', value: 'newValue'},
                 nextIndex: 0,
                 diff: {
+                    type: "object",
                     updated: {
                         value: {
                             propertyName: 'value',
@@ -210,12 +199,12 @@ describe('arrayDiff', () => {
             }
         ]
         expect(result.updated).toStrictEqual(updatedExpect)
-        expect(result.equals).toEqual([
+        expect(result.equals).toStrictEqual([
             {data: {name: 'item2', value: 'value2'}, index: 1}
         ])
-        expect(result.added).toEqual([])
-        expect(result.deleted).toEqual([])
-        expect(result.moved).toEqual([])
+        expect(result.added).toStrictEqual([])
+        expect(result.deleted).toStrictEqual([])
+        expect(result.moved).toStrictEqual([])
     })
 
     it('deleted', () => {
@@ -230,16 +219,16 @@ describe('arrayDiff', () => {
         ]
 
         const result = arrayDiff<TestItem>(prevList, nextList, nameMatch)
-        expect(result.deleted).toEqual([
+        expect(result.deleted).toStrictEqual([
             {data: {name: 'item2', value: 'value2'}, prevIndex: 1},
             {data: {name: 'item3', value: 'value3'}, prevIndex: 2}
         ])
-        expect(result.equals).toEqual([
+        expect(result.equals).toStrictEqual([
             {data: {name: 'item1', value: 'value1'}, index: 0}
         ])
-        expect(result.added).toEqual([])
-        expect(result.updated).toEqual([])
-        expect(result.moved).toEqual([])
+        expect(result.added).toStrictEqual([])
+        expect(result.updated).toStrictEqual([])
+        expect(result.moved).toStrictEqual([])
     })
 
     it('multiple changes', () => {
@@ -311,6 +300,7 @@ describe('arrayDiff', () => {
                 },
                 nextIndex: 2,
                 diff: {
+                    type: "object",
                     updated: {
                         value: {
                             propertyName: "value",
@@ -334,6 +324,7 @@ describe('arrayDiff', () => {
                 },
                 nextIndex: 3,
                 diff: {
+                    type: "object",
                     updated: {
                         name: {
                             propertyName: "name",
@@ -396,6 +387,7 @@ describe('arrayDiff', () => {
         )
         expect(result.updated.length).toBe(1)
         const nestDiffExpect: ObjectDiff<NestTestItem> = {
+            type: 'object',
             updated: {
                 details: {
                     propertyName: 'details',
@@ -417,6 +409,7 @@ describe('arrayDiff', () => {
                         ]
                     },
                     diff: {
+                        type: 'object',
                         updated: {
                             description: {
                                 propertyName: 'description',
@@ -436,6 +429,7 @@ describe('arrayDiff', () => {
                                     {name: 'item3', value: 'new value'},
                                 ],
                                 diff: {
+                                    type: 'array',
                                     added: [],
                                     updated: [
                                         {
@@ -444,6 +438,7 @@ describe('arrayDiff', () => {
                                             nextData: {name: 'item3', value: 'new value'},
                                             nextIndex: 1,
                                             diff: {
+                                                type: 'object',
                                                 updated: {
                                                     value: {
                                                         propertyName: 'value',

@@ -1,20 +1,22 @@
-import {describe, it, expect} from 'vitest';
+import {describe, it, expect, assert} from 'vitest';
 import {objectDiff} from '../objectDiff';
 
 describe('objectDiff', () => {
     it('empty object', () => {
-        expect(objectDiff({}, {})).toEqual({});
-        expect(objectDiff(null, null)).toEqual({});
-        expect(objectDiff(undefined, undefined)).toEqual({});
-        expect(objectDiff({}, null)).toEqual({});
-        expect(objectDiff(null, {})).toEqual({});
-        expect(objectDiff({}, undefined)).toEqual({});
-        expect(objectDiff(undefined, {})).toEqual({});
+        const emptyObjectDiff: ObjectDiff<any> = {type: "object"}
+        expect(objectDiff({}, {})).toStrictEqual(emptyObjectDiff);
+        expect(objectDiff(null, null)).toStrictEqual(emptyObjectDiff);
+        expect(objectDiff(undefined, undefined)).toStrictEqual(emptyObjectDiff);
+        expect(objectDiff({}, null)).toStrictEqual(emptyObjectDiff);
+        expect(objectDiff(null, {})).toStrictEqual(emptyObjectDiff);
+        expect(objectDiff({}, undefined)).toStrictEqual(emptyObjectDiff);
+        expect(objectDiff(undefined, {})).toStrictEqual(emptyObjectDiff);
     });
 
     it('empty added', () => {
         const result = objectDiff(null, {a: 1, b: 2});
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
+            type: "object",
             added: {
                 a: {propertyName: 'a', value: 1},
                 b: {propertyName: 'b', value: 2}
@@ -24,7 +26,8 @@ describe('objectDiff', () => {
 
     it('empty deleted', () => {
         const result = objectDiff({a: 1, b: 2}, null);
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
+            type: "object",
             deleted: {
                 a: {propertyName: 'a', value: 1},
                 b: {propertyName: 'b', value: 2}
@@ -34,7 +37,8 @@ describe('objectDiff', () => {
 
     it('added', () => {
         const result = objectDiff({a: 1}, {a: 1, b: 2});
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
+            type: "object",
             added: {
                 b: {propertyName: 'b', value: 2}
             }
@@ -43,7 +47,8 @@ describe('objectDiff', () => {
 
     it('deleted', () => {
         const result = objectDiff({a: 1, b: 2}, {a: 1});
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
+            type: "object",
             deleted: {
                 b: {propertyName: 'b', value: 2}
             }
@@ -52,12 +57,14 @@ describe('objectDiff', () => {
 
     it('updated', () => {
         const result = objectDiff({a: 1, b: 2}, {a: 1, b: 3});
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
+            type: "object",
             updated: {
                 b: {
                     propertyName: 'b',
                     prevValue: 2,
-                    nextValue: 3
+                    nextValue: 3,
+                    diff: undefined,
                 }
             }
         });
@@ -68,7 +75,8 @@ describe('objectDiff', () => {
             {a: 1, b: 2, c: 5},
             {a: 1, b: 3, d: 4}
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
+            type: "object",
             deleted: {
                 c: {propertyName: 'c', value: 5}
             },
@@ -79,7 +87,8 @@ describe('objectDiff', () => {
                 b: {
                     propertyName: 'b',
                     prevValue: 2,
-                    nextValue: 3
+                    nextValue: 3,
+                    diff: undefined,
                 }
             }
         });
@@ -90,18 +99,21 @@ describe('objectDiff', () => {
         const newObj = {a: {b: 2}};
         const result = objectDiff(oldObj, newObj);
 
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
+            type: "object",
             updated: {
                 a: {
                     propertyName: 'a',
                     prevValue: {b: 1},
                     nextValue: {b: 2},
                     diff: {
+                        type: "object",
                         updated: {
                             b: {
                                 propertyName: 'b',
                                 prevValue: 1,
-                                nextValue: 2
+                                nextValue: 2,
+                                diff: undefined,
                             }
                         }
                     }
@@ -115,9 +127,11 @@ describe('objectDiff', () => {
         const newObj = {items: [1, 2, 4]};
         const result = objectDiff(oldObj, newObj);
 
+        assert(result.type === "object");
         expect(result.updated).toBeDefined();
         expect(result.updated?.items).toBeDefined();
         expect(result.updated?.items?.diff).toStrictEqual({
+            type: "array",
             equals: [
                 {
                     data: 1,
@@ -147,20 +161,32 @@ describe('objectDiff', () => {
 
     it('equals', () => {
         const result = objectDiff({a: 1, b: 2}, {a: 1, b: 2});
-        expect(result).toEqual({});
+        expect(result).toStrictEqual({type: "object"});
     });
 
     it('nested equals', () => {
         const result = objectDiff({a: 1, b: {c: 1}}, {a: 1, b: {c: 1}});
-        expect(result).toEqual({});
+        expect(result).toStrictEqual({type: "object"});
     });
 
     it('primitive values', () => {
         const result = objectDiff(1 as any, {a: 1});
-        expect(result.added).toBeDefined();
+        assert(result.type === "object");
+        expect(result.added).toStrictEqual({
+            a: {
+                propertyName: 'a',
+                value: 1
+            }
+        });
 
         const result2 = objectDiff({a: 1}, 1 as any);
-        expect(result2.deleted).toBeDefined();
+        assert(result2.type === "object");
+        expect(result2.deleted).toStrictEqual({
+            a: {
+                propertyName: 'a',
+                value: 1
+            }
+        });
     });
 
     it('circular references', () => {
@@ -172,6 +198,7 @@ describe('objectDiff', () => {
 
         const result = objectDiff(obj1, obj2);
         expect(result).toStrictEqual({
+            type: "object",
             updated: {
                 a: {
                     propertyName: 'a',
@@ -183,7 +210,9 @@ describe('objectDiff', () => {
                     propertyName: 'self',
                     prevValue: obj1,
                     nextValue: obj2,
-                    diff: {}
+                    diff: {
+                        type: "circular reference",
+                    }
                 }
             }
         });
@@ -196,9 +225,9 @@ describe('objectDiff', () => {
         const obj2: any = {a: {b: 2}};
         obj2.a.self = obj2; // Create nested circular reference
 
-
         const result = objectDiff(obj1, obj2);
         expect(result).toStrictEqual({
+            type: "object",
             updated: {
                 a: {
                     propertyName: 'a',
@@ -211,6 +240,7 @@ describe('objectDiff', () => {
                         self: obj2
                     },
                     diff: {
+                        type: "object",
                         updated: {
                             b: {
                                 propertyName: 'b',
@@ -222,7 +252,9 @@ describe('objectDiff', () => {
                                 propertyName: 'self',
                                 prevValue: obj1,
                                 nextValue: obj2,
-                                diff: {}
+                                diff: {
+                                    type: "circular reference",
+                                }
                             }
                         }
                     }
@@ -237,12 +269,14 @@ describe('objectDiff', () => {
             {a: null, b: 2, c: 1}
         );
 
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
+            type: "object",
             updated: {
                 b: {
                     propertyName: 'b',
                     prevValue: undefined,
-                    nextValue: 2
+                    nextValue: 2,
+                    diff: undefined,
                 }
             }
         });
@@ -295,7 +329,10 @@ describe('objectDiff', () => {
             customNameMatch
         );
 
+        assert(result.type === "object")
+        assert(result.updated?.a?.diff?.updated?.[0]?.diff?.type === "object")
         expect(result.updated?.a?.diff?.updated?.[0]?.diff?.updated?.nestArray?.diff).toStrictEqual({
+            type: "array",
             added: [
                 {
                     data: {
