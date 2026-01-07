@@ -39,14 +39,17 @@ export const arrayDiff = <T extends Record<string, unknown>>(
         return result
     }
 
-    let prevWithIndex = prevList.map((item, index) => ({item: item, index}))
-    let nextWithIndex = nextList.map((item, index) => ({item, index}))
+    const prevWithIndexSet = new Set(prevList.map((item, index) => ({item: item, index})))
+    const nextWithIndexSet = new Set(nextList.map((item, index) => ({item, index})))
 
     for (const fn of matchFnList) {
-        for (const prev of prevWithIndex) {
+        for (const prev of prevWithIndexSet) {
             const {item: prevItem, index: prevIndex} = prev
 
-            const matchedNext = nextWithIndex.find(it => fn(it.item, prevItem))
+            let matchedNext: {item: T, index: number} | undefined = undefined
+            for (const next of nextWithIndexSet) {
+                if (fn(prevItem, next.item)) matchedNext = next
+            }
             if (matchedNext !== undefined) {
                 const {item: nextItem, index: nextIndex} = matchedNext
 
@@ -78,16 +81,16 @@ export const arrayDiff = <T extends Record<string, unknown>>(
                     })
                 }
 
-                prevWithIndex = prevWithIndex.filter(it => it !== prev)
-                nextWithIndex = nextWithIndex.filter(it => it !== matchedNext)
+                prevWithIndexSet.delete(prev)
+                nextWithIndexSet.delete(matchedNext)
             }
         }
     }
 
-    prevWithIndex.forEach(({item, index}) => {
+    prevWithIndexSet.forEach(({item, index}) => {
         result.deleted.push({data: item, prevIndex: index})
     })
-    nextWithIndex.forEach(({item, index}) => {
+    nextWithIndexSet.forEach(({item, index}) => {
         result.added.push({data: item, nextIndex: index})
     })
 
