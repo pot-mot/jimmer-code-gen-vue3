@@ -39,7 +39,7 @@ export const arrayDiff = <T extends Record<string, unknown>>(
         return result
     }
 
-    const prevWithIndexSet = new Set(prevList.map((item, index) => ({item: item, index})))
+    const prevWithIndexSet = new Set(prevList.map((item, index) => ({item, index})))
     const nextWithIndexSet = new Set(nextList.map((item, index) => ({item, index})))
 
     for (const fn of matchFnList) {

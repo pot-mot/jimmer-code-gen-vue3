@@ -107,7 +107,7 @@ export const objectDiff = <T extends Record<string, unknown>, U extends Record<s
 
                 // 检查是否为数组
                 if (Array.isArray(oldValue) && Array.isArray(newValue)) {
-                    diff = arrayDiff(oldValue, newValue, deepMatchFnList);
+                    diff = arrayDiff(oldValue, newValue, deepMatchFnList, deepMatchFnList);
                 } else if (
                     typeof oldValue === 'object' && typeof newValue === 'object' &&
                     oldValue !== null && newValue !== null &&
