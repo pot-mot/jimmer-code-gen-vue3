@@ -89,6 +89,7 @@ export const localeEn: MainLocale = {
     enumeration: "Enum",
     embeddableType: "Embeddable Type",
     association: "Association",
+    history_version: "History Version",
 
     model_list_title: "Model List",
     model_create_button: "Create Model",

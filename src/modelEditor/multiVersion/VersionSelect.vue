@@ -8,7 +8,7 @@ const version = defineModel<ModelHistoryNoJsonView | undefined>({
 })
 
 defineProps<{
-    versions: ModelHistoryNoJsonView[]
+    versions: DeepReadonly<ModelHistoryNoJsonView[]>
 }>()
 </script>
 

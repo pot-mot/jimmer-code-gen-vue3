@@ -4,11 +4,10 @@ import {computed} from "vue";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 import {fillModelGraphSubData} from "@/modelEditor/utils/ModelGraphSubData.ts";
 import {versionDiff} from "@/modelEditor/multiVersion/versionDiff.ts";
-import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
-import CodeEditor from "@/components/code/CodeEditor.vue";
+import ObjectDiffView from "@/components/diff/ObjectDiffView.vue";
 
 const props = defineProps<{
-    current: ModelGraphSubData | undefined,
+    current: ModelGraphData | undefined,
     version: ModelHistoryView | undefined
 }>()
 
@@ -33,25 +32,35 @@ const previousGraphSubData = computed(() => {
 })
 
 const diff = computed(() => {
-    return versionDiff(props.current, previousGraphSubData.value)
-})
-
-const diffStr = computed(() => {
-    return jsonPrettyFormat(diff.value)
+    return versionDiff(
+        {
+            model: {
+                name: props.version?.name,
+                description: props.version?.description,
+                databaseType: props.version?.databaseType,
+                databaseNameStrategy: props.version?.databaseNameStrategy,
+                defaultForeignKeyType: props.version?.defaultForeignKeyType,
+                jvmLanguage: props.version?.jvmLanguage,
+                defaultEnumerationStrategy: props.version?.defaultEnumerationStrategy,
+            },
+            viewport: props.version?.viewport,
+            subData: previousGraphSubData.value
+        },
+        props.current
+    )
 })
 </script>
 
 <template>
-    <CodeEditor
-        v-if="current && previousGraphSubData"
-        :model-value="diffStr"
-        language="json"
-        :options="{
-            readOnly: true,
-        }"
-    />
+    <div>
+        <div>
+            <div>Model</div>
+            <ObjectDiffView v-if="diff.model.type === 'object'" :diff="diff.model" style="padding-left: 0.5rem;"/>
+        </div>
+        <ObjectDiffView v-if="diff.subData.type === 'object'" :diff="diff.subData"/>
+        <div>
+            <div>Viewport</div>
+            <ObjectDiffView v-if="diff.viewport.type === 'object'" :diff="diff.viewport" style="padding-left: 0.5rem;"/>
+        </div>
+    </div>
 </template>
-
-<style scoped>
-
-</style>

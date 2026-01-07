@@ -104,6 +104,7 @@ const exportModelJson = () => {
         <div class="right">
             <button @click="openVersionDialog()">
                 <IconHistory/>
+                {{ translate("history_version") }}
             </button>
             <button @click="openDiagnoseDialog()">
                 <IconDiagnostic/>

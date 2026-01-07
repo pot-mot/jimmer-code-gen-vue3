@@ -89,6 +89,7 @@ export const localeZhCn: MainLocale = {
     enumeration: "枚举",
     embeddableType: "内嵌类型",
     association: "关联",
+    history_version: "历史版本",
 
     model_list_title: "模型列表",
     model_create_button: "创建模型",

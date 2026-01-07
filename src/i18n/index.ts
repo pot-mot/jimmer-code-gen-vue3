@@ -87,6 +87,7 @@ export type MainLocale = {
     enumeration: string
     embeddableType: string
     association: string
+    history_version: string
 
     model_list_title: string
     model_create_button: string
