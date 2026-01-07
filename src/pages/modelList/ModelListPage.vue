@@ -42,7 +42,7 @@ import ModelEditForm from "@/modelEditor/modelForm/ModelEditForm.vue";
 
 const modelList = ref<ModelNoJsonView[]>([])
 const modelQuerySpec = ref<ModelSpec>({})
-const modelOrder = ref<ModelOrder>("MODIFIED_TIME_DESC")
+const modelOrder = ref<ModelOrder>("CREATE_TIME_ASC")
 
 const loadModelList = async () => {
     await withLoading("list model", async () => {
