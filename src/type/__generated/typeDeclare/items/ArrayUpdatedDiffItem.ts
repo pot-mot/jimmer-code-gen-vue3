@@ -8,7 +8,7 @@ export default Object.freeze({
     diff: T extends Array<infer Item> | ReadonlyArray<infer Item>
         ? ArrayDiff<Item>
         : T extends Record<string, unknown>
-            ? ObjectDiff<T>
+            ? ObjectDiff<T> | CircularReferenceDiff
             : never
 }`,
 })

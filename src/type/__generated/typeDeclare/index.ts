@@ -15,6 +15,7 @@ import BaseAssociationPropertyDeclare from "./items/BaseAssociationProperty.ts";
 import BasePropertyDeclare from "./items/BaseProperty.ts";
 import CategorizedEmbeddableTypePropertiesDeclare from "./items/CategorizedEmbeddableTypeProperties.ts";
 import CheckDeclare from "./items/Check.ts";
+import CircularReferenceDiffDeclare from "./items/CircularReferenceDiff.ts";
 import ColumnDeclare from "./items/Column.ts";
 import ColumnInfoDeclare from "./items/ColumnInfo.ts";
 import ColumnNameOverrideDeclare from "./items/ColumnNameOverride.ts";
@@ -132,9 +133,11 @@ import OrderDirectionDeclare from "./items/OrderDirection.ts";
 import PartialModelGraphDataDeclare from "./items/PartialModelGraphData.ts";
 import PositionDeclare from "./items/Position.ts";
 import PropertyDeclare from "./items/Property.ts";
-import PropertyDiffItemDeclare from "./items/PropertyDiffItem.ts";
+import PropertyAddedDiffItemDeclare from "./items/PropertyAddedDiffItem.ts";
+import PropertyDeletedDiffItemDeclare from "./items/PropertyDeletedDiffItem.ts";
 import PropertyInfoDeclare from "./items/PropertyInfo.ts";
 import PropertyOwnerDeclare from "./items/PropertyOwner.ts";
+import PropertyUpdatedDiffItemDeclare from "./items/PropertyUpdatedDiffItem.ts";
 import PropertyWithInheritSourceDeclare from "./items/PropertyWithInheritSource.ts";
 import ScalarCommonPropertyDeclare from "./items/ScalarCommonProperty.ts";
 import ScalarEmbeddablePropertyDeclare from "./items/ScalarEmbeddableProperty.ts";
@@ -171,6 +174,7 @@ export type TypeMap = {
     BaseProperty: BaseProperty
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypeProperties
     Check: Check
+    CircularReferenceDiff: CircularReferenceDiff
     Column: Column
     ColumnInfo: ColumnInfo
     ColumnNameOverride: ColumnNameOverride
@@ -333,6 +337,7 @@ export const typeDeclares = Object.freeze({
     BaseProperty: BasePropertyDeclare,
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypePropertiesDeclare,
     Check: CheckDeclare,
+    CircularReferenceDiff: CircularReferenceDiffDeclare,
     Column: ColumnDeclare,
     ColumnInfo: ColumnInfoDeclare,
     ColumnNameOverride: ColumnNameOverrideDeclare,
@@ -450,9 +455,11 @@ export const typeDeclares = Object.freeze({
     PartialModelGraphData: PartialModelGraphDataDeclare,
     Position: PositionDeclare,
     Property: PropertyDeclare,
-    PropertyDiffItem: PropertyDiffItemDeclare,
+    PropertyAddedDiffItem: PropertyAddedDiffItemDeclare,
+    PropertyDeletedDiffItem: PropertyDeletedDiffItemDeclare,
     PropertyInfo: PropertyInfoDeclare,
     PropertyOwner: PropertyOwnerDeclare,
+    PropertyUpdatedDiffItem: PropertyUpdatedDiffItemDeclare,
     PropertyWithInheritSource: PropertyWithInheritSourceDeclare,
     ScalarCommonProperty: ScalarCommonPropertyDeclare,
     ScalarEmbeddableProperty: ScalarEmbeddablePropertyDeclare,

@@ -331,7 +331,12 @@ describe('objectDiff', () => {
 
         assert(result.type === "object")
         assert(result.updated?.a?.diff?.updated?.[0]?.diff?.type === "object")
-        expect(result.updated?.a?.diff?.updated?.[0]?.diff?.updated?.nestArray?.diff).toStrictEqual({
+        expect(
+            result.updated
+                ?.a?.diff?.updated
+                ?.[0]?.diff?.updated
+                ?.nestArray?.diff
+        ).toStrictEqual({
             type: "array",
             added: [
                 {
