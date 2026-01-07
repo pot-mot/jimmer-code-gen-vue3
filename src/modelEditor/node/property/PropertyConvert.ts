@@ -3,20 +3,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {firstCaseToLower} from "@/utils/name/firstCase.ts";
 import {ID_VIEW_TEMPLATE} from "@/modelEditor/utils/AssociationTemplate.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
-
-const getDefaultStringSqlType = () => {
-    return {
-        type: "varchar(255)",
-        dataSize: 255,
-        numericPrecision: undefined,
-    }
-}
-const getDefaultIntSqlType = () => {
-    return {
-        type: "int",
-        numericPrecision: undefined,
-    }
-}
+import {defaultSqlType_INT, defaultSqlType_VARCHAR255} from "@/modelEditor/default/modelDefaults.ts";
 
 export const isKeyProperty = (property: DeepReadonly<Property>): property is DeepReadonly<typeof property> & KeyProperty => {
     return "key" in property && property.key
@@ -86,7 +73,7 @@ export const toIdProperty = (property: DeepReadonly<Property>): IdCommonProperty
             rawType: "rawType" in property ? property.rawType : "String",
             columnInfo: "columnInfo" in property ?
                 createColumnInfo(property, property.columnInfo) :
-                createColumnInfo(property, getDefaultStringSqlType()),
+                createColumnInfo(property, defaultSqlType_VARCHAR255()),
             autoSyncColumnName: true,
         }
     }
@@ -109,7 +96,7 @@ export const exitIdProperty = (property: DeepReadonly<IdCommonProperty | IdEmbed
             serialized: false,
             columnInfo: "columnInfo" in property ?
                 createColumnInfo(property, property.columnInfo) :
-                createColumnInfo(property, getDefaultStringSqlType()),
+                createColumnInfo(property, defaultSqlType_VARCHAR255()),
             autoSyncColumnName: true,
             typeIsArray: false,
         }
@@ -183,7 +170,7 @@ export const toVersionProperty = (property: DeepReadonly<Property>): VersionProp
         extraImports: Array.from(property.extraImports),
         columnInfo: "columnInfo" in property ?
             createColumnInfo(property, property.columnInfo) :
-            createColumnInfo(property, getDefaultIntSqlType()),
+            createColumnInfo(property, defaultSqlType_INT()),
         autoSyncColumnName: true,
     }
 }
@@ -196,7 +183,7 @@ export const exitVersionProperty = (property: DeepReadonly<VersionProperty>): Sc
         serialized: false,
         columnInfo: "columnInfo" in property ?
             createColumnInfo(property, property.columnInfo) :
-            createColumnInfo(property, getDefaultIntSqlType()),
+            createColumnInfo(property, defaultSqlType_INT()),
         autoSyncColumnName: true,
     }
 }
@@ -257,8 +244,8 @@ export const toScalarEnumProperty = (
         defaultOrderDirection: undefined,
         columnInfo:
             enumeration.strategy === "NAME" ?
-                createColumnInfo(property, getDefaultStringSqlType()) :
-                createColumnInfo(property, getDefaultIntSqlType()),
+                createColumnInfo(property, defaultSqlType_VARCHAR255()) :
+                createColumnInfo(property, defaultSqlType_INT()),
         autoSyncColumnName: true,
     }
     if (isKeyProperty(property)) {

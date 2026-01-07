@@ -21,6 +21,34 @@ export const presetColor = [
     'rgb(70, 140, 110)',
 ]
 
+export const defaultSqlType_VARCHAR255 = (): SqlType => ({
+    type: "varchar(255)",
+    dataSize: 255,
+})
+
+export const defaultSqlType_INT = (): SqlType => ({
+    type: "int",
+})
+
+export const defaultJavaType_Object = (): JvmType => ({
+    typeExpression: "Object",
+    extraImports: [],
+    extraAnnotations: [],
+    serialized: false,
+})
+
+export const defaultKotlinType_Any = (): JvmType => ({
+    typeExpression: "Any",
+    extraImports: [],
+    extraAnnotations: [],
+    serialized: false,
+})
+
+export const defaultTsType = (): TsType => ({
+    typeExpression: "any",
+    extraImports: [],
+})
+
 export const defaultIdProperty = (): IdCommonProperty => ({
     id: createId("Property"),
     name: "id",
@@ -34,7 +62,7 @@ export const defaultIdProperty = (): IdCommonProperty => ({
         name: "id",
         comment: 'id',
         nullable: false,
-        type: "text",
+        ...defaultSqlType_VARCHAR255(),
     },
     autoSyncColumnName: true,
 })
@@ -54,7 +82,7 @@ export const defaultScalarProperty = (): ScalarCommonProperty => ({
         name: "property",
         comment: '',
         nullable: false,
-        type: "text",
+        ...defaultSqlType_VARCHAR255(),
     },
     autoSyncColumnName: true,
 })

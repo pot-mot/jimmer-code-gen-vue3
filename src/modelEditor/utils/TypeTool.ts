@@ -2,6 +2,12 @@ import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts"
 import {parseRegExp} from "@/utils/regExp/parseRegExp.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import {translate} from "@/store/i18nStore.ts";
+import {
+    defaultJavaType_Object,
+    defaultKotlinType_Any,
+    defaultSqlType_VARCHAR255,
+    defaultTsType
+} from "@/modelEditor/default/modelDefaults.ts";
 
 type JvmCompiledMappingRule = {
     jvmSource: JvmSource
@@ -42,17 +48,7 @@ export const createSqlToJvm = (
                 return cloneDeepReadonlyRaw<JvmType>(rule.result)
             }
         }
-        return jvmLanguage === "JAVA" ? {
-            typeExpression: "Object",
-            extraImports: [],
-            extraAnnotations: [],
-            serialized: false,
-        } : {
-            typeExpression: "Any",
-            extraImports: [],
-            extraAnnotations: [],
-            serialized: false,
-        }
+        return jvmLanguage === "JAVA" ? defaultJavaType_Object() : defaultKotlinType_Any()
     }
 }
 
@@ -94,9 +90,7 @@ export const createJvmToSql = (
                 return cloneDeepReadonlyRaw<SqlType>(rule.result)
             }
         }
-        return {
-            type: "text",
-        }
+        return defaultSqlType_VARCHAR255()
     }
 }
 
@@ -131,9 +125,6 @@ export const createJvmToTs = (
                 return cloneDeepReadonlyRaw<TsType>(rule.result)
             }
         }
-        return {
-            typeExpression: "any",
-            extraImports: []
-        }
+        return defaultTsType()
     }
 }
