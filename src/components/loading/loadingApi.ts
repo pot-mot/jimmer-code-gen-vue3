@@ -1,4 +1,4 @@
-import {createApp} from "vue";
+import {createApp, nextTick} from "vue";
 import ProcessLoading from "@/components/loading/ProcessLoading.vue";
 
 type LoadingInstance = InstanceType<typeof ProcessLoading>
@@ -42,6 +42,7 @@ export const stopLoading = (symbol: symbol, success: boolean) => {
 export const withLoading = async <T> (message: string, fn: () => Promise<T>) => {
     const {stop} = startLoading(message)
     try {
+        await nextTick()
         const result = await fn()
         stop(true)
         return result
