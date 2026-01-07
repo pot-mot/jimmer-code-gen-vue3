@@ -16,7 +16,8 @@ defineSlots<{
         <!-- 属性添加 -->
         <div v-if="diff.added" class="diff-section">
             <div
-                v-for="item in diff.added"
+                v-for="(item, key) in diff.added"
+                :key="'added' + String(key)"
                 class="diff-item added"
             >
                 <template v-if="item !== undefined">
@@ -31,7 +32,8 @@ defineSlots<{
 
         <div v-if="diff.updated" class="diff-section">
             <div
-                v-for="item in diff.updated"
+                v-for="(item, key) in diff.updated"
+                :key="'updated' + String(key)"
             >
                 <template v-if="item !== undefined">
                     <CollapseDetail trigger-position="left" :disabled="item.diff === undefined" :model-value="true">
@@ -85,7 +87,8 @@ defineSlots<{
         <!-- 属性删除 -->
         <div v-if="diff.deleted" class="diff-section">
             <div
-                v-for="item in diff.deleted"
+                v-for="(item, key) in diff.deleted"
+                :key="'deleted' + String(key)"
                 class="diff-item deleted"
             >
                 <template v-if="item !== undefined">
