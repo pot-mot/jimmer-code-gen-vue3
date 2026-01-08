@@ -8,6 +8,19 @@ import {getTypeDeclareFiles} from "@/components/code/language/typescript.ts";
 
 type IMarkerData = editor.IMarkerData
 
+export const dangerousText = Object.freeze([
+    "@ts-ignore",
+    "@ts-nocheck",
+])
+
+export const dangerousTypeTokens = Object.freeze([
+    'any',
+    'unknown',
+    'never',
+]);
+
+export const dangerousTypeTokensSet = Object.freeze(new Set(dangerousTypeTokens));
+
 export const forbiddenGlobal = Object.freeze([
     'import',
     'export',
@@ -39,7 +52,7 @@ export const forbiddenGlobal = Object.freeze([
     'debugger',
 ])
 
-export const forbiddenGlobalMap = Object.freeze(new Set(forbiddenGlobal))
+export const forbiddenGlobalSet = Object.freeze(new Set(forbiddenGlobal))
 
 // 创建安全的全局环境
 const safeGlobalEnv = Object.freeze({
@@ -90,7 +103,7 @@ const proxiedEnv = Object.freeze(new Proxy({}, {
     has: () => true, // 让 with 语句认为所有属性都存在
     get: (_, prop) => {
         // 如果是禁止的属性，返回 null
-        if (forbiddenGlobalMap.has(String(prop))) {
+        if (forbiddenGlobalSet.has(String(prop))) {
             return null
         }
         // 否则从安全环境中获取
@@ -342,12 +355,41 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                 }
             }
 
+            const dangerousTextMarkers: IMarkerData[] = []
+            const fullText = sourceFile.getFullText()
+            for (const comment of dangerousText) {
+                let position = 0;
+                while ((position = fullText.indexOf(comment, position)) !== -1) {
+                    // 获取匹配位置对应的行列号
+                    const {line, character} = sourceFile.getLineAndCharacterOfPosition(position)
+
+                    // 创建标记，提示该注释被禁用使用
+                    const marker: IMarkerData = {
+                        startLineNumber: line + 1,
+                        startColumn: character + 1,
+                        endLineNumber: line + 1,
+                        endColumn: character + 1 + comment.length,
+                        message: translate({
+                            key: 'target_is_forbidden',
+                            args: [comment]
+                        }),
+                        severity: MarkerSeverity.Error
+                    }
+
+                    dangerousTextMarkers.push(marker)
+
+                    // 移动到下一个位置，避免无限循环
+                    position += comment.length
+                }
+            }
+            markers.push(...dangerousTextMarkers)
+
             const forbiddenGlobalMarkers: IMarkerData[] = []
-            const visitNode = (node: ts.Node) => {
+            const checkNodeForbidden = (node: ts.Node) => {
                 // 检查标识符是否为禁止的全局变量
                 if (ts.isIdentifier(node)) {
                     const identifierText = node.text;
-                    if (forbiddenGlobalMap.has(identifierText)) {
+                    if (forbiddenGlobalSet.has(identifierText)) {
                         const marker = createMarker(node, translate({
                             key: 'target_is_forbidden',
                             args: [identifierText]
@@ -355,11 +397,30 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                         forbiddenGlobalMarkers.push(marker)
                     }
                 }
+                // 检查类型断言 (as any, as unknown 等)
+                else if (ts.isAsExpression(node)) {
+                    const typeNode = node.type;
+                    const typeName = typeNode.getText(sourceFile);
+                    if (dangerousTypeTokensSet.has(typeName)) {
+                        const marker = createMarker(node, translate({
+                            key: 'target_is_forbidden',
+                            args: [`as ${typeName}`]
+                        }));
+                        forbiddenGlobalMarkers.push(marker);
+                    }
+                }
+                // 检查非空断言操作符
+                else if (ts.isNonNullExpression(node)) {
+                    const marker = createMarker(node, translate({
+                        key: 'target_is_forbidden',
+                        args: ['non-null assertion (!)']
+                    }));
+                    forbiddenGlobalMarkers.push(marker);
+                }
 
-                ts.forEachChild(node, visitNode);
+                ts.forEachChild(node, checkNodeForbidden);
             };
-
-            visitNode(sourceFile)
+            checkNodeForbidden(sourceFile)
 
             markers.push(...forbiddenGlobalMarkers)
 
