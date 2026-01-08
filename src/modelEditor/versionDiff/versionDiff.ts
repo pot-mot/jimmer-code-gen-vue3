@@ -1,17 +1,19 @@
 import {objectDiff} from "@/utils/diff/objectDiff.ts";
+import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
+import {fillModelGraphSubData} from "@/modelEditor/utils/ModelGraphSubData.ts";
+import type {ModelHistoryView} from "@/api/__generated/model/static";
 
-type ModelDiffInput = DeepReadonly<Partial<{
+export type ModelDiffInput = DeepReadonly<Partial<{
     model: Partial<Omit<Model, "id" | "createdTime" | "modifiedTime">>
     viewport: ModelViewport
     subData: Partial<ModelGraphSubData>
 }>>
 
-const excludeModelFields = (model?: Partial<Model>) => {
-    if (!model) return model;
-
-    const { id, createdTime, modifiedTime, ...rest } = model;
-    return rest;
-};
+export type ModelVersionDiff = DeepReadonly<{
+    model: ObjectDiff<Partial<Omit<Model, "id" | "createdTime" | "modifiedTime">>> | CircularReferenceDiff
+    viewport: ObjectDiff<ModelViewport> | CircularReferenceDiff
+    subData: ObjectDiff<Partial<ModelGraphSubData>> | CircularReferenceDiff
+}>
 
 const nameIdAnyMatch = [
     (a: any, b: any): boolean => {
@@ -59,13 +61,54 @@ const nameIdAnyMatch = [
     },
 ]
 
-export const versionDiff = (
+export const modelVersionDiff = (
     prev: ModelDiffInput | undefined,
     next: ModelDiffInput | undefined
-) => {
+): ModelVersionDiff => {
     return {
-        model: objectDiff(excludeModelFields(prev?.model), excludeModelFields(next?.model)),
+        model: objectDiff(prev?.model, next?.model),
         viewport: objectDiff(prev?.viewport, next?.viewport),
         subData: objectDiff(prev?.subData, next?.subData, nameIdAnyMatch)
+    }
+}
+
+const parseGraphSubData = (json: string | undefined): ModelGraphSubData | undefined => {
+    try {
+        if (!json) return undefined
+
+        const parsedJson = JSON.parse(json)
+        if (validatePartialModelGraphSubData(parsedJson)) {
+            return fillModelGraphSubData(parsedJson)
+        } else {
+            return undefined
+        }
+    } catch (e) {
+        console.warn(e)
+        return undefined
+    }
+}
+
+export const versionViewToDiffInput = (data: ModelHistoryView): ModelDiffInput => {
+    return {
+        model: {
+            name: data.name,
+            description: data.description,
+            databaseType: data.databaseType,
+            databaseNameStrategy: data.databaseNameStrategy,
+            defaultForeignKeyType: data.defaultForeignKeyType,
+            jvmLanguage: data.jvmLanguage,
+            defaultEnumerationStrategy: data.defaultEnumerationStrategy,
+        },
+        viewport: data.viewport,
+        subData: parseGraphSubData(data.jsonData),
+    }
+}
+
+export const graphDataToDiffInput = (data: ModelGraphData): ModelDiffInput => {
+    const {id, createdTime, modifiedTime, ...rest} = data.model
+    return {
+        model: rest,
+        viewport: data.viewport,
+        subData: data.subData,
     }
 }

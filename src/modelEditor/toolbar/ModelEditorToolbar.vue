@@ -17,7 +17,7 @@ import {translate} from "@/store/i18nStore.ts";
 import {useDiagnoseDialog} from "@/modelEditor/diagnostic/useDiagnoseDialog.ts";
 import {watch} from "vue";
 import {sendMessage} from "@/components/message/messageApi.ts";
-import {useModelVersionDialog} from "@/modelEditor/multiVersion/useModelVersionDialog.ts";
+import {useVersionDiffDialog} from "@/modelEditor/versionDiff/useVersionDiffDialog.ts";
 import IconHistory from "@/components/icons/IconHistory.vue";
 
 const {
@@ -55,7 +55,7 @@ const {
 
 const {
     open: openVersionDialog
-} = useModelVersionDialog()
+} = useVersionDiffDialog()
 
 const handleGenerate = () => {
     diagnose()

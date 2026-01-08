@@ -1,40 +1,41 @@
 <script setup lang="ts">
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import {useModelVersionDialog} from "@/modelEditor/multiVersion/useModelVersionDialog.ts";
+import {useVersionDiffDialog} from "@/modelEditor/versionDiff/useVersionDiffDialog.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
-import VersionSelect from "@/modelEditor/multiVersion/VersionSelect.vue";
+import VersionSelect from "@/modelEditor/versionDiff/VersionSelect.vue";
 import type {ModelHistoryNoJsonView} from "@/api/__generated/model/static";
 import {ref, watch} from "vue";
-import VersionDiffView from "@/modelEditor/multiVersion/VersionDiffView.vue";
 import {translate} from "@/store/i18nStore.ts";
+import ObjectDiffView from "@/components/diff/ObjectDiffView.vue";
 
 const {
     openState,
-    fetchVersions,
+    refreshVersions,
     versions,
-    fetchCurrentVersion,
-    currentVersion,
-} = useModelVersionDialog()
+    resetDiff,
+    diff,
+} = useVersionDiffDialog()
 
-const {contextData, getModelGraphData} = useModelEditor()
+const {contextData} = useModelEditor()
 
-const currentModelGraphData = ref<ModelGraphData | undefined>()
-const currentVersionNoJson = ref<ModelHistoryNoJsonView | undefined>()
-watch(() => currentVersionNoJson.value, () => {
-    fetchCurrentVersion(currentVersionNoJson.value?.id)
-})
+const version1 = ref<ModelHistoryNoJsonView | 'current'>('current')
+const version2 = ref<ModelHistoryNoJsonView | 'current'>('current')
 
 const handleOpen = () => {
     withLoading("Fetch Versions", async () => {
-        currentModelGraphData.value = getModelGraphData()
-        const versions = await fetchVersions(contextData.model.id)
+        const versions = await refreshVersions(contextData.model.id)
         const firstVersion = versions[0]
         if (firstVersion !== undefined) {
-            currentVersionNoJson.value = firstVersion
+            version1.value = firstVersion
+            await resetDiff(firstVersion, version2.value)
         }
     })
 }
+
+watch(() => [version1.value, version2.value], async () => {
+    await resetDiff(version1.value, version2.value)
+})
 </script>
 
 <template>
@@ -51,15 +52,18 @@ const handleOpen = () => {
 
         <div class="version-diff-container">
             <VersionSelect
-                v-model="currentVersionNoJson"
+                v-model="version1"
                 :versions="versions"
             />
-            <VersionDiffView
-                v-if="currentModelGraphData && currentVersion"
-                class="diff-view"
-                :current="currentModelGraphData"
-                :version="currentVersion"
+            <VersionSelect
+                v-model="version2"
+                :versions="versions"
             />
+            <div class="diff-view" v-if="diff">
+                <ObjectDiffView v-if="diff.model && diff.model.type !== 'circular reference'" :diff="diff.model"/>
+                <ObjectDiffView v-if="diff.subData && diff.subData.type !== 'circular reference'" :diff="diff.subData"/>
+                <ObjectDiffView v-if="diff.viewport && diff.viewport.type !== 'circular reference'" :diff="diff.viewport"/>
+            </div>
             <div v-else>
                 No version selected
             </div>
