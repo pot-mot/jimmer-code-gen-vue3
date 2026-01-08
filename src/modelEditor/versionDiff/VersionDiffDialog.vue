@@ -51,14 +51,17 @@ watch(() => [version1.value, version2.value], async () => {
         </template>
 
         <div class="version-diff-container">
-            <VersionSelect
-                v-model="version1"
-                :versions="versions"
-            />
-            <VersionSelect
-                v-model="version2"
-                :versions="versions"
-            />
+            <div class="diff-version-select">
+                <VersionSelect
+                    v-model="version1"
+                    :versions="versions"
+                />
+                <VersionSelect
+                    v-model="version2"
+                    :versions="versions"
+                />
+            </div>
+
             <div class="diff-view" v-if="diff">
                 <ObjectDiffView v-if="diff.model && diff.model.type !== 'circular reference'" :diff="diff.model"/>
                 <ObjectDiffView v-if="diff.subData && diff.subData.type !== 'circular reference'" :diff="diff.subData"/>
@@ -84,5 +87,11 @@ watch(() => [version1.value, version2.value], async () => {
     width: 100%;
     overflow: auto;
     margin-top: 0.5rem;
+}
+
+.diff-version-select {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0.5rem;
 }
 </style>

@@ -24,13 +24,13 @@ const versionsWithCurrent = computed<['current', ...ModelHistoryNoJsonView[]]>((
     <FilterableSelect
         v-model="version"
         :options="versionsWithCurrent"
-        :get-id="(option) => (typeof option === 'object' && 'id' in option) ? option.id : ''"
+        :get-id="(option) => (typeof option === 'object') ? option.id : option"
     >
         <template #selected="{option}">
-            {{ (typeof option === 'object' && 'modifiedTime' in option) ? formatDateTime(option.modifiedTime) : option }}
+            {{ (typeof option === 'object') ? `${option.name} ${formatDateTime(option.modifiedTime)}` : option }}
         </template>
         <template #option="{option}">
-            {{ (typeof option === 'object' && 'modifiedTime' in option) ? formatDateTime(option.modifiedTime) : option }}
+            {{ (typeof option === 'object') ? `${option.name} ${formatDateTime(option.modifiedTime)}` : option }}
         </template>
     </FilterableSelect>
 </template>
