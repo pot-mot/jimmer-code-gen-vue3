@@ -15,7 +15,7 @@
 
     "type-gen": "tsx scripts/precompile/generateTypes.ts && vue-tsc --build --force",
     "default-script-gen": "tsx scripts/backend/generateDefaultScript.ts",
-    "default-type-mapping-gen": "tsx scripts/precompile/generateDefaultTypeMapping.ts"
+    "default-type-mapping-gen": "tsx scripts/backend/generateDefaultTypeMapping.ts"
   },
   "dependencies": {
     "@progress/jszip-esm": "^1.0.4",
