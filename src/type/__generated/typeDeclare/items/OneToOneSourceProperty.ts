@@ -4,8 +4,14 @@ export default Object.freeze({
     category: "OneToOne_Source"
     typeIsList: false
     autoGenerateJoinInfo: boolean
+} & ({
+    joinInfo: FkJoinInfo,
+    nullable: boolean,
     onDissociateAction: OnDissociationAction
-} & ({ joinInfo: FkJoinInfo, nullable: boolean } | { joinInfo: MidTableJoinInfo, nullable: true })
+} | {
+    joinInfo: MidTableJoinInfo,
+    nullable: true
+})
     & Omit<BaseProperty, 'nullable'>
     & BaseAssociationProperty
     & ({} | KeyProperty)`,

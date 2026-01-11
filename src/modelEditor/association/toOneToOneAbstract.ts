@@ -56,7 +56,7 @@ export const toOneToOneAbstract = async (
             },
             autoGenerateJoinInfo: sourceProperty.autoGenerateJoinInfo,
             nullable: sourceProperty.nullable,
-            onDissociateAction: sourceProperty.onDissociateAction,
+            onDissociateAction: "onDissociateAction" in sourceProperty ? sourceProperty.onDissociateAction : "NONE",
             referencedEntityId: sourceProperty.referencedEntityId,
             typeIsList: false,
             extraAnnotations: [...sourceProperty.extraAnnotations],

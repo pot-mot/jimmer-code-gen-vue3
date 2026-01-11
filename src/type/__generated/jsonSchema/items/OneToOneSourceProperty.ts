@@ -18,15 +18,11 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -38,11 +34,15 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         },
                         "nullable": {
                             "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "joinInfo",
-                        "nullable"
+                        "nullable",
+                        "onDissociateAction"
                     ]
                 },
                 {
@@ -92,15 +92,11 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -112,11 +108,15 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         },
                         "nullable": {
                             "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "joinInfo",
-                        "nullable"
+                        "nullable",
+                        "onDissociateAction"
                     ]
                 },
                 {
@@ -185,15 +185,11 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -358,15 +354,11 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -537,16 +529,6 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
         }
     ],
     "definitions": {
-        "OnDissociationAction": {
-            "enum": [
-                "CHECK",
-                "DELETE",
-                "LAX",
-                "NONE",
-                "SET_NULL"
-            ],
-            "type": "string"
-        },
         "FkJoinInfo": {
             "anyOf": [
                 {
@@ -630,6 +612,16 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
             "enum": [
                 "FAKE",
                 "REAL"
+            ],
+            "type": "string"
+        },
+        "OnDissociationAction": {
+            "enum": [
+                "CHECK",
+                "DELETE",
+                "LAX",
+                "NONE",
+                "SET_NULL"
             ],
             "type": "string"
         },

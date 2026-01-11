@@ -50,7 +50,7 @@ export const oneToOneAbstractToReal = (
             extraImports: [...abstractSourceProperty.extraImports],
             nullable: abstractSourceProperty.nullable,
             referencedEntityId: abstractSourceProperty.referencedEntityId,
-            onDissociateAction: abstractSourceProperty.onDissociateAction,
+            onDissociateAction: "onDissociateAction" in abstractSourceProperty ? abstractSourceProperty.onDissociateAction : "NONE",
             joinInfo: cloneDeepReadonlyRaw<FkJoinInfo>(abstractSourceProperty.joinInfo),
             autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
         }
@@ -69,7 +69,7 @@ export const oneToOneAbstractToReal = (
             extraImports: [...abstractSourceProperty.extraImports],
             nullable: true,
             referencedEntityId: abstractSourceProperty.referencedEntityId,
-            onDissociateAction: abstractSourceProperty.onDissociateAction,
+            onDissociateAction: "onDissociateAction" in abstractSourceProperty ? abstractSourceProperty.onDissociateAction : "NONE",
             joinInfo: cloneDeepReadonlyRaw<MidTableJoinInfo>(abstractSourceProperty.joinInfo),
             autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
         }
@@ -160,7 +160,7 @@ export const oneToManyAbstractToReal = (
             extraImports: [...abstractSourceProperty.extraImports],
             nullable: abstractSourceProperty.nullable,
             referencedEntityId: abstractSourceProperty.referencedEntityId,
-            onDissociateAction: abstractSourceProperty.onDissociateAction,
+            onDissociateAction: "onDissociateAction" in abstractSourceProperty ? abstractSourceProperty.onDissociateAction : "NONE",
             joinInfo: cloneDeepReadonlyRaw<FkJoinInfo>(abstractSourceProperty.joinInfo),
             autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
         }
@@ -179,7 +179,7 @@ export const oneToManyAbstractToReal = (
             extraImports: [...abstractSourceProperty.extraImports],
             nullable: true,
             referencedEntityId: abstractSourceProperty.referencedEntityId,
-            onDissociateAction: abstractSourceProperty.onDissociateAction,
+            onDissociateAction: "onDissociateAction" in abstractSourceProperty ? abstractSourceProperty.onDissociateAction : "NONE",
             joinInfo: cloneDeepReadonlyRaw<MidTableJoinInfo>(abstractSourceProperty.joinInfo),
             autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
         }

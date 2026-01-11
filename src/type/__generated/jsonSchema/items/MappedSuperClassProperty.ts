@@ -596,15 +596,11 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -616,11 +612,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "nullable": {
                             "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "joinInfo",
-                        "nullable"
+                        "nullable",
+                        "onDissociateAction"
                     ]
                 },
                 {
@@ -670,15 +670,11 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -690,11 +686,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "nullable": {
                             "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "joinInfo",
-                        "nullable"
+                        "nullable",
+                        "onDissociateAction"
                     ]
                 },
                 {
@@ -763,15 +763,11 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -936,15 +932,11 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -1128,15 +1120,11 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -1148,11 +1136,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "nullable": {
                             "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "joinInfo",
-                        "nullable"
+                        "nullable",
+                        "onDissociateAction"
                     ]
                 },
                 {
@@ -1202,15 +1194,11 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -1222,11 +1210,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "nullable": {
                             "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "joinInfo",
-                        "nullable"
+                        "nullable",
+                        "onDissociateAction"
                     ]
                 },
                 {
@@ -1295,15 +1287,11 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -1468,15 +1456,11 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "onDissociateAction",
                         "typeIsList"
                     ]
                 },
@@ -2406,16 +2390,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                 }
             ]
         },
-        "OnDissociationAction": {
-            "enum": [
-                "CHECK",
-                "DELETE",
-                "LAX",
-                "NONE",
-                "SET_NULL"
-            ],
-            "type": "string"
-        },
         "FkJoinInfo": {
             "anyOf": [
                 {
@@ -2499,6 +2473,16 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
             "enum": [
                 "FAKE",
                 "REAL"
+            ],
+            "type": "string"
+        },
+        "OnDissociationAction": {
+            "enum": [
+                "CHECK",
+                "DELETE",
+                "LAX",
+                "NONE",
+                "SET_NULL"
             ],
             "type": "string"
         },

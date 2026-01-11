@@ -104,8 +104,14 @@ type OneToOneSourceProperty = {
     category: "OneToOne_Source"
     typeIsList: false
     autoGenerateJoinInfo: boolean
+} & ({
+    joinInfo: FkJoinInfo,
+    nullable: boolean,
     onDissociateAction: OnDissociationAction
-} & ({ joinInfo: FkJoinInfo, nullable: boolean } | { joinInfo: MidTableJoinInfo, nullable: true })
+} | {
+    joinInfo: MidTableJoinInfo,
+    nullable: true
+})
     & Omit<BaseProperty, 'nullable'>
     & BaseAssociationProperty
     & ({} | KeyProperty)
@@ -134,8 +140,14 @@ type ManyToOneProperty = {
     category: "ManyToOne"
     typeIsList: false
     autoGenerateJoinInfo: boolean
+} & ({
+    joinInfo: FkJoinInfo,
+    nullable: boolean,
     onDissociateAction: OnDissociationAction
-} & ({ joinInfo: FkJoinInfo, nullable: boolean } | { joinInfo: MidTableJoinInfo, nullable: true })
+} | {
+    joinInfo: MidTableJoinInfo,
+    nullable: true
+})
     & Omit<BaseProperty, 'nullable'>
     & BaseAssociationProperty
     & ({} | KeyProperty)
