@@ -1,5 +1,4 @@
 import {getPropertyView} from "@/modelEditor/utils/PropertyView.ts";
-import {getAssociationView} from "@/modelEditor/utils/AssociationView.ts";
 
 const defaultEntityCategorizedProperties = (): Omit<EntityCategorizedProperties, 'idProperty'> => {
     return {
@@ -61,6 +60,15 @@ const defaultCategorizedEmbeddableTypeProperties = (): CategorizedEmbeddableType
         scalarCommonPropertyMap: new Map<string, ScalarCommonProperty>(),
         scalarEnumPropertyMap: new Map<string, ScalarEnumProperty>(),
         scalarEmbeddablePropertyMap: new Map<string, ScalarEmbeddableProperty>(),
+    }
+}
+
+const getAssociationView = (association: Association | AssociationIdOnly | undefined): string => {
+    if (!association) return "[NOT EXISTED]"
+    if ("name" in association) {
+        return association.name
+    } else {
+        return association.nameTemplate
     }
 }
 

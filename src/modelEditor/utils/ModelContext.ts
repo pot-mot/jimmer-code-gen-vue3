@@ -10,13 +10,13 @@ import {
     getMappedPropertyInfo
 } from "@/modelEditor/utils/MappedPropertyInfo.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
-import {idOnlyToAssociation} from "@/modelEditor/utils/AssociationIdOnlyToAssociation.ts";
+import {idOnlyToAssociation} from "@/modelEditor/association/AssociationIdOnlyToAssociation.ts";
 import {nameTool} from "@/modelEditor/utils/NameTool.ts";
 import {
     manyToManyAbstractToReal,
     oneToManyAbstractToReal,
     oneToOneAbstractToReal
-} from "@/modelEditor/utils/AbstractAssociationToReal.ts";
+} from "@/modelEditor/association/AbstractAssociationToReal.ts";
 import type {InheritInfo} from "@/modelEditor/utils/InheritInfo.ts";
 import {
     syncAssociationAutoChange, syncEmbeddableTypeAutoChange,
