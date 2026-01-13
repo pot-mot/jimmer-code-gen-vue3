@@ -282,7 +282,7 @@ describe('objectDiff', () => {
         });
     });
 
-    it('custom deepKeyFn', () => {
+    it('custom deepMatchFn', () => {
         const customNameMatch = [
             (a: any, b: any): boolean => {
                 if (
@@ -331,12 +331,10 @@ describe('objectDiff', () => {
 
         assert(result.type === "object")
         assert(result.updated?.a?.diff?.updated?.[0]?.diff?.type === "object")
-        expect(
-            result.updated
-                ?.a?.diff?.updated
-                ?.[0]?.diff?.updated
-                ?.nestArray?.diff
-        ).toStrictEqual({
+        const nestArrayDiff: ArrayDiff<{
+            name: string,
+            value: string,
+        }> = {
             type: "array",
             added: [
                 {
@@ -346,26 +344,41 @@ describe('objectDiff', () => {
                     },
                     nextIndex: 0,
                 },
-                {
-                    data: {
-                        name: "item1-1",
-                        value: "new value",
-                    },
-                    nextIndex: 1,
-                },
             ],
-            deleted: [
+            deleted: [],
+            equals: [],
+            moved: [],
+            updated: [
                 {
-                    data: {
+                    prevData: {
                         name: "item1-1",
                         value: "value1-1",
                     },
                     prevIndex: 0,
+                    nextData: {
+                        name: "item1-1",
+                        value: "new value",
+                    },
+                    nextIndex: 1,
+                    diff: {
+                        type: "object",
+                        updated: {
+                            value: {
+                                propertyName: 'value',
+                                prevValue: "value1-1",
+                                nextValue: "new value",
+                                diff: undefined,
+                            }
+                        }
+                    }
                 },
             ],
-            equals: [],
-            moved: [],
-            updated: [],
-        })
+        }
+        expect(
+            result.updated
+                ?.a?.diff?.updated
+                ?.[0]?.diff?.updated
+                ?.nestArray?.diff
+        ).toStrictEqual(nestArrayDiff)
     });
 });
