@@ -14,26 +14,15 @@ jar 包启动使用。
 | 后端                                                                         | 前端                                                                       |
 |----------------------------------------------------------------------------|--------------------------------------------------------------------------|
 | [Github](https://github.com/pot-mot/jimmer-code-gen-kotlin)                | [Github](https://github.com/pot-mot/jimmer-code-gen-vue3)                |
-| [Gitee](https://gitee.com/run-around---whats-wrong/jimmer-code-gen-kotlin) | [Gitee](https://gitee.com/run-around---whats-wrong/jimmer-code-gen-vue3) |
 
 ## 基本命令
 
-| 命令                | 说明                                  |
-|-------------------|-------------------------------------|
-| `pnpm install`    | 下载依赖                                |
-| `pnpm dev`        | 启动项目                                |
-| `pnpm build-only` | 构建项目                                |
-| `pnpm api`        | 应用前后端免对接生成的接口                       |
-| `pnpm type-check` | ts 类型校验，将对项目及依赖进行校验<br/>**目前部分依赖无法通过校验** |
-
-
-## 项目结构
-
-| 分块                                      | 说明                                                                                                                                     |
-|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| [global](src%2Fcomponents%2Fglobal)     | 全局通用组件，如 [DragDialog](src%2Fcomponents%2Fglobal%2Fdialog%2FDragDialog.vue)、[EditList](src%2Fcomponents%2Fglobal%2Flist%2FEditList.vue) |
-| [business](src%2Fcomponents%2Fbusiness) | 业务组件，包含了实体表单与校验，如[TableForm](src%2Fcomponents%2Fbusiness%2Ftable%2FTableForm.vue)                                                      |
-| [pages](src%2Fcomponents%2Fpages)       | 页面组件，如 [ModelEditor](src%2Fcomponents%2Fpages%2FModelEditor)                                                                           |
+| 命令               | 说明   |
+|------------------|------|
+| `pnpm install`   | 下载依赖 |
+| `pnpm dev`       | 启动项目 |
+| `pnpm test`      | 测试项目 |
+| `pnpm build` | 打包项目 |
 
 ## LICENSE
 
