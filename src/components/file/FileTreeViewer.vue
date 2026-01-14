@@ -31,19 +31,20 @@ const currentLanguage = computed(() => {
 <template>
     <Splitpanes>
         <Pane size="20">
-            <div class="pane-content">
+            <div class="pane-content left-pane">
                 <slot
                     name="left-top"
                     :selectedPathSet="selectedPathSet"
                     :currentFileContent="currentFileContent"
                     :currentLanguage="currentLanguage"
                 />
-                <FileTree
-                    :paths="paths"
-                    v-model:current-file-path="currentFilePath"
-                    v-model:selected-path-set="selectedPathSet"
-                    style="padding-left: 0.5rem; overflow-x: auto;"
-                />
+                <div class="file-tree-wrapper">
+                    <FileTree
+                        :paths="paths"
+                        v-model:current-file-path="currentFilePath"
+                        v-model:selected-path-set="selectedPathSet"
+                    />
+                </div>
             </div>
         </Pane>
         <Pane>
@@ -64,5 +65,16 @@ const currentLanguage = computed(() => {
     height: 100%;
     width: 100%;
     overflow: hidden;
+}
+
+.left-pane {
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.file-tree-wrapper {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
 }
 </style>
