@@ -30,7 +30,6 @@ const props = withDefaults(defineProps<{
 }>(), {
     fontSize: '0.8rem',
 	showLineCounts: true,
-    noHighlightLimit: 10000,
 })
 
 const contentWrapperRef = ref<HTMLDivElement>()
@@ -77,7 +76,7 @@ const highlightCode = () => {
 
 onMounted(() => {
 	nextTick(() => {
-        if (props.code.length > props.noHighlightLimit) {
+        if (props.noHighlightLimit !== undefined && props.code.length > props.noHighlightLimit) {
             showCode()
         } else {
             highlightCode()
@@ -86,7 +85,7 @@ onMounted(() => {
 })
 
 watch(() => [props.code, props.language], () => {
-    if (props.code.length > props.noHighlightLimit) {
+    if (props.noHighlightLimit !== undefined && props.code.length > props.noHighlightLimit) {
         showCode()
     } else {
         highlightCode()
