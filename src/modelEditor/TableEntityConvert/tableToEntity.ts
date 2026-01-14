@@ -316,7 +316,7 @@ export const tableToEntity = (
                 const indexList = indexColumnMapSet.get(column.name)
                 if (indexList !== undefined) {
                     if (table.indexes.length === 1 && table.indexes[0]?.uniqueIndex) {
-                        Object.assign(property, {key: true})
+                        Object.assign(property, {key: true, keyGroups: []})
                     } else {
                         for (const index of indexList.filter(it => it.uniqueIndex)) {
                             if ("key" in property) {
