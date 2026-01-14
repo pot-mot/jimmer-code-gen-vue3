@@ -17,8 +17,13 @@ export type HistoryCommand<
     key: Key
 } & CommandDefinition<ApplyOptions, RevertOptions>
 
-export type HistoryCommandMap<CommandMap extends CustomCommandMap> = {
-    [Key in keyof CommandMap]?: HistoryCommand<CommandMap, Key>;
+type HistoryCommandMap<CommandMap extends CustomCommandMap> = {
+    get: <Key extends keyof CommandMap>(key: Key) => HistoryCommand<CommandMap, Key> | undefined,
+    set: <Key extends keyof CommandMap>(key: Key, value: HistoryCommand<CommandMap, Key>) => void,
+    delete: <Key extends keyof CommandMap>(key: Key) => void,
+    has: <Key extends keyof CommandMap>(key: Key) => boolean,
+    clear: () => void,
+    size: number,
 }
 
 export type HistoryCommandOption<CommandMap extends CustomCommandMap, Key extends keyof CommandMap> =
@@ -70,44 +75,44 @@ export type CommandHistoryEvents<CommandMap extends CustomCommandMap> = {
 
 export type CommandHistory<CommandMap extends CustomCommandMap> =
     {
-        eventBus: Emitter<CommandHistoryEvents<CommandMap>>
+        readonly eventBus: Emitter<CommandHistoryEvents<CommandMap>>
 
-        canUndo(): boolean
-        undo(): void
+        readonly canUndo: () => boolean
+        readonly undo: () => void
 
-        canRedo(): boolean
-        redo(): void
+        readonly canRedo: () => boolean
+        readonly redo: () => void
 
-        clean(): void
+        readonly clean: () => void
 
         // 命令注册方法
-        registerCommand<Key extends keyof CommandMap>(
+        readonly registerCommand: <Key extends keyof CommandMap>(
             key: Key,
             options: HistoryCommandOption<CommandMap, Key>
-        ): void;
+        ) => void;
 
-        unregisterCommand<Key extends keyof CommandMap>(
+        readonly unregisterCommand: <Key extends keyof CommandMap>(
             key: Key
-        ): HistoryCommand<CommandMap, Key>;
+        ) => HistoryCommand<CommandMap, Key>;
 
         // 执行单个命令
-        executeCommand<Key extends keyof CommandMap>(
+        readonly executeCommand: <Key extends keyof CommandMap>(
             key: Key,
             options: Parameters<CommandMap[Key]["applyAction"]>[0],
-        ): ReturnType<CommandMap[Key]["applyAction"]>;
+        ) => ReturnType<CommandMap[Key]["applyAction"]>;
 
         // 记录单个命令
-        pushCommand<Key extends keyof CommandMap>(
+        readonly pushCommand: <Key extends keyof CommandMap>(
             key: Key,
             options: Parameters<CommandMap[Key]["applyAction"]>[0],
             revertOptions: Parameters<CommandMap[Key]["revertAction"]>[0],
-        ): void;
+        ) => void;
 
         // 批次操作相关方法
-        startBatch(key: symbol): void;
-        stopBatch(key: symbol): void;
-        executeBatch(key: symbol, action: () => void): void;
-        executeAsyncBatch(key: symbol, action: () => Promise<any>): Promise<void>;
+        readonly startBatch: (key: symbol) => void;
+        readonly stopBatch: (key: symbol) => void;
+        readonly executeBatch: (key: symbol, action: () => void) => void;
+        readonly executeAsyncBatch: (key: symbol, action: () => Promise<any>) => Promise<void>;
 
         readonly __clone_view__: {
             getCommandMap: () => HistoryCommandMap<CommandMap>;
@@ -118,7 +123,8 @@ export type CommandHistory<CommandMap extends CustomCommandMap> =
     };
 
 export const useCommandHistory = <CommandMap extends CustomCommandMap>(): CommandHistory<CommandMap> => {
-    const commandMap: HistoryCommandMap<CommandMap> = {}
+    const commandMap: HistoryCommandMap<CommandMap> =
+        new Map<keyof CommandMap, HistoryCommand<CommandMap, keyof CommandMap>>() as HistoryCommandMap<CommandMap>
 
     const eventBus = mitt<CommandHistoryEvents<CommandMap>>()
 
@@ -160,7 +166,7 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
         key: Key,
         options: HistoryCommandOption<CommandMap, Key>
     ) => {
-        if (key in commandMap) {
+        if (commandMap.has(key)) {
             throw new Error(`command ${String(key)} is already registered`)
         }
 
@@ -174,29 +180,25 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
                 return protectExecuteNest(() => target(args[0]))
             }
         })
-        commandMap[key] = {
+        commandMap.set(key, {
             key,
             applyAction: applyWrapper,
             revertAction: revertWrapper
-        }
+        })
 
         eventBus.emit('registerCommand', {key})
     }
 
     const unregisterCommand = <Key extends keyof CommandMap>(key: Key) => {
-        if (key in commandMap) {
-            const command = commandMap[key]
-            if (command === undefined) {
-                throw new Error(`command ${String(key)} is not registered`)
-            }
-
-            delete commandMap[key]
-
-            eventBus.emit('unregisterCommand', {key})
-            return command
-        } else {
+        const command = commandMap.get(key)
+        if (command === undefined) {
             throw new Error(`command ${String(key)} is not registered`)
         }
+
+        commandMap.delete(key)
+
+        eventBus.emit('unregisterCommand', {key})
+        return command
     }
 
     const push = (commandData: CommandData<CommandMap>) => {
@@ -214,7 +216,7 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
     ): ReturnType<CommandMap[Key]["applyAction"]> => {
         eventBus.emit("beforeChange", {key, type: applyType})
 
-        const command = commandMap[key]
+        const command = commandMap.get(key)
         if (command === undefined) {
             throw new Error(`command ${String(key)} is not registered`)
         }
@@ -235,7 +237,7 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
     ) => {
         eventBus.emit("beforeChange", {key, type: pushType})
 
-        const command = commandMap[key]
+        const command = commandMap.get(key)
         if (command !== undefined) {
             const commandData = {command, options, revertOptions}
             push(commandData)
@@ -355,7 +357,7 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
         }
     }
 
-    return {
+    return Object.freeze({
         eventBus,
 
         clean,
@@ -381,5 +383,5 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
             getRedoStack: () => cloneDeep(redoStack),
             getBatchKeyStack: () => cloneDeep(batchKeyStack),
         },
-    }
+    })
 }
