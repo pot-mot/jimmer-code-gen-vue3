@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="T">
 import ObjectDiffView from "@/components/diff/ObjectDiffView.vue";
 import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
+import type {ArrayDiff} from "@potmot/diff/dist/type/DiffItem.d.ts";
 
 defineProps<{
     diff: ArrayDiff<T>,

@@ -10,24 +10,23 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "type-check": "vue-tsc --build --force",
-
     "api": "tsx scripts/api/generateApi.ts",
-
     "type-gen": "tsx scripts/precompile/generateTypes.ts && vue-tsc --build --force",
     "default-script-gen": "tsx scripts/backend/generateDefaultScript.ts",
     "default-type-mapping-gen": "tsx scripts/backend/generateDefaultTypeMapping.ts"
   },
   "dependencies": {
+    "@potmot/diff": "^0.0.0",
     "@progress/jszip-esm": "^1.0.4",
     "@typescript/vfs": "^1.6.1",
     "@vue-flow/core": "^1.46.5",
     "@vue-flow/node-toolbar": "^1.1.1",
-    "ajv": "^8.17.1",
+    "ajv": "^8.18.0",
     "clipboard-polyfill": "^4.1.1",
     "file-saver": "^2.0.5",
     "html-to-image": "1.11.11",
     "json5": "^2.2.3",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.23",
     "mitt": "^3.0.1",
     "monaco-editor": "^0.45.0",
     "prismjs": "^1.30.0",

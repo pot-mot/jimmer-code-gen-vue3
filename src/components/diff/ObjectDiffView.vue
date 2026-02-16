@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="T extends Record<string, unknown>, U extends Record<string, unknown> = T">
 import ArrayDiffView from "@/components/diff/ArrayDiffView.vue";
 import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
+import type {ObjectDiff} from "@potmot/diff/dist/type/DiffItem.d.ts";
 
 defineProps<{
     diff: ObjectDiff<T, U>,
