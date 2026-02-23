@@ -1,108 +1,117 @@
 <script setup lang="ts">
-import {computed, onMounted, readonly, ref, useTemplateRef, watch} from "vue";
-import {BaseEdge, type EdgeProps, getSmoothStepPath} from "@vue-flow/core";
-import type {ConcreteAssociationEdge} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
-import type {AbstractAssociationEdge} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
-import AutoResizeForeignObject from "@/modelEditor/svg/AutoResizeForeignObject.vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import {computed, onMounted, readonly, ref, useTemplateRef, watch} from 'vue';
+import {BaseEdge, type EdgeProps, getSmoothStepPath} from '@vue-flow/core';
+import type {ConcreteAssociationEdge} from '@/modelEditor/edge/ConcreteAssociationEdge.ts';
+import type {AbstractAssociationEdge} from '@/modelEditor/edge/AbstractAssociationEdge.ts';
+import AutoResizeForeignObject from '@/modelEditor/svg/AutoResizeForeignObject.vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
 
-const {zoom, graphSelection} = useModelEditor()
+const {zoom, graphSelection} = useModelEditor();
 
-const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"] | AbstractAssociationEdge["data"]>>()
-const association = computed(() => props.data.edgedAssociation.association)
-const labelPosition = computed(() => props.data.edgedAssociation.labelPosition)
+const props =
+    defineProps<EdgeProps<ConcreteAssociationEdge['data'] | AbstractAssociationEdge['data']>>();
+const association = computed(() => props.data.edgedAssociation.association);
+const labelPosition = computed(() => props.data.edgedAssociation.labelPosition);
 
 const smoothStepPath = computed(() => {
-    return getSmoothStepPath(props)
-})
+    return getSmoothStepPath(props);
+});
 
 const strokeDasharray = computed(() => {
-    if (association.value.foreignKeyType === "FAKE") {
-        return "5"
+    if (association.value.foreignKeyType === 'FAKE') {
+        return '5';
     } else {
-        return "0"
+        return '0';
     }
-})
+});
 
 // 曲线中点控制 label 位置
-const edgeRef = useTemplateRef<InstanceType<typeof BaseEdge>>("edgeRef")
-const labelPoint = ref<{ x: number; y: number }>({x: 0, y: 0});
+const edgeRef = useTemplateRef<InstanceType<typeof BaseEdge>>('edgeRef');
+const labelPoint = ref<{x: number; y: number}>({x: 0, y: 0});
 
 const getPath = (): SVGPathElement | undefined => {
-    return edgeRef.value?.$el?.nextElementSibling as SVGPathElement | undefined
-}
+    return edgeRef.value?.$el?.nextElementSibling as SVGPathElement | undefined;
+};
 
 // 监听 svg 路径变化
-let pathObserver: MutationObserver | undefined = undefined
+let pathObserver: MutationObserver | undefined = undefined;
 
 // 计算贝塞尔曲线上的点
 const calculateLabelPoint = (path: SVGPathElement) => {
-    const totalLength = path.getTotalLength()
-    if ("percentage" in labelPosition.value) {
-        if (labelPosition.value.from === "source") {
-            labelPoint.value = path.getPointAtLength(totalLength * labelPosition.value.percentage / 100)
+    const totalLength = path.getTotalLength();
+    if ('percentage' in labelPosition.value) {
+        if (labelPosition.value.from === 'source') {
+            labelPoint.value = path.getPointAtLength(
+                (totalLength * labelPosition.value.percentage) / 100,
+            );
         } else {
-            labelPoint.value = path.getPointAtLength(totalLength - totalLength * labelPosition.value.percentage / 100)
+            labelPoint.value = path.getPointAtLength(
+                totalLength - (totalLength * labelPosition.value.percentage) / 100,
+            );
         }
-    } else if ("fixedLength" in labelPosition.value) {
-        if (labelPosition.value.from === "source") {
-            labelPoint.value = path.getPointAtLength(labelPosition.value.fixedLength)
+    } else if ('fixedLength' in labelPosition.value) {
+        if (labelPosition.value.from === 'source') {
+            labelPoint.value = path.getPointAtLength(labelPosition.value.fixedLength);
         } else {
-            labelPoint.value = path.getPointAtLength(totalLength - labelPosition.value.fixedLength)
+            labelPoint.value = path.getPointAtLength(totalLength - labelPosition.value.fixedLength);
         }
     }
-}
+};
 
-watch(() => labelPosition.value, () => {
-    const path = getPath()
-    if (path === undefined) return
-    calculateLabelPoint(path)
-}, {deep: true})
+watch(
+    () => labelPosition.value,
+    () => {
+        const path = getPath();
+        if (path === undefined) return;
+        calculateLabelPoint(path);
+    },
+    {deep: true},
+);
 
 // 同步 edge size position
-const boundingClientRect = ref<DOMRect>()
+const boundingClientRect = ref<DOMRect>();
 
 // 计算 edge 外部尺寸
 const calculateBoundingBox = (path: SVGPathElement) => {
-    boundingClientRect.value = path.getBoundingClientRect()
-}
+    boundingClientRect.value = path.getBoundingClientRect();
+};
 
 onMounted(() => {
-    const path = edgeRef.value?.$el?.nextElementSibling as SVGPathElement | undefined
-    if (path === undefined) return
-    calculateLabelPoint(path)
-    calculateBoundingBox(path)
+    const path = edgeRef.value?.$el?.nextElementSibling as SVGPathElement | undefined;
+    if (path === undefined) return;
+    calculateLabelPoint(path);
+    calculateBoundingBox(path);
     pathObserver = new MutationObserver(() => {
-        calculateLabelPoint(path)
-        calculateBoundingBox(path)
-    })
+        calculateLabelPoint(path);
+        calculateBoundingBox(path);
+    });
     pathObserver.observe(path, {
         attributes: true,
-        attributeFilter: ['d']
-    })
-})
+        attributeFilter: ['d'],
+    });
+});
 
 // 标签
-const labelWidth = ref(0)
-const labelHeight = ref(0)
+const labelWidth = ref(0);
+const labelHeight = ref(0);
 
-const handleLabelResize = (size: { width: number, height: number }) => {
-    labelWidth.value = size.width
-    labelHeight.value = size.height
-}
+const handleLabelResize = (size: {width: number; height: number}) => {
+    labelWidth.value = size.width;
+    labelHeight.value = size.height;
+};
 
 // 工具栏
-const toolBarWidth = ref(0)
-const toolBarHeight = ref(0)
+const toolBarWidth = ref(0);
+const toolBarHeight = ref(0);
 
-const handleToolBarResize = (size: { width: number, height: number }) => {
-    toolBarWidth.value = size.width
-    toolBarHeight.value = size.height
-}
+const handleToolBarResize = (size: {width: number; height: number}) => {
+    toolBarWidth.value = size.width;
+    toolBarHeight.value = size.height;
+};
 
 defineExpose({
-    getPath
-})
+    getPath,
+});
 </script>
 
 <template>
@@ -121,16 +130,16 @@ defineExpose({
             @resize="handleLabelResize"
             :transform="`translate(${labelPoint.x - labelWidth / 2} ${labelPoint.y - labelHeight / 2})`"
         >
-            <slot name="label"/>
+            <slot name="label" />
         </AutoResizeForeignObject>
 
         <AutoResizeForeignObject
             v-if="selected && graphSelection.selectedCount.value < 2"
             @resize="handleToolBarResize"
-            style="z-index: var(--edge-toolbar-z-index);"
+            style="z-index: var(--edge-toolbar-z-index)"
             :transform="`translate(${labelPoint.x - toolBarWidth / (zoom * 2)} ${labelPoint.y - labelHeight / 2 - (toolBarHeight + 10) / zoom}) scale(${1 / zoom})`"
         >
-            <slot name="toolbar"/>
+            <slot name="toolbar" />
         </AutoResizeForeignObject>
     </g>
 </template>
@@ -153,6 +162,8 @@ defineExpose({
     stroke: var(--edge-color) !important;
     stroke-width: var(--edge-width) !important;
     stroke-dasharray: v-bind(strokeDasharray);
-    transition: stroke 0.2s ease, stroke-width 0.2s ease;
+    transition:
+        stroke 0.2s ease,
+        stroke-width 0.2s ease;
 }
 </style>

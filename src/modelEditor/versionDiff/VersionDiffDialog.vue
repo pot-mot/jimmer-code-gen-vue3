@@ -1,41 +1,38 @@
 <script setup lang="ts">
-import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import {useVersionDiffDialog} from "@/modelEditor/versionDiff/useVersionDiffDialog.ts";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {withLoading} from "@/components/loading/loadingApi.ts";
-import VersionSelect from "@/modelEditor/versionDiff/VersionSelect.vue";
-import type {ModelHistoryNoJsonView} from "@/api/__generated/model/static";
-import {ref, watch} from "vue";
-import {translate} from "@/store/i18nStore.ts";
-import ObjectDiffView from "@/components/diff/ObjectDiffView.vue";
+import DragResizeDialog from '@/components/dialog/DragResizeDialog.vue';
+import {useVersionDiffDialog} from '@/modelEditor/versionDiff/useVersionDiffDialog.ts';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import {withLoading} from '@/components/loading/loadingApi.ts';
+import VersionSelect from '@/modelEditor/versionDiff/VersionSelect.vue';
+import type {ModelHistoryNoJsonView} from '@/api/__generated/model/static';
+import {ref, watch} from 'vue';
+import {translate} from '@/store/i18nStore.ts';
+import ObjectDiffView from '@/components/diff/ObjectDiffView.vue';
 
-const {
-    openState,
-    refreshVersions,
-    versions,
-    resetDiff,
-    diff,
-} = useVersionDiffDialog()
+const {openState, refreshVersions, versions, resetDiff, diff} = useVersionDiffDialog();
 
-const {contextData} = useModelEditor()
+const {contextData} = useModelEditor();
 
-const version1 = ref<ModelHistoryNoJsonView | 'current'>('current')
-const version2 = ref<ModelHistoryNoJsonView | 'current'>('current')
+const version1 = ref<ModelHistoryNoJsonView | 'current'>('current');
+const version2 = ref<ModelHistoryNoJsonView | 'current'>('current');
 
 const handleOpen = () => {
-    withLoading("Fetch Versions", async () => {
-        const versions = await refreshVersions(contextData.model.id)
-        const firstVersion = versions[0]
+    withLoading('Fetch Versions', async () => {
+        const versions = await refreshVersions(contextData.model.id);
+        const firstVersion = versions[0];
         if (firstVersion !== undefined) {
-            version1.value = firstVersion
-            await resetDiff(firstVersion, version2.value)
+            version1.value = firstVersion;
+            await resetDiff(firstVersion, version2.value);
         }
-    })
-}
+    });
+};
 
-watch(() => [version1.value, version2.value], async () => {
-    await resetDiff(version1.value, version2.value)
-})
+watch(
+    () => [version1.value, version2.value],
+    async () => {
+        await resetDiff(version1.value, version2.value);
+    },
+);
 </script>
 
 <template>
@@ -47,7 +44,7 @@ watch(() => [version1.value, version2.value], async () => {
         :init-w="700"
     >
         <template #title>
-            {{ translate("history_version") }}
+            {{ translate('history_version') }}
         </template>
 
         <div class="version-diff-container">
@@ -62,14 +59,24 @@ watch(() => [version1.value, version2.value], async () => {
                 />
             </div>
 
-            <div class="diff-view" v-if="diff">
-                <ObjectDiffView v-if="diff.model && diff.model.type !== 'circular reference'" :diff="diff.model"/>
-                <ObjectDiffView v-if="diff.subData && diff.subData.type !== 'circular reference'" :diff="diff.subData"/>
-                <ObjectDiffView v-if="diff.viewport && diff.viewport.type !== 'circular reference'" :diff="diff.viewport"/>
+            <div
+                class="diff-view"
+                v-if="diff"
+            >
+                <ObjectDiffView
+                    v-if="diff.model && diff.model.type !== 'circular reference'"
+                    :diff="diff.model"
+                />
+                <ObjectDiffView
+                    v-if="diff.subData && diff.subData.type !== 'circular reference'"
+                    :diff="diff.subData"
+                />
+                <ObjectDiffView
+                    v-if="diff.viewport && diff.viewport.type !== 'circular reference'"
+                    :diff="diff.viewport"
+                />
             </div>
-            <div v-else>
-                No version selected
-            </div>
+            <div v-else>No version selected</div>
         </div>
     </DragResizeDialog>
 </template>

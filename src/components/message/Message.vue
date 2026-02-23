@@ -1,108 +1,110 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import IconClose from "@/components/icons/IconClose.vue";
+import {ref} from 'vue';
+import IconClose from '@/components/icons/IconClose.vue';
 import {
     type MessageContent,
     type MessageItem,
     messageOpenDefaultOptions,
     type MessageOpenOptions,
-} from "@/components/message/MessageItem.ts";
+} from '@/components/message/MessageItem.ts';
 
-const props = withDefaults(defineProps<{
-    timeout?: number,
-    enterDuration?: number,
-    leaveDuration?: number,
-}>(), {
-    timeout: 3000,
-    enterDuration: 500,
-    leaveDuration: 1000,
-})
+const props = withDefaults(
+    defineProps<{
+        timeout?: number;
+        enterDuration?: number;
+        leaveDuration?: number;
+    }>(),
+    {
+        timeout: 3000,
+        enterDuration: 500,
+        leaveDuration: 1000,
+    },
+);
 
 const emits = defineEmits<{
-    (event: "close", index: number): void,
-    (event: "closeAll"): void
-}>()
+    (event: 'close', index: number): void;
+    (event: 'closeAll'): void;
+}>();
 
-let messageItemIdIncrement = 0
+let messageItemIdIncrement = 0;
 
-const messageItems = ref<MessageItem[]>([])
+const messageItems = ref<MessageItem[]>([]);
 
 const setMessageItemTimeout = (messageItem: MessageItem) => {
     if (messageItem.timeout !== undefined) {
-        clearTimeout(messageItem.timeout)
+        clearTimeout(messageItem.timeout);
     }
 
     messageItem.timeout = window.setTimeout(() => {
-        const index = messageItems.value.findIndex(it => it.id === messageItem.id)
-        if (index === -1) return
-        messageItems.value.splice(index, 1)
+        const index = messageItems.value.findIndex((it) => it.id === messageItem.id);
+        if (index === -1) return;
+        messageItems.value.splice(index, 1);
         window.setTimeout(() => {
-            emits("close", index)
-        }, props.leaveDuration)
-    }, props.timeout + props.enterDuration)
-}
+            emits('close', index);
+        }, props.leaveDuration);
+    }, props.timeout + props.enterDuration);
+};
 
-const open = (
-    content: MessageContent,
-    options?: Partial<MessageOpenOptions>
-) => {
-    const {
-        type,
-        canClose,
-        grouping,
-    } = Object.assign({}, messageOpenDefaultOptions, options)
+const open = (content: MessageContent, options?: Partial<MessageOpenOptions>) => {
+    const {type, canClose, grouping} = Object.assign({}, messageOpenDefaultOptions, options);
 
     if (grouping) {
-        const existingItem = messageItems.value.find(item => {
+        const existingItem = messageItems.value.find((item) => {
             if (typeof content === 'string' && typeof item.content === 'string') {
-                return content === item.content
+                return content === item.content;
             }
-            return false
-        })
+            return false;
+        });
 
         if (existingItem) {
-            existingItem.repeatCount++
-            setMessageItemTimeout(existingItem)
-            return
+            existingItem.repeatCount++;
+            setMessageItemTimeout(existingItem);
+            return;
         }
     }
 
-    const messageItem: MessageItem = {id: ++messageItemIdIncrement, content, type, canClose, repeatCount: 1}
-    setMessageItemTimeout(messageItem)
-    messageItems.value.push(messageItem)
-}
+    const messageItem: MessageItem = {
+        id: ++messageItemIdIncrement,
+        content,
+        type,
+        canClose,
+        repeatCount: 1,
+    };
+    setMessageItemTimeout(messageItem);
+    messageItems.value.push(messageItem);
+};
 
 const handleMouseEnter = (messageItem: MessageItem) => {
-    clearTimeout(messageItem.timeout)
-}
+    clearTimeout(messageItem.timeout);
+};
 
 const handleMouseLeave = (messageItem: MessageItem) => {
-    setMessageItemTimeout(messageItem)
-}
+    setMessageItemTimeout(messageItem);
+};
 
 const close = (index: number) => {
-    const removedMessages = messageItems.value.splice(index, 1)
+    const removedMessages = messageItems.value.splice(index, 1);
     for (const message of removedMessages) {
-        clearTimeout(message.timeout)
+        clearTimeout(message.timeout);
     }
     window.setTimeout(() => {
-        emits("close", index)
-    }, props.leaveDuration)
-}
+        emits('close', index);
+    }, props.leaveDuration);
+};
 
 const handleAfterLeave = () => {
     if (messageItems.value.length === 0) {
         window.setTimeout(() => {
             if (messageItems.value.length === 0) {
-                emits("closeAll")
+                emits('closeAll');
             }
-        }, props.leaveDuration)
+        }, props.leaveDuration);
     }
-}
+};
 
 defineExpose({
-    open
-})
+    open,
+});
 </script>
 
 <template>
@@ -110,7 +112,7 @@ defineExpose({
         <TransitionGroup
             tag="div"
             name="messages"
-            style="position: relative;"
+            style="position: relative"
             :duration="{enter: enterDuration, leave: leaveDuration}"
             @after-leave="handleAfterLeave"
         >
@@ -120,19 +122,30 @@ defineExpose({
                 class="message-wrapper"
             >
                 <div
-                    class="message" :class="item.type"
+                    class="message"
+                    :class="item.type"
                     @mouseenter="handleMouseEnter(item)"
                     @mouseleave="handleMouseLeave(item)"
                 >
                     <div class="message-content">
-                        <Component v-if="typeof item.content !== 'string'" :is="item.content"/>
+                        <Component
+                            v-if="typeof item.content !== 'string'"
+                            :is="item.content"
+                        />
                         <div v-else>{{ item.content }}</div>
                     </div>
 
-                    <div v-if="item.canClose" class="close-icon" @click="close(index)">
-                        <IconClose/>
+                    <div
+                        v-if="item.canClose"
+                        class="close-icon"
+                        @click="close(index)"
+                    >
+                        <IconClose />
                     </div>
-                    <div v-if="item.repeatCount > 1" class="repeat-count">
+                    <div
+                        v-if="item.repeatCount > 1"
+                        class="repeat-count"
+                    >
                         {{ item.repeatCount }}
                     </div>
                 </div>
@@ -245,12 +258,16 @@ defineExpose({
 }
 
 .messages-enter-active {
-    transition: opacity v-bind(enterDuration+ 'ms') ease, transform v-bind(enterDuration+ 'ms') ease;
+    transition:
+        opacity v-bind(enterDuration + 'ms') ease,
+        transform v-bind(enterDuration + 'ms') ease;
 }
 
 .messages-move,
 .messages-leave-active {
-    transition: opacity v-bind(leaveDuration+ 'ms') ease, transform v-bind(enterDuration+ 'ms') linear;
+    transition:
+        opacity v-bind(leaveDuration + 'ms') ease,
+        transform v-bind(enterDuration + 'ms') linear;
     pointer-events: none;
 }
 

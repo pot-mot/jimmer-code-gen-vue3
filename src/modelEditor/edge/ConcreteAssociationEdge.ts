@@ -1,12 +1,12 @@
-import type {GraphEdge} from "@vue-flow/core";
+import type {GraphEdge} from '@vue-flow/core';
 
-export const EdgeType_ConcreteAssociation = "CONCRETE_ASSOCIATION" as const
+export const EdgeType_ConcreteAssociation = 'CONCRETE_ASSOCIATION' as const;
 
 export type ConcreteAssociationEdge = Pick<GraphEdge, 'id' | 'source' | 'target'> & {
-    type: typeof EdgeType_ConcreteAssociation
+    type: typeof EdgeType_ConcreteAssociation;
     data: {
-        edgedAssociation: ConcreteEdgedAssociation
-    },
-    sourceHandle: string,
-    targetHandle: string,
-}
+        edgedAssociation: ConcreteEdgedAssociation;
+    };
+    sourceHandle: string;
+    targetHandle: string;
+};

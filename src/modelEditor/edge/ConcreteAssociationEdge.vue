@@ -1,25 +1,28 @@
 <script setup lang="ts">
-import AssociationEdge from "@/modelEditor/edge/AssociationEdge.vue";
-import {type EdgeProps} from "@vue-flow/core";
-import type {ConcreteAssociationEdge} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
-import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
-import {computed, useTemplateRef} from "vue";
-import LabelPositionEditor from "@/modelEditor/edge/tool/LabelPositionEditor.vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
-import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
-import NameCommentTemplateEditor from "@/modelEditor/nameComment/NameCommentTemplateEditor.vue";
+import AssociationEdge from '@/modelEditor/edge/AssociationEdge.vue';
+import {type EdgeProps} from '@vue-flow/core';
+import type {ConcreteAssociationEdge} from '@/modelEditor/edge/ConcreteAssociationEdge.ts';
+import EntityIdViewer from '@/modelEditor/viewer/EntityIdViewer.vue';
+import {computed, useTemplateRef} from 'vue';
+import LabelPositionEditor from '@/modelEditor/edge/tool/LabelPositionEditor.vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import DiagnoseViewer from '@/modelEditor/diagnostic/DiagnoseViewer.vue';
+import {associationElementId, mappedPropertyElementId} from '@/modelEditor/edge/edgeElementId.ts';
+import NameCommentTemplateEditor from '@/modelEditor/nameComment/NameCommentTemplateEditor.vue';
 
-const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
+const props = defineProps<EdgeProps<ConcreteAssociationEdge['data']>>();
 
-const {modelDiagnoseInfo, edgeToFront} = useModelEditor()
+const {modelDiagnoseInfo, edgeToFront} = useModelEditor();
 
-const associationEdgeRef = useTemplateRef("associationEdgeRef")
+const associationEdgeRef = useTemplateRef('associationEdgeRef');
 const getPath = computed(() => {
-    return associationEdgeRef.value?.getPath ?? (() => {
-        return undefined
-    })
-})
+    return (
+        associationEdgeRef.value?.getPath ??
+        (() => {
+            return undefined;
+        })
+    );
+});
 </script>
 
 <template>
@@ -63,20 +66,26 @@ const getPath = computed(() => {
                             hide-comment
                             ctrl-focus
                         />
-                        <span style="padding: 0 0.1rem;">.</span>
+                        <span style="padding: 0 0.1rem">.</span>
                         <NameCommentTemplateEditor
                             v-model="data.edgedAssociation.association.mappedProperty"
                             class="with-border-bg"
                             :font-size="12"
                         />
-                        <span style="padding-right: 0.25rem;">:</span>
-                        <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
+                        <span style="padding-right: 0.25rem">:</span>
+                        <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList"
+                            >List<</span
+                        >
                         <EntityIdViewer
-                            :id="data.edgedAssociation.association.mappedProperty.referencedEntityId"
+                            :id="
+                                data.edgedAssociation.association.mappedProperty.referencedEntityId
+                            "
                             hide-comment
                             ctrl-focus
                         />
-                        <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
+                        <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList"
+                            >></span
+                        >
                     </div>
                     <div class="flex-center">
                         <DiagnoseViewer
@@ -88,7 +97,10 @@ const getPath = computed(() => {
         </template>
 
         <template #toolbar>
-            <LabelPositionEditor v-model="data.edgedAssociation.labelPosition" :get-path="getPath"/>
+            <LabelPositionEditor
+                v-model="data.edgedAssociation.labelPosition"
+                :get-path="getPath"
+            />
         </template>
     </AssociationEdge>
 </template>

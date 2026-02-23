@@ -1,102 +1,110 @@
 <script setup lang="ts">
-import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
-import {computed, nextTick, onMounted, ref, useTemplateRef} from "vue";
-import {useClickOutside} from "@/components/list/selectableList/useClickOutside.ts";
+import FitSizeLineInput from '@/components/input/FitSizeLineInput.vue';
+import {computed, nextTick, onMounted, ref, useTemplateRef} from 'vue';
+import {useClickOutside} from '@/components/list/selectableList/useClickOutside.ts';
 
 const model = defineModel<{
-    name: string
-    comment: string
+    name: string;
+    comment: string;
 }>({
-    required: true
-})
+    required: true,
+});
 
-const props = withDefaults(defineProps<{
-    autoFocus?: boolean
-    fontSize?: number
-    blurDelay?: number
-}>(), {
-    fontSize: 16,
-    blurDelay: 200
-})
+const props = withDefaults(
+    defineProps<{
+        autoFocus?: boolean;
+        fontSize?: number;
+        blurDelay?: number;
+    }>(),
+    {
+        fontSize: 16,
+        blurDelay: 200,
+    },
+);
 
 const emits = defineEmits<{
-    (event: "change"): void
-    (event: "blur"): void
-}>()
+    (event: 'change'): void;
+    (event: 'blur'): void;
+}>();
 
-const editorRef = useTemplateRef("editorRef")
-const nameInput = useTemplateRef("nameInput")
-const commentInput = useTemplateRef("commentInput")
-const nameSpan = useTemplateRef("nameSpan")
-const commentSpan = useTemplateRef("commentSpan")
+const editorRef = useTemplateRef('editorRef');
+const nameInput = useTemplateRef('nameInput');
+const commentInput = useTemplateRef('commentInput');
+const nameSpan = useTemplateRef('nameSpan');
+const commentSpan = useTemplateRef('commentSpan');
 
-const editorFocused = ref(false)
-const nameFocused = ref(false)
-const commentFocused = ref(false)
+const editorFocused = ref(false);
+const nameFocused = ref(false);
+const commentFocused = ref(false);
 
-useClickOutside(() => editorRef.value, () => {
-    editorFocused.value = false
-    nameFocused.value = false
-    commentFocused.value = false
-})
+useClickOutside(
+    () => editorRef.value,
+    () => {
+        editorFocused.value = false;
+        nameFocused.value = false;
+        commentFocused.value = false;
+    },
+);
 
 const focusNameInput = () => {
-    editorFocused.value = true
-    nameFocused.value = true
-    commentFocused.value = false
+    editorFocused.value = true;
+    nameFocused.value = true;
+    commentFocused.value = false;
     nextTick(() => {
-        nameInput.value?.$el.focus()
-    })
-}
+        nameInput.value?.$el.focus();
+    });
+};
 const focusCommentInput = () => {
-    editorFocused.value = true
-    nameFocused.value = false
-    commentFocused.value = true
+    editorFocused.value = true;
+    nameFocused.value = false;
+    commentFocused.value = true;
     nextTick(() => {
-        commentInput.value?.$el.focus()
-    })
-}
+        commentInput.value?.$el.focus();
+    });
+};
 
 const handleNameFocus = () => {
-    editorFocused.value = true
-    nameFocused.value = true
-}
+    editorFocused.value = true;
+    nameFocused.value = true;
+};
 const handleNameBlur = () => {
     window.setTimeout(() => {
-        nameFocused.value = false
+        nameFocused.value = false;
         if (!commentFocused.value) {
-            editorFocused.value = false
-            emits("blur")
+            editorFocused.value = false;
+            emits('blur');
         }
-    }, props.blurDelay)
-}
+    }, props.blurDelay);
+};
 const handleCommentFocus = () => {
-    editorFocused.value = true
-    commentFocused.value = true
-}
+    editorFocused.value = true;
+    commentFocused.value = true;
+};
 const handleCommentBlur = () => {
     window.setTimeout(() => {
-        commentFocused.value = false
+        commentFocused.value = false;
         if (!nameFocused.value) {
-            editorFocused.value = false
-            emits("blur")
+            editorFocused.value = false;
+            emits('blur');
         }
-    }, props.blurDelay)
-}
+    }, props.blurDelay);
+};
 
 onMounted(async () => {
     if (props.autoFocus) {
-        await nextTick()
-        focusNameInput()
+        await nextTick();
+        focusNameInput();
     }
-})
+});
 
-const showComment = computed(() => model.value.comment.length > 0 || nameFocused.value || commentFocused.value)
+const showComment = computed(
+    () => model.value.comment.length > 0 || nameFocused.value || commentFocused.value,
+);
 
 const handleDoubleClick = (event: MouseEvent) => {
     if (editorFocused.value || nameFocused.value || commentFocused.value) {
-        event.stopPropagation()
-        return
+        event.stopPropagation();
+        return;
     }
 
     // 判断点击位置是否在name区域
@@ -111,14 +119,14 @@ const handleDoubleClick = (event: MouseEvent) => {
     else {
         focusNameInput();
     }
-}
+};
 
 const handleSpanClick = (event: MouseEvent) => {
     if (editorFocused.value || nameFocused.value || commentFocused.value) {
-        event.stopPropagation()
-        return
+        event.stopPropagation();
+        return;
     }
-}
+};
 </script>
 
 <template>
@@ -161,17 +169,17 @@ const handleSpanClick = (event: MouseEvent) => {
             @click="handleSpanClick"
         >
             [<FitSizeLineInput
-            ref="commentInput"
-            class="no-drag"
-            :class="{untouchable: !editorFocused && !commentFocused}"
-            :padding="{top: 4, bottom: 4, left: 0, right: 0}"
-            :line-height="fontSize"
-            :font-size="fontSize"
-            v-model="model.comment"
-            @change="emits('change')"
-            @focus="handleCommentFocus"
-            @blur="handleCommentBlur"
-        />]
+                ref="commentInput"
+                class="no-drag"
+                :class="{untouchable: !editorFocused && !commentFocused}"
+                :padding="{top: 4, bottom: 4, left: 0, right: 0}"
+                :line-height="fontSize"
+                :font-size="fontSize"
+                v-model="model.comment"
+                @change="emits('change')"
+                @focus="handleCommentFocus"
+                @blur="handleCommentBlur"
+            />]
         </span>
     </span>
 </template>

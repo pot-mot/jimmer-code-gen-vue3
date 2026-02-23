@@ -1,79 +1,82 @@
 <script setup lang="ts" generic="T">
-import {computed, inject, onBeforeMount, onUnmounted} from 'vue'
-import type {TreeNode} from "@/components/tree/TreeNode.ts";
-import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
-import {SelectableTreeInjectKey} from "@/components/tree/SelectableTreeInjectKey.ts";
+import {computed, inject, onBeforeMount, onUnmounted} from 'vue';
+import type {TreeNode} from '@/components/tree/TreeNode.ts';
+import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
+import {SelectableTreeInjectKey} from '@/components/tree/SelectableTreeInjectKey.ts';
 
 const props = defineProps<{
-    node: TreeNode<T>
-    level: number
-}>()
+    node: TreeNode<T>;
+    level: number;
+}>();
 
-const treeSelect = inject(SelectableTreeInjectKey)!
+const treeSelect = inject(SelectableTreeInjectKey)!;
 
 onBeforeMount(() => {
     if (treeSelect.defaultOpen) {
-        treeSelect.openedIdSet.value.add(props.node.id)
+        treeSelect.openedIdSet.value.add(props.node.id);
     }
-})
+});
 
 onUnmounted(() => {
-    treeSelect.openedIdSet.value.delete(props.node.id)
-})
+    treeSelect.openedIdSet.value.delete(props.node.id);
+});
 
 const isOpen = computed({
     get: (): boolean => {
-        return treeSelect.openedIdSet.value.has(props.node.id)
+        return treeSelect.openedIdSet.value.has(props.node.id);
     },
     set: (value: boolean) => {
         if (value) {
-            treeSelect.openedIdSet.value.add(props.node.id)
+            treeSelect.openedIdSet.value.add(props.node.id);
         } else {
-            treeSelect.openedIdSet.value.delete(props.node.id)
+            treeSelect.openedIdSet.value.delete(props.node.id);
         }
-    }
-})
+    },
+});
 
 const levelPadding = computed(() => {
-    return `calc(${props.level} * ${treeSelect.levelPadding})`
-})
+    return `calc(${props.level} * ${treeSelect.levelPadding})`;
+});
 
 const hasChildren = computed(() => {
-    return props.node.children && props.node.children.length > 0
-})
+    return props.node.children && props.node.children.length > 0;
+});
 
 // 计算是否选中
 const isSelected = computed(() => {
-    return treeSelect.selectedIdSet.value.has(props.node.id)
-})
+    return treeSelect.selectedIdSet.value.has(props.node.id);
+});
 
 // 计算是否禁用
 const isDisabled = computed(() => {
-    return treeSelect.isDisabled ?? props.node.disabled ?? false
-})
+    return treeSelect.isDisabled ?? props.node.disabled ?? false;
+});
 
 // 点击处理
 const handleClick = (event: MouseEvent) => {
-    treeSelect.handleItemClick(props.node.id, event)
-    if (isDisabled.value) return
-    treeSelect.toggleSelection(props.node.id, event)
-}
+    treeSelect.handleItemClick(props.node.id, event);
+    if (isDisabled.value) return;
+    treeSelect.toggleSelection(props.node.id, event);
+};
 
 const handleDoubleClick = (event: MouseEvent) => {
-    treeSelect.handleItemDoubleClick(props.node.id, event)
-}
+    treeSelect.handleItemDoubleClick(props.node.id, event);
+};
 
 const handleContextMenu = (event: MouseEvent) => {
-    treeSelect.handleItemContextMenu(props.node.id, event)
-}
+    treeSelect.handleItemContextMenu(props.node.id, event);
+};
 
 defineSlots<{
-    default(props: { data: T, node: TreeNode<T>, selected: boolean, disabled: boolean }): any
-}>()
+    default(props: {data: T; node: TreeNode<T>; selected: boolean; disabled: boolean}): any;
+}>();
 </script>
 
 <template>
-    <div class="tree-select-item" :class="{ selected: isSelected, disabled: isDisabled }">
+    <div
+        class="tree-select-item"
+        :class="{selected: isSelected, disabled: isDisabled}"
+    >
         <CollapseDetail
             v-model="isOpen"
             trigger-position="left"
@@ -84,7 +87,12 @@ defineSlots<{
         >
             <template #head>
                 <div class="tree-node">
-                    <slot :data="node.data" :node="node" :selected="isSelected" :disabled="isDisabled"/>
+                    <slot
+                        :data="node.data"
+                        :node="node"
+                        :selected="isSelected"
+                        :disabled="isDisabled"
+                    />
                 </div>
             </template>
             <template #body>
@@ -96,7 +104,12 @@ defineSlots<{
                         :level="level + 1"
                     >
                         <template #default="{data, node, selected, disabled}">
-                            <slot :data="data" :node="node" :selected="selected" :disabled="disabled"/>
+                            <slot
+                                :data="data"
+                                :node="node"
+                                :selected="selected"
+                                :disabled="disabled"
+                            />
                         </template>
                     </SelectableTreeItem>
                 </div>

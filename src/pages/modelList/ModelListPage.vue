@@ -1,215 +1,282 @@
 <script setup lang="ts">
-import {api} from "@/api";
-import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import {onBeforeUnmount, onMounted, ref} from "vue";
+import {api} from '@/api';
+import DragResizeDialog from '@/components/dialog/DragResizeDialog.vue';
+import {onBeforeUnmount, onMounted, ref} from 'vue';
 import type {
     ModelInsertInput,
     ModelNoJsonView,
     ModelSpec,
-    ModelUpdateInput
-} from "@/api/__generated/model/static";
-import {withLoading} from "@/components/loading/loadingApi.ts";
-import IconAdd from "@/components/icons/IconAdd.vue";
-import IconEdit from "@/components/icons/IconEdit.vue";
-import IconDelete from "@/components/icons/IconDelete.vue";
-import {formatDateTime} from "@/utils/datetime/timeFormat.ts";
-import {useRouter} from "vue-router";
-import JvmLanguageView from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue";
-import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
-import {sendConfirm} from "@/components/confirm/confirmApi.ts";
-import {translate} from "@/store/i18nStore.ts";
-import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
-import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
-import DatabaseDialog from "@/modelEditor/database/DatabaseDialog.vue";
-import TypeMappingDialog from "@/modelEditor/typeMapping/TypeMappingDialog.vue";
-import IconDatabase from "@/components/icons/IconDatabase.vue";
-import IconCode from "@/components/icons/IconCode.vue";
-import DatabaseTypeNullableSelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeNullableSelect.vue";
-import JvmLanguageNullableSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageNullableSelect.vue";
-import IconCaretDown from "@/components/icons/IconCaretDown.vue";
-import type {ModelOrder} from "@/api/__generated/model/enums";
-import {sendMessage} from "@/components/message/messageApi.ts";
-import ScriptDialog from "@/modelEditor/script/ScriptDialog.vue";
-import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
-import IconLoad from "@/components/icons/IconLoad.vue";
-import {readJson} from "@/utils/file/jsonRead.ts";
-import {validatePartialModelGraphData} from "@/type/context/jsonSchema/PartialModelGraphData.ts";
-import {fillModelGraphSubData} from "@/modelEditor/utils/ModelGraphSubData.ts";
-import IconDownload from "@/components/icons/IconDownload.vue";
-import {downloadJson} from "@/utils/file/jsonDownload.ts";
-import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
-import ModelEditForm from "@/modelEditor/modelForm/ModelEditForm.vue";
+    ModelUpdateInput,
+} from '@/api/__generated/model/static';
+import {withLoading} from '@/components/loading/loadingApi.ts';
+import IconAdd from '@/components/icons/IconAdd.vue';
+import IconEdit from '@/components/icons/IconEdit.vue';
+import IconDelete from '@/components/icons/IconDelete.vue';
+import {formatDateTime} from '@/utils/datetime/timeFormat.ts';
+import {useRouter} from 'vue-router';
+import JvmLanguageView from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue';
+import DatabaseTypeView from '@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue';
+import {sendConfirm} from '@/components/confirm/confirmApi.ts';
+import {translate} from '@/store/i18nStore.ts';
+import {useDatabaseDialog} from '@/modelEditor/database/useDatabaseDialog.ts';
+import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
+import DatabaseDialog from '@/modelEditor/database/DatabaseDialog.vue';
+import TypeMappingDialog from '@/modelEditor/typeMapping/TypeMappingDialog.vue';
+import IconDatabase from '@/components/icons/IconDatabase.vue';
+import IconCode from '@/components/icons/IconCode.vue';
+import DatabaseTypeNullableSelect from '@/modelEditor/modelForm/databaseType/DatabaseTypeNullableSelect.vue';
+import JvmLanguageNullableSelect from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageNullableSelect.vue';
+import IconCaretDown from '@/components/icons/IconCaretDown.vue';
+import type {ModelOrder} from '@/api/__generated/model/enums';
+import {sendMessage} from '@/components/message/messageApi.ts';
+import ScriptDialog from '@/modelEditor/script/ScriptDialog.vue';
+import {useScriptDialog} from '@/modelEditor/script/useScriptDialog.ts';
+import IconLoad from '@/components/icons/IconLoad.vue';
+import {readJson} from '@/utils/file/jsonRead.ts';
+import {validatePartialModelGraphData} from '@/type/context/jsonSchema/PartialModelGraphData.ts';
+import {fillModelGraphSubData} from '@/modelEditor/utils/ModelGraphSubData.ts';
+import IconDownload from '@/components/icons/IconDownload.vue';
+import {downloadJson} from '@/utils/file/jsonDownload.ts';
+import {validatePartialModelGraphSubData} from '@/type/context/jsonSchema/PartialModelGraphSubData.ts';
+import ModelEditForm from '@/modelEditor/modelForm/ModelEditForm.vue';
 
-const modelList = ref<ModelNoJsonView[]>([])
-const modelQuerySpec = ref<ModelSpec>({})
-const modelOrder = ref<ModelOrder>("CREATE_TIME_ASC")
+const modelList = ref<ModelNoJsonView[]>([]);
+const modelQuerySpec = ref<ModelSpec>({});
+const modelOrder = ref<ModelOrder>('CREATE_TIME_ASC');
 
 const loadModelList = async () => {
-    await withLoading("list model", async () => {
+    await withLoading('list model', async () => {
         modelList.value = await api.modelService.list({
             body: modelQuerySpec.value,
             modelOrder: modelOrder.value,
-        })
-    })
-}
+        });
+    });
+};
 
 onMounted(async () => {
-    await loadModelList()
-})
+    await loadModelList();
+});
 
-const router = useRouter()
+const router = useRouter();
 
 const toModelEditor = (modelId: string) => {
-    router.push({name: 'ModelEditor', params: {id: modelId}})
-}
+    router.push({name: 'ModelEditor', params: {id: modelId}});
+};
 
 const defaultModelInsertInput = (): ModelInsertInput => ({
-    name: "",
-    description: "",
-    databaseType: "POSTGRESQL",
-    databaseNameStrategy: "LOWER_SNAKE",
-    defaultForeignKeyType: "REAL",
-    jvmLanguage: "KOTLIN",
-    defaultEnumerationStrategy: "NAME",
+    name: '',
+    description: '',
+    databaseType: 'POSTGRESQL',
+    databaseNameStrategy: 'LOWER_SNAKE',
+    defaultForeignKeyType: 'REAL',
+    jvmLanguage: 'KOTLIN',
+    defaultEnumerationStrategy: 'NAME',
     viewport: {
         x: 0,
         y: 0,
         zoom: 1,
     },
-    jsonData: "{}"
-})
+    jsonData: '{}',
+});
 
-const modelInsertVisible = ref(false)
-const modelInsertInput = ref<ModelInsertInput>()
+const modelInsertVisible = ref(false);
+const modelInsertInput = ref<ModelInsertInput>();
 
 const startModelInsert = () => {
-    modelInsertInput.value = defaultModelInsertInput()
-    modelInsertVisible.value = true
-}
+    modelInsertInput.value = defaultModelInsertInput();
+    modelInsertVisible.value = true;
+};
 
 const stopModelInsert = () => {
-    modelInsertVisible.value = false
-}
+    modelInsertVisible.value = false;
+};
 
 const submitModelInsert = async (model: ModelInsertInput) => {
     try {
-        await withLoading("insert model", async () => {
-            const result = await api.modelService.insert({body: model})
-            modelInsertVisible.value = false
-            sendMessage(translate({key: "insert_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
-            toModelEditor(result.id)
-        })
+        await withLoading('insert model', async () => {
+            const result = await api.modelService.insert({body: model});
+            modelInsertVisible.value = false;
+            sendMessage(
+                translate({key: 'insert_success', args: [`${translate('model')}[${model.name}]`]}),
+                {type: 'success'},
+            );
+            toModelEditor(result.id);
+        });
     } catch (e) {
-        sendMessage(translate({key: "insert_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+        sendMessage(
+            translate({key: 'insert_fail', args: [`${translate('model')}[${model.name}]`]}),
+            {type: 'warning'},
+        );
     }
-}
+};
 
 const loadModel = async () => {
-    const modelGraphData = await readJson(validatePartialModelGraphData)
+    const modelGraphData = await readJson(validatePartialModelGraphData);
     if (modelGraphData !== undefined) {
         try {
-            await withLoading("load model", async () => {
-                const {id, ...model} = modelGraphData.data.model
-                const result = await api.modelService.insert({body: {
-                    ...model,
-                    viewport: modelGraphData.data.viewport,
-                    jsonData: JSON.stringify(fillModelGraphSubData(modelGraphData.data.subData)),
-                }})
-                sendMessage(translate({key: "insert_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
-                toModelEditor(result.id)
-            })
+            await withLoading('load model', async () => {
+                const {id, ...model} = modelGraphData.data.model;
+                const result = await api.modelService.insert({
+                    body: {
+                        ...model,
+                        viewport: modelGraphData.data.viewport,
+                        jsonData: JSON.stringify(
+                            fillModelGraphSubData(modelGraphData.data.subData),
+                        ),
+                    },
+                });
+                sendMessage(
+                    translate({
+                        key: 'insert_success',
+                        args: [`${translate('model')}[${model.name}]`],
+                    }),
+                    {type: 'success'},
+                );
+                toModelEditor(result.id);
+            });
         } catch (e) {
-            sendMessage(translate({key: "insert_fail", args: [`${translate("model")}[${modelGraphData.name}]`]}), {type: "warning"})
+            sendMessage(
+                translate({
+                    key: 'insert_fail',
+                    args: [`${translate('model')}[${modelGraphData.name}]`],
+                }),
+                {type: 'warning'},
+            );
         }
     }
-}
+};
 
-const modelUpdateVisible = ref(false)
-const modelUpdateInput = ref<ModelUpdateInput>()
+const modelUpdateVisible = ref(false);
+const modelUpdateInput = ref<ModelUpdateInput>();
 
 const startModelUpdate = async (modelId: string) => {
     try {
-        await withLoading("get model", async () => {
-            modelUpdateInput.value = await api.modelService.get({modelId})
-            modelUpdateVisible.value = true
-        })
+        await withLoading('get model', async () => {
+            modelUpdateInput.value = await api.modelService.get({modelId});
+            modelUpdateVisible.value = true;
+        });
     } catch (e) {
-        sendMessage(translate({key: "get_fail", args: [translate("model")]}), {type: "warning"})
+        sendMessage(translate({key: 'get_fail', args: [translate('model')]}), {type: 'warning'});
     }
-}
+};
 
 const stopModelUpdate = () => {
-    modelUpdateVisible.value = false
-}
+    modelUpdateVisible.value = false;
+};
 
 const submitModelUpdate = async (model: ModelUpdateInput) => {
     try {
-        await withLoading("update model", async () => {
-            await api.modelService.update({body: model})
-            await loadModelList()
-            modelUpdateVisible.value = false
-            sendMessage(translate({key: "update_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
-        })
+        await withLoading('update model', async () => {
+            await api.modelService.update({body: model});
+            await loadModelList();
+            modelUpdateVisible.value = false;
+            sendMessage(
+                translate({key: 'update_success', args: [`${translate('model')}[${model.name}]`]}),
+                {type: 'success'},
+            );
+        });
     } catch (e) {
-        sendMessage(translate({key: "update_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+        sendMessage(
+            translate({key: 'update_fail', args: [`${translate('model')}[${model.name}]`]}),
+            {type: 'warning'},
+        );
     }
-}
+};
 
 const deleteModel = async (model: Model) => {
     sendConfirm({
-        title: translate({key: "delete_confirm_title", args: [translate("model")]}),
-        content: translate({key: "delete_confirm_content", args: [`${translate("model")}[${model.name}]`]}),
+        title: translate({key: 'delete_confirm_title', args: [translate('model')]}),
+        content: translate({
+            key: 'delete_confirm_content',
+            args: [`${translate('model')}[${model.name}]`],
+        }),
         onConfirm: async () => {
             try {
-                await withLoading("delete model", async () => {
-                    await api.modelService.delete({modelId: model.id})
-                    modelList.value = modelList.value.filter(it => model.id !== it.id)
-                    sendMessage(translate({key: "delete_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
-                })
+                await withLoading('delete model', async () => {
+                    await api.modelService.delete({modelId: model.id});
+                    modelList.value = modelList.value.filter((it) => model.id !== it.id);
+                    sendMessage(
+                        translate({
+                            key: 'delete_success',
+                            args: [`${translate('model')}[${model.name}]`],
+                        }),
+                        {type: 'success'},
+                    );
+                });
             } catch (e) {
-                sendMessage(translate({key: "delete_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+                sendMessage(
+                    translate({key: 'delete_fail', args: [`${translate('model')}[${model.name}]`]}),
+                    {type: 'warning'},
+                );
             }
-        }
-    })
-}
+        },
+    });
+};
 
 const exportModelJson = async (model: ModelNoJsonView) => {
     try {
-        await withLoading("export model", async () => {
-            const result = await api.modelService.get({modelId: model.id})
+        await withLoading('export model', async () => {
+            const result = await api.modelService.get({modelId: model.id});
             if (result !== undefined) {
-                const json = JSON.parse(result.jsonData)
+                const json = JSON.parse(result.jsonData);
                 if (validatePartialModelGraphSubData(json)) {
                     downloadJson<ModelGraphData>({
-                        name: model.name + ".json",
+                        name: model.name + '.json',
                         content: {
                             model,
                             viewport: result.viewport,
                             subData: fillModelGraphSubData(json),
-                        }
-                    })
+                        },
+                    });
                 } else {
-                    sendMessage(translate({key: "export_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+                    sendMessage(
+                        translate({
+                            key: 'export_fail',
+                            args: [`${translate('model')}[${model.name}]`],
+                        }),
+                        {type: 'warning'},
+                    );
                 }
             } else {
-                sendMessage(translate({key: "get_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+                sendMessage(
+                    translate({key: 'get_fail', args: [`${translate('model')}[${model.name}]`]}),
+                    {type: 'warning'},
+                );
             }
-        })
-        sendMessage(translate({key: "export_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
+        });
+        sendMessage(
+            translate({key: 'export_success', args: [`${translate('model')}[${model.name}]`]}),
+            {type: 'success'},
+        );
     } catch (e) {
-        sendMessage(translate({key: "export_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+        sendMessage(
+            translate({key: 'export_fail', args: [`${translate('model')}[${model.name}]`]}),
+            {type: 'warning'},
+        );
     }
-}
+};
 
-const databaseDialog = useDatabaseDialog()
-const typeMappingDialog = useTypeMapping()
-const scriptDialog = useScriptDialog()
+const databaseDialog = useDatabaseDialog();
+const typeMappingDialog = useTypeMapping();
+const scriptDialog = useScriptDialog();
 
 onBeforeUnmount(() => {
-    try {databaseDialog.close()} catch (e) {console.error(e)}
-    try {typeMappingDialog.close()} catch (e) {console.error(e)}
-    try {scriptDialog.close()} catch (e) {console.error(e)}
-})
+    try {
+        databaseDialog.close();
+    } catch (e) {
+        console.error(e);
+    }
+    try {
+        typeMappingDialog.close();
+    } catch (e) {
+        console.error(e);
+    }
+    try {
+        scriptDialog.close();
+    } catch (e) {
+        console.error(e);
+    }
+});
 </script>
 
 <template>
@@ -217,27 +284,42 @@ onBeforeUnmount(() => {
         <div class="page-header">
             <div class="header-operations">
                 <h2>{{ translate('model_list_title') }}</h2>
-                <button @click="startModelInsert" class="header-button">
-                    <IconAdd/>
+                <button
+                    @click="startModelInsert"
+                    class="header-button"
+                >
+                    <IconAdd />
                     {{ translate('model_create_button') }}
                 </button>
-                <button @click="loadModel" class="header-button">
-                    <IconLoad/>
+                <button
+                    @click="loadModel"
+                    class="header-button"
+                >
+                    <IconLoad />
                     {{ translate('model_load_button') }}
                 </button>
             </div>
 
             <div class="header-operations">
-                <button @click="databaseDialog.open()" class="header-button">
-                    <IconDatabase/>
+                <button
+                    @click="databaseDialog.open()"
+                    class="header-button"
+                >
+                    <IconDatabase />
                     {{ translate('database_dialog_button') }}
                 </button>
-                <button @click="typeMappingDialog.open()" class="header-button">
-                    <IconCode/>
+                <button
+                    @click="typeMappingDialog.open()"
+                    class="header-button"
+                >
+                    <IconCode />
                     {{ translate('type_mapping_dialog_button') }}
                 </button>
-                <button @click="scriptDialog.open()" class="header-button">
-                    <IconCode/>
+                <button
+                    @click="scriptDialog.open()"
+                    class="header-button"
+                >
+                    <IconCode />
                     {{ translate('script_dialog_button') }}
                 </button>
             </div>
@@ -249,7 +331,7 @@ onBeforeUnmount(() => {
                 v-model="modelQuerySpec.keywords"
                 :placeholder="translate({key: 'input_placeholder', args: [translate('keywords')]})"
                 @change="loadModelList"
-            >
+            />
             <JvmLanguageNullableSelect
                 class="jvm-language-select"
                 v-model="modelQuerySpec.jvmLanguage"
@@ -260,27 +342,41 @@ onBeforeUnmount(() => {
                 v-model="modelQuerySpec.databaseType"
                 @update:model-value="loadModelList"
             />
-            <button class="sort-button" @click="() => {
-                if (modelOrder !== 'CREATE_TIME_DESC') modelOrder = 'CREATE_TIME_DESC'
-                else modelOrder = 'CREATE_TIME_ASC'
-                loadModelList()
-            }">
+            <button
+                class="sort-button"
+                @click="
+                    () => {
+                        if (modelOrder !== 'CREATE_TIME_DESC') modelOrder = 'CREATE_TIME_DESC';
+                        else modelOrder = 'CREATE_TIME_ASC';
+                        loadModelList();
+                    }
+                "
+            >
                 {{ translate('createdTime') }}
-                <IconCaretDown :style="{
-                    visibility: modelOrder.startsWith('CREATE_TIME') ? 'visible' : 'hidden',
-                    rotate: modelOrder === 'CREATE_TIME_ASC' ? '180deg' : '0deg'
-                }"/>
+                <IconCaretDown
+                    :style="{
+                        visibility: modelOrder.startsWith('CREATE_TIME') ? 'visible' : 'hidden',
+                        rotate: modelOrder === 'CREATE_TIME_ASC' ? '180deg' : '0deg',
+                    }"
+                />
             </button>
-            <button class="sort-button" @click="() => {
-                if (modelOrder !== 'MODIFIED_TIME_DESC') modelOrder = 'MODIFIED_TIME_DESC'
-                else modelOrder = 'MODIFIED_TIME_ASC'
-                loadModelList()
-            }">
+            <button
+                class="sort-button"
+                @click="
+                    () => {
+                        if (modelOrder !== 'MODIFIED_TIME_DESC') modelOrder = 'MODIFIED_TIME_DESC';
+                        else modelOrder = 'MODIFIED_TIME_ASC';
+                        loadModelList();
+                    }
+                "
+            >
                 {{ translate('modifiedTime') }}
-                <IconCaretDown :style="{
-                    visibility: modelOrder.startsWith('MODIFIED_TIME') ? 'visible' : 'hidden',
-                    rotate: modelOrder === 'MODIFIED_TIME_ASC' ? '180deg' : '0deg'
-                }"/>
+                <IconCaretDown
+                    :style="{
+                        visibility: modelOrder.startsWith('MODIFIED_TIME') ? 'visible' : 'hidden',
+                        rotate: modelOrder === 'MODIFIED_TIME_ASC' ? '180deg' : '0deg',
+                    }"
+                />
             </button>
         </div>
 
@@ -294,20 +390,25 @@ onBeforeUnmount(() => {
                 >
                     <div class="model-info">
                         <div class="header">
-                            <div class="name" @click.stop>
+                            <div
+                                class="name"
+                                @click.stop
+                            >
                                 {{ model.name }}
                             </div>
                             <div class="tags">
-                                <JvmLanguageView :jvm-language="model.jvmLanguage"/>
-                                <DatabaseTypeView :database-type="model.databaseType"/>
+                                <JvmLanguageView :jvm-language="model.jvmLanguage" />
+                                <DatabaseTypeView :database-type="model.databaseType" />
                             </div>
                         </div>
                         <div class="timestamps">
                             <div>
-                                {{ translate('createdTime') }} {{ formatDateTime(model.createdTime) }}
+                                {{ translate('createdTime') }}
+                                {{ formatDateTime(model.createdTime) }}
                             </div>
                             <div>
-                                {{ translate('modifiedTime') }} {{ formatDateTime(model.modifiedTime) }}
+                                {{ translate('modifiedTime') }}
+                                {{ formatDateTime(model.modifiedTime) }}
                             </div>
                         </div>
                         <div class="description">
@@ -320,21 +421,21 @@ onBeforeUnmount(() => {
                             @click.stop="exportModelJson(model)"
                             class="export-button"
                         >
-                            <IconDownload/>
+                            <IconDownload />
                             {{ translate('export') }}
                         </button>
                         <button
                             @click.stop="startModelUpdate(model.id)"
                             class="edit-button"
                         >
-                            <IconEdit/>
+                            <IconEdit />
                             {{ translate('edit') }}
                         </button>
                         <button
                             @click.stop="deleteModel(model)"
                             class="delete-button"
                         >
-                            <IconDelete/>
+                            <IconDelete />
                             {{ translate('delete') }}
                         </button>
                     </div>
@@ -377,9 +478,9 @@ onBeforeUnmount(() => {
         />
     </DragResizeDialog>
 
-    <DatabaseDialog/>
-    <TypeMappingDialog/>
-    <ScriptDialog/>
+    <DatabaseDialog />
+    <TypeMappingDialog />
+    <ScriptDialog />
 </template>
 
 <style scoped>
@@ -524,7 +625,7 @@ onBeforeUnmount(() => {
     overflow: auto;
 }
 
-.model-info > .header  > .tags {
+.model-info > .header > .tags {
     display: flex;
     gap: 0.5rem;
 }

@@ -1,24 +1,24 @@
-import mitt from "mitt";
+import mitt from 'mitt';
 
 export const modelSubSelectEventBus = mitt<{
-    unselectAll: void
+    unselectAll: void;
     selectEntityProperty: {
-        readonly entityId: string
-        readonly propertyId: string
-    }
+        readonly entityId: string;
+        readonly propertyId: string;
+    };
     selectMappedSuperClassProperty: {
-        readonly mappedSuperClassId: string
-        readonly propertyId: string
-    }
+        readonly mappedSuperClassId: string;
+        readonly propertyId: string;
+    };
     selectEmbeddableTypeProperty: {
-        readonly embeddableTypeId: string
-        readonly propertyId: string
-    }
+        readonly embeddableTypeId: string;
+        readonly propertyId: string;
+    };
     selectEnumerationItem: {
-        readonly enumerationId: string
-        readonly itemId: string
-    }
+        readonly enumerationId: string;
+        readonly itemId: string;
+    };
     selectMappedProperty: {
-        readonly associationId: string
-    }
-}>()
+        readonly associationId: string;
+    };
+}>();

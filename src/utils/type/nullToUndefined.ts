@@ -20,10 +20,10 @@
 type ConvertNullToUndefined<T> = T extends null
     ? undefined
     : T extends object
-        ? { [K in keyof T]: ConvertNullToUndefined<T[K]> }
-        : T extends Array<infer U>
-            ? Array<ConvertNullToUndefined<U>>
-            : T;
+      ? {[K in keyof T]: ConvertNullToUndefined<T[K]>}
+      : T extends Array<infer U>
+        ? Array<ConvertNullToUndefined<U>>
+        : T;
 
 export const convertNullToUndefined = <T>(obj: T): ConvertNullToUndefined<T> => {
     if (obj === null) {
@@ -32,9 +32,9 @@ export const convertNullToUndefined = <T>(obj: T): ConvertNullToUndefined<T> => 
 
     if (typeof obj === 'object') {
         if (Array.isArray(obj)) {
-            return obj.map(item => convertNullToUndefined(item)) as ConvertNullToUndefined<T>;
+            return obj.map((item) => convertNullToUndefined(item)) as ConvertNullToUndefined<T>;
         } else {
-            const result: { [key: string]: any } = {};
+            const result: {[key: string]: any} = {};
             for (const key in obj) {
                 result[key] = convertNullToUndefined(obj[key]);
             }
@@ -42,9 +42,9 @@ export const convertNullToUndefined = <T>(obj: T): ConvertNullToUndefined<T> => 
         }
     }
     return obj as ConvertNullToUndefined<T>;
-}
+};
 
 export const jsonParseThenConvertNullToUndefined = (jsonStr: string): any => {
     const obj = JSON.parse(jsonStr);
     return convertNullToUndefined(obj);
-}
+};

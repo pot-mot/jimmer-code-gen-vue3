@@ -1,21 +1,26 @@
-<script setup lang="ts" generic="T extends Record<string, unknown>, U extends Record<string, unknown> = T">
-import ArrayDiffView from "@/components/diff/ArrayDiffView.vue";
-import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
-import type {ObjectDiff} from "@potmot/diff/dist/type/DiffItem.d.ts";
+<script
+    setup
+    lang="ts"
+    generic="T extends Record<string, unknown>, U extends Record<string, unknown> = T"
+>
+import ArrayDiffView from '@/components/diff/ArrayDiffView.vue';
+import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
+import type {ObjectDiff} from '@potmot/diff/dist/type/DiffItem.d.ts';
 
 defineProps<{
-    diff: ObjectDiff<T, U>,
-}>()
+    diff: ObjectDiff<T, U>;
+}>();
 
-defineSlots<{
-
-}>()
+defineSlots<{}>();
 </script>
 
 <template>
     <div class="object-diff-view">
         <!-- 属性添加 -->
-        <div v-if="diff.added" class="diff-section">
+        <div
+            v-if="diff.added"
+            class="diff-section"
+        >
             <div
                 v-for="(item, key) in diff.added"
                 :key="'added' + String(key)"
@@ -31,13 +36,20 @@ defineSlots<{
             </div>
         </div>
 
-        <div v-if="diff.updated" class="diff-section">
+        <div
+            v-if="diff.updated"
+            class="diff-section"
+        >
             <div
                 v-for="(item, key) in diff.updated"
                 :key="'updated' + String(key)"
             >
                 <template v-if="item !== undefined">
-                    <CollapseDetail trigger-position="left" :disabled="item.diff === undefined" :model-value="true">
+                    <CollapseDetail
+                        trigger-position="left"
+                        :disabled="item.diff === undefined"
+                        :model-value="true"
+                    >
                         <template #head>
                             <div
                                 v-if="item.diff === undefined"
@@ -63,7 +75,10 @@ defineSlots<{
                             </div>
                         </template>
 
-                        <template #body v-if="item.diff !== undefined">
+                        <template
+                            #body
+                            v-if="item.diff !== undefined"
+                        >
                             <div class="nested-diff">
                                 <ObjectDiffView
                                     v-if="item.diff.type === 'object'"
@@ -73,9 +88,7 @@ defineSlots<{
                                     v-else-if="item.diff.type === 'array'"
                                     :diff="item.diff"
                                 />
-                                <div
-                                    v-else-if="item.diff.type === 'circular reference'"
-                                >
+                                <div v-else-if="item.diff.type === 'circular reference'">
                                     [Circular]
                                 </div>
                             </div>
@@ -86,7 +99,10 @@ defineSlots<{
         </div>
 
         <!-- 属性删除 -->
-        <div v-if="diff.deleted" class="diff-section">
+        <div
+            v-if="diff.deleted"
+            class="diff-section"
+        >
             <div
                 v-for="(item, key) in diff.deleted"
                 :key="'deleted' + String(key)"

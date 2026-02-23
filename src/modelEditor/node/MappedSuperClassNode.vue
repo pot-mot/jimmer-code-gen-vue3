@@ -1,108 +1,135 @@
 <script setup lang="ts">
-import {Handle, type NodeProps, Position} from "@vue-flow/core";
-import type {MappedSuperClassNode} from "@/modelEditor/node/MappedSuperClassNode.ts";
-import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue";
-import {defaultScalarProperty} from "@/modelEditor/default/modelDefaults.ts";
-import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from "vue";
-import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import MappedSuperClassPropertyTypeEditor from "@/modelEditor/node/property/MappedSuperClassPropertyTypeEditor.vue";
-import {validateMappedSuperClassProperty} from "@/type/__generated/jsonSchema/items/MappedSuperClassProperty.ts";
-import {NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
-import IconAim from "@/components/icons/IconAim.vue";
-import {NodeToolbar} from "@vue-flow/node-toolbar";
-import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
-import IconAbstractEntity from "@/components/icons/modelEditor/IconAbstractEntity.vue";
-import EntityPropertyCategoryEditor from "@/modelEditor/node/property/EntityPropertyCategoryEditor.vue";
-import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
+import {Handle, type NodeProps, Position} from '@vue-flow/core';
+import type {MappedSuperClassNode} from '@/modelEditor/node/MappedSuperClassNode.ts';
+import EditList from '@/components/list/selectableList/EditList.vue';
+import {
+    createId,
+    getColorVar,
+    getColorIsDark,
+    useModelEditor,
+} from '@/modelEditor/useModelEditor.ts';
+import ExtendsIdMultiSelect from '@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue';
+import {defaultScalarProperty} from '@/modelEditor/default/modelDefaults.ts';
+import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from 'vue';
+import NameCommentEditor from '@/modelEditor/nameComment/NameCommentEditor.vue';
+import MappedSuperClassPropertyTypeEditor from '@/modelEditor/node/property/MappedSuperClassPropertyTypeEditor.vue';
+import {validateMappedSuperClassProperty} from '@/type/__generated/jsonSchema/items/MappedSuperClassProperty.ts';
+import {NOT_EXIST_ASSOCIATION_ID} from '@/modelEditor/node/EntityNode.ts';
+import IconAim from '@/components/icons/IconAim.vue';
+import {NodeToolbar} from '@vue-flow/node-toolbar';
+import IconDelete from '@/components/icons/IconDelete.vue';
+import {modelSubSelectEventBus} from '@/modelEditor/diagnostic/focusDiagnoseSource.ts';
+import DiagnoseViewer from '@/modelEditor/diagnostic/DiagnoseViewer.vue';
+import IconAbstractEntity from '@/components/icons/modelEditor/IconAbstractEntity.vue';
+import EntityPropertyCategoryEditor from '@/modelEditor/node/property/EntityPropertyCategoryEditor.vue';
+import {nodeSubElementId} from '@/modelEditor/node/nodeElementId.ts';
 
-const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
+const props = defineProps<NodeProps<MappedSuperClassNode['data']>>();
 
 const groupColor = computed(() => {
-    return getColorVar(props.data.mappedSuperClass.groupId)
-})
+    return getColorVar(props.data.mappedSuperClass.groupId);
+});
 const groupTheme = computed(() => {
-    return getColorIsDark(props.data.mappedSuperClass.groupId) ? 'dark' : 'light'
-})
+    return getColorIsDark(props.data.mappedSuperClass.groupId) ? 'dark' : 'light';
+});
 
-const propertyEditListRef = useTemplateRef("propertyEditListRef")
+const propertyEditListRef = useTemplateRef('propertyEditListRef');
 const unselectAllProperty = () => {
-    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection()
-}
-const selectProperty = ({mappedSuperClassId, propertyId}: {mappedSuperClassId: string, propertyId: string}) => {
+    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection();
+};
+const selectProperty = ({
+    mappedSuperClassId,
+    propertyId,
+}: {
+    mappedSuperClassId: string;
+    propertyId: string;
+}) => {
     if (mappedSuperClassId === props.data.mappedSuperClass.id && propertyEditListRef.value) {
-        const index = props.data.mappedSuperClass.properties.findIndex(property => property.id === propertyId)
-        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index])
+        const index = props.data.mappedSuperClass.properties.findIndex(
+            (property) => property.id === propertyId,
+        );
+        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index]);
     }
-}
+};
 onMounted(() => {
-    modelSubSelectEventBus.on("unselectAll", unselectAllProperty)
-    modelSubSelectEventBus.on("selectMappedSuperClassProperty", selectProperty)
-})
+    modelSubSelectEventBus.on('unselectAll', unselectAllProperty);
+    modelSubSelectEventBus.on('selectMappedSuperClassProperty', selectProperty);
+});
 onBeforeUnmount(() => {
-    modelSubSelectEventBus.off("unselectAll", unselectAllProperty)
-    modelSubSelectEventBus.off("selectMappedSuperClassProperty", selectProperty)
-})
+    modelSubSelectEventBus.off('unselectAll', unselectAllProperty);
+    modelSubSelectEventBus.off('selectMappedSuperClassProperty', selectProperty);
+});
 
-const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor()
+const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor();
 
 const beforeCopy = (properties: MappedSuperClassProperty[]) => {
     for (const property of properties) {
-        if ("associationId" in property) {
-            property.associationId = NOT_EXIST_ASSOCIATION_ID
+        if ('associationId' in property) {
+            property.associationId = NOT_EXIST_ASSOCIATION_ID;
         }
     }
-}
+};
 
 const beforePaste = (properties: MappedSuperClassProperty[]) => {
     for (const property of properties) {
-        property.id = createId("Property")
-        if ("associationId" in property) {
-            property.associationId = createId("Association")
+        property.id = createId('Property');
+        if ('associationId' in property) {
+            property.associationId = createId('Association');
         }
     }
-}
+};
 
-const nodeElRef = useTemplateRef("nodeElRef")
-const handleIndexMap = ref(new Map<number, string>())
+const nodeElRef = useTemplateRef('nodeElRef');
+const handleIndexMap = ref(new Map<number, string>());
 const onHandleUpdate = (id: string, index: number) => {
-    handleIndexMap.value.set(index, id)
-}
+    handleIndexMap.value.set(index, id);
+};
 const forceResize = (element: HTMLElement) => {
-    const oldStyleWidth = element.style.width
-    const currentWidth = element.offsetWidth
-    element.style.width = currentWidth + 'px'
+    const oldStyleWidth = element.style.width;
+    const currentWidth = element.offsetWidth;
+    element.style.width = currentWidth + 'px';
     window.setTimeout(() => {
-        element.style.width = oldStyleWidth
-    })
-}
-watch(() => handleIndexMap.value, () => {
-    if (nodeElRef.value && nodeElRef.value.parentElement) {
-        const parent = nodeElRef.value.parentElement
-        forceResize(parent)
-    }
-}, {deep: true})
+        element.style.width = oldStyleWidth;
+    });
+};
+watch(
+    () => handleIndexMap.value,
+    () => {
+        if (nodeElRef.value && nodeElRef.value.parentElement) {
+            const parent = nodeElRef.value.parentElement;
+            forceResize(parent);
+        }
+    },
+    {deep: true},
+);
 </script>
 
 <template>
-    <div class="mapped-super-class-node" ref="nodeElRef" :class="{selected}">
-        <Handle :id="data.mappedSuperClass.id" type="target" :position="Position.Bottom"/>
+    <div
+        class="mapped-super-class-node"
+        ref="nodeElRef"
+        :class="{selected}"
+    >
+        <Handle
+            :id="data.mappedSuperClass.id"
+            type="target"
+            :position="Position.Bottom"
+        />
 
         <div class="mapped-super-class-header">
             <div class="header-label">
-                <IconAbstractEntity
-                    class="header-label-icon"
-                />
+                <IconAbstractEntity class="header-label-icon" />
                 <NameCommentEditor
                     v-model="data.mappedSuperClass"
                     :class="groupTheme"
                 />
-                <span :class="groupTheme" style="color: var(--text-color);">:</span>
+                <span
+                    :class="groupTheme"
+                    style="color: var(--text-color)"
+                    >:</span
+                >
                 <ExtendsIdMultiSelect
-                    style="font-size: 16px; line-height: 32px;"
+                    style="font-size: 16px; line-height: 32px"
                     v-model="data.mappedSuperClass.extendsIds"
                     type="Abstract"
                     :id="data.mappedSuperClass.id"
@@ -127,7 +154,8 @@ watch(() => handleIndexMap.value, () => {
                 <div class="mapped-super-class-property">
                     <Handle
                         :ref="() => onHandleUpdate(item.id, index)"
-                        :id="item.id" type="source"
+                        :id="item.id"
+                        type="source"
                         :position="Position.Left"
                     />
 
@@ -136,7 +164,7 @@ watch(() => handleIndexMap.value, () => {
                         v-if="data.mappedSuperClass.properties[index]"
                         :id="nodeSubElementId(data.mappedSuperClass.id, item.id)"
                     >
-                        <div style="display: flex; gap: 0.5rem;">
+                        <div style="display: flex; gap: 0.5rem">
                             <EntityPropertyCategoryEditor
                                 v-model="data.mappedSuperClass.properties[index]"
                             />
@@ -165,19 +193,31 @@ watch(() => handleIndexMap.value, () => {
                     </div>
 
                     <DiagnoseViewer
-                        :messages="modelDiagnoseInfo.mappedSuperClassMap.get(id)?.properties.get(item.id)"
+                        :messages="
+                            modelDiagnoseInfo.mappedSuperClassMap.get(id)?.properties.get(item.id)
+                        "
                     />
                 </div>
             </template>
         </EditList>
 
         <NodeToolbar class="node-toolbar">
-            <button @click="focusNode(id); focus()">
-                <IconAim/>
+            <button
+                @click="
+                    focusNode(id);
+                    focus();
+                "
+            >
+                <IconAim />
             </button>
 
-            <button @click="remove({mappedSuperClassIds: [id]}); focus()">
-                <IconDelete/>
+            <button
+                @click="
+                    remove({mappedSuperClassIds: [id]});
+                    focus();
+                "
+            >
+                <IconDelete />
             </button>
         </NodeToolbar>
     </div>

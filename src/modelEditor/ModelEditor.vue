@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import ModelEditorBackground from "@/modelEditor/background/ModelEditorBackground.vue";
-import {useModelEditor, VUE_FLOW_ID} from "@/modelEditor/useModelEditor.ts";
-import {VueFlow} from "@vue-flow/core";
-import EntityNode from "@/modelEditor/node/EntityNode.vue";
-import MappedSuperClassNode from "@/modelEditor/node/MappedSuperClassNode.vue";
-import EnumerationNode from "@/modelEditor/node/EnumerationNode.vue";
-import EmbeddableTypeNode from "@/modelEditor/node/EmbeddableTypeNode.vue";
-import {onBeforeUnmount, onMounted} from "vue";
-import ModelEditorToolbar from "@/modelEditor/toolbar/ModelEditorToolbar.vue";
-import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
-import ConcreteAssociationEdge from "@/modelEditor/edge/ConcreteAssociationEdge.vue";
-import AbstractAssociationEdge from "@/modelEditor/edge/AbstractAssociationEdge.vue";
-import ModelEditorSelectionRect from "@/modelEditor/selectionRect/ModelEditorSelectionRect.vue";
-import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
-import {subIdSetToSubIds} from "@/modelEditor/utils/ModelSubIds.ts";
+import ModelEditorBackground from '@/modelEditor/background/ModelEditorBackground.vue';
+import {useModelEditor, VUE_FLOW_ID} from '@/modelEditor/useModelEditor.ts';
+import {VueFlow} from '@vue-flow/core';
+import EntityNode from '@/modelEditor/node/EntityNode.vue';
+import MappedSuperClassNode from '@/modelEditor/node/MappedSuperClassNode.vue';
+import EnumerationNode from '@/modelEditor/node/EnumerationNode.vue';
+import EmbeddableTypeNode from '@/modelEditor/node/EmbeddableTypeNode.vue';
+import {onBeforeUnmount, onMounted} from 'vue';
+import ModelEditorToolbar from '@/modelEditor/toolbar/ModelEditorToolbar.vue';
+import {judgeTargetIsInteraction} from '@/utils/event/judgeEventTarget.ts';
+import ConcreteAssociationEdge from '@/modelEditor/edge/ConcreteAssociationEdge.vue';
+import AbstractAssociationEdge from '@/modelEditor/edge/AbstractAssociationEdge.vue';
+import ModelEditorSelectionRect from '@/modelEditor/selectionRect/ModelEditorSelectionRect.vue';
+import {useModelContextMenu} from '@/modelEditor/contextMenu/useModelContextMenu.ts';
+import {subIdSetToSubIds} from '@/modelEditor/utils/ModelSubIds.ts';
 
 const {
     initModelEditor,
@@ -34,107 +34,111 @@ const {
     paste,
     focus,
     remove,
-} = useModelEditor()
+} = useModelEditor();
 
 onMounted(() => {
-    initModelEditor()
-})
+    initModelEditor();
+});
 onBeforeUnmount(() => {
-    destroyModelEditor()
-})
+    destroyModelEditor();
+});
 
-const {
-    open: openContextMenu,
-} = useModelContextMenu()
+const {open: openContextMenu} = useModelContextMenu();
 
 const handleKeyDown = async (e: KeyboardEvent) => {
     // 按下 Delete 键删除选中的节点和边
-    if (e.key === "Delete" || e.key === "Backspace") {
-        if (judgeTargetIsInteraction(e)) return
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (judgeTargetIsInteraction(e)) return;
 
-        e.preventDefault()
-        remove(subIdSetToSubIds(modelSelection.selectedIdSets.value))
+        e.preventDefault();
+        remove(subIdSetToSubIds(modelSelection.selectedIdSets.value));
     }
 
     // 按下 Ctrl 键进入多选模式，直到松开 Ctrl 键
-    else if (e.key === "Control") {
-        if (judgeTargetIsInteraction(e)) return
+    else if (e.key === 'Control') {
+        if (judgeTargetIsInteraction(e)) return;
 
-        enableMultiSelect()
-        document.documentElement.addEventListener('keyup', (e) => {
-            if (e.key === "Control" || e.ctrlKey) {
-                disableMultiSelect()
-            }
-        }, {once: true})
+        enableMultiSelect();
+        document.documentElement.addEventListener(
+            'keyup',
+            (e) => {
+                if (e.key === 'Control' || e.ctrlKey) {
+                    disableMultiSelect();
+                }
+            },
+            {once: true},
+        );
     }
 
     // 按下 Shift 键进入框选模式，直到松开 Shift 键
-    else if (e.key === "Shift") {
-        if (judgeTargetIsInteraction(e)) return
+    else if (e.key === 'Shift') {
+        if (judgeTargetIsInteraction(e)) return;
 
-        toggleDefaultMouseAction()
-        document.documentElement.addEventListener('keyup', (e) => {
-            if (e.key === "Shift" || e.shiftKey) {
-                toggleDefaultMouseAction()
-            }
-        }, {once: true})
-    }
-
-    else if (e.ctrlKey || e.metaKey) {
+        toggleDefaultMouseAction();
+        document.documentElement.addEventListener(
+            'keyup',
+            (e) => {
+                if (e.key === 'Shift' || e.shiftKey) {
+                    toggleDefaultMouseAction();
+                }
+            },
+            {once: true},
+        );
+    } else if (e.ctrlKey || e.metaKey) {
         // 按下 Ctrl + z 键，进行历史记录的撤回重做
-        if ((e.key === "z" || e.key === "Z")) {
-            if (judgeTargetIsInteraction(e)) return
+        if (e.key === 'z' || e.key === 'Z') {
+            if (judgeTargetIsInteraction(e)) return;
 
             if (e.shiftKey) {
-                e.preventDefault()
-                redo()
+                e.preventDefault();
+                redo();
             } else {
-                e.preventDefault()
-                undo()
+                e.preventDefault();
+                undo();
             }
-        } else if (e.key === 'y' || e.key === "Y") {
-            if (judgeTargetIsInteraction(e)) return
+        } else if (e.key === 'y' || e.key === 'Y') {
+            if (judgeTargetIsInteraction(e)) return;
 
-            e.preventDefault()
-            redo()
+            e.preventDefault();
+            redo();
         }
 
         // 按下 Ctrl + s 键，保存模型
-        else if (e.key === "s" || e.key === "S") {
-            e.preventDefault()
-            await saveModel()
+        else if (e.key === 's' || e.key === 'S') {
+            e.preventDefault();
+            await saveModel();
         }
 
         // 剪切板快捷键
-        else if (e.key === "c" || e.key === "C") {
-            if (judgeTargetIsInteraction(e)) return
-            if (graphSelection.selectedCount.value < 1) return
+        else if (e.key === 'c' || e.key === 'C') {
+            if (judgeTargetIsInteraction(e)) return;
+            if (graphSelection.selectedCount.value < 1) return;
 
-            e.preventDefault()
-            await copy()
-        } else if (e.key === "x" || e.key === "X") {
-            if (judgeTargetIsInteraction(e)) return
-            if (graphSelection.selectedCount.value < 1) return
+            e.preventDefault();
+            await copy();
+        } else if (e.key === 'x' || e.key === 'X') {
+            if (judgeTargetIsInteraction(e)) return;
+            if (graphSelection.selectedCount.value < 1) return;
 
-            e.preventDefault()
-            await cut()
-        } else if (e.key === "v" || e.key === "V") {
-            if (judgeTargetIsInteraction(e)) return
+            e.preventDefault();
+            await cut();
+        } else if (e.key === 'v' || e.key === 'V') {
+            if (judgeTargetIsInteraction(e)) return;
 
-            e.preventDefault()
-            await paste()
+            e.preventDefault();
+            await paste();
         }
 
         // 全选
-        else if (e.key === "a" || e.key === "A") {
-            if (judgeTargetIsInteraction(e)) return
+        else if (e.key === 'a' || e.key === 'A') {
+            if (judgeTargetIsInteraction(e)) return;
 
-            e.preventDefault()
+            e.preventDefault();
 
-            graphSelection.selectAll()
+            graphSelection.selectAll();
         }
     }
-}
+};
 </script>
 
 <template>
@@ -144,7 +148,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         @keydown="handleKeyDown"
         @mouseenter="focus"
     >
-        <ModelEditorBackground :viewport="viewport"/>
+        <ModelEditorBackground :viewport="viewport" />
 
         <VueFlow
             :id="VUE_FLOW_ID"
@@ -161,113 +165,122 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             :select-nodes-on-drag="false"
             :selection-key-code="false"
             :delete-key-code="() => false"
-
             no-drag-class-name="no-drag"
             no-wheel-class-name="no-wheel"
             :disable-keyboard-a11y="true"
-
-            @contextmenu.capture="(e: MouseEvent) => {
-                if (judgeTargetIsInteraction(e)) return
-                e.preventDefault()
-                openContextMenu(
-                    {type: 'Model'},
-                    {x: e.clientX, y: e.clientY}
-                )
-            }"
+            @contextmenu.capture="
+                (e: MouseEvent) => {
+                    if (judgeTargetIsInteraction(e)) return;
+                    e.preventDefault();
+                    openContextMenu({type: 'Model'}, {x: e.clientX, y: e.clientY});
+                }
+            "
         >
             <template #node-ENTITY="nodeProps">
                 <EntityNode
                     v-bind="nodeProps"
-                    @contextmenu="(e: MouseEvent) => {
-                        if (judgeTargetIsInteraction(e)) return
-                        e.preventDefault()
-                        modelSelection.unselectAll()
-                        modelSelection.selectEntity(nodeProps.id)
-                        openContextMenu(
-                            {type: 'Entity', id: nodeProps.id},
-                            {x: e.clientX, y: e.clientY}
-                        )
-                    }"
+                    @contextmenu="
+                        (e: MouseEvent) => {
+                            if (judgeTargetIsInteraction(e)) return;
+                            e.preventDefault();
+                            modelSelection.unselectAll();
+                            modelSelection.selectEntity(nodeProps.id);
+                            openContextMenu(
+                                {type: 'Entity', id: nodeProps.id},
+                                {x: e.clientX, y: e.clientY},
+                            );
+                        }
+                    "
                 />
             </template>
             <template #node-MAPPED_SUPER_CLASS="nodeProps">
                 <MappedSuperClassNode
                     v-bind="nodeProps"
-                    @contextmenu="(e: MouseEvent) => {
-                        if (judgeTargetIsInteraction(e)) return
-                        e.preventDefault()
-                        modelSelection.unselectAll()
-                        modelSelection.selectMappedSuperClass(nodeProps.id)
-                        openContextMenu(
-                            {type: 'MappedSuperClass', id: nodeProps.id},
-                            {x: e.clientX, y: e.clientY}
-                        )
-                    }"
+                    @contextmenu="
+                        (e: MouseEvent) => {
+                            if (judgeTargetIsInteraction(e)) return;
+                            e.preventDefault();
+                            modelSelection.unselectAll();
+                            modelSelection.selectMappedSuperClass(nodeProps.id);
+                            openContextMenu(
+                                {type: 'MappedSuperClass', id: nodeProps.id},
+                                {x: e.clientX, y: e.clientY},
+                            );
+                        }
+                    "
                 />
             </template>
             <template #node-ENUMERATION="nodeProps">
                 <EnumerationNode
                     v-bind="nodeProps"
-                    @contextmenu="(e: MouseEvent) => {
-                        if (judgeTargetIsInteraction(e)) return
-                        e.preventDefault()
-                        modelSelection.unselectAll()
-                        modelSelection.selectEnumeration(nodeProps.id)
-                        openContextMenu(
-                            {type: 'Enumeration', id: nodeProps.id},
-                            {x: e.clientX, y: e.clientY}
-                        )
-                    }"
+                    @contextmenu="
+                        (e: MouseEvent) => {
+                            if (judgeTargetIsInteraction(e)) return;
+                            e.preventDefault();
+                            modelSelection.unselectAll();
+                            modelSelection.selectEnumeration(nodeProps.id);
+                            openContextMenu(
+                                {type: 'Enumeration', id: nodeProps.id},
+                                {x: e.clientX, y: e.clientY},
+                            );
+                        }
+                    "
                 />
             </template>
             <template #node-EMBEDDABLE_TYPE="nodeProps">
                 <EmbeddableTypeNode
                     v-bind="nodeProps"
-                    @contextmenu="(e: MouseEvent) => {
-                        modelSelection.unselectAll()
-                        modelSelection.selectEmbeddableType(nodeProps.id)
-                        openContextMenu(
-                            {type: 'EmbeddableType', id: nodeProps.id},
-                            {x: e.clientX, y: e.clientY}
-                        )
-                    }"
+                    @contextmenu="
+                        (e: MouseEvent) => {
+                            modelSelection.unselectAll();
+                            modelSelection.selectEmbeddableType(nodeProps.id);
+                            openContextMenu(
+                                {type: 'EmbeddableType', id: nodeProps.id},
+                                {x: e.clientX, y: e.clientY},
+                            );
+                        }
+                    "
                 />
             </template>
             <template #edge-CONCRETE_ASSOCIATION="edgeProps">
                 <ConcreteAssociationEdge
                     v-bind="edgeProps"
-                    @contextmenu="(e: MouseEvent) => {
-                        if (judgeTargetIsInteraction(e)) return
-                        e.preventDefault()
-                        modelSelection.unselectAll()
-                        modelSelection.selectAssociation(edgeProps.id)
-                        openContextMenu(
-                            {type: 'Association', id: edgeProps.id},
-                            {x: e.clientX, y: e.clientY}
-                        )
-                    }"
+                    @contextmenu="
+                        (e: MouseEvent) => {
+                            if (judgeTargetIsInteraction(e)) return;
+                            e.preventDefault();
+                            modelSelection.unselectAll();
+                            modelSelection.selectAssociation(edgeProps.id);
+                            openContextMenu(
+                                {type: 'Association', id: edgeProps.id},
+                                {x: e.clientX, y: e.clientY},
+                            );
+                        }
+                    "
                 />
             </template>
             <template #edge-ABSTRACT_ASSOCIATION="edgeProps">
                 <AbstractAssociationEdge
                     v-bind="edgeProps"
-                    @contextmenu="(e: MouseEvent) => {
-                        if (judgeTargetIsInteraction(e)) return
-                        e.preventDefault()
-                        modelSelection.unselectAll()
-                        modelSelection.selectAssociation(edgeProps.id)
-                        openContextMenu(
-                            {type: 'Association', id: edgeProps.id},
-                            {x: e.clientX, y: e.clientY}
-                        )
-                    }"
+                    @contextmenu="
+                        (e: MouseEvent) => {
+                            if (judgeTargetIsInteraction(e)) return;
+                            e.preventDefault();
+                            modelSelection.unselectAll();
+                            modelSelection.selectAssociation(edgeProps.id);
+                            openContextMenu(
+                                {type: 'Association', id: edgeProps.id},
+                                {x: e.clientX, y: e.clientY},
+                            );
+                        }
+                    "
                 />
             </template>
         </VueFlow>
 
-        <ModelEditorSelectionRect :rect="selectionRect"/>
+        <ModelEditorSelectionRect :rect="selectionRect" />
 
-        <ModelEditorToolbar/>
+        <ModelEditorToolbar />
     </div>
 </template>
 

@@ -1,36 +1,39 @@
 <script setup lang="ts">
-import Dropdown from "@/components/dropdown/Dropdown.vue";
-import {ref} from "vue";
+import Dropdown from '@/components/dropdown/Dropdown.vue';
+import {ref} from 'vue';
 
 const isOpen = defineModel<boolean>({
     required: false,
-    default: false
-})
+    default: false,
+});
 
-withDefaults(defineProps<{
-    disabled?: boolean,
-    paddingY?: number,
-}>(), {
-    disabled: false,
-    paddingY: 8,
-})
+withDefaults(
+    defineProps<{
+        disabled?: boolean;
+        paddingY?: number;
+    }>(),
+    {
+        disabled: false,
+        paddingY: 8,
+    },
+);
 
-const isFocus = ref(false)
+const isFocus = ref(false);
 
 const handleFocusIn = () => {
-    isFocus.value = true
-}
+    isFocus.value = true;
+};
 
 const handleFocusOut = () => {
-    isFocus.value = false
-}
+    isFocus.value = false;
+};
 
 const handleKeydown = (e: KeyboardEvent) => {
-    if (e.key === "Enter") {
-        e.preventDefault()
-        isOpen.value = !isOpen.value
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        isOpen.value = !isOpen.value;
     }
-}
+};
 </script>
 
 <template>
@@ -45,10 +48,10 @@ const handleKeydown = (e: KeyboardEvent) => {
         :class="{focused: isFocus}"
     >
         <template #head>
-            <slot name="head"/>
+            <slot name="head" />
         </template>
         <template #body>
-            <slot name="body"/>
+            <slot name="body" />
         </template>
     </Dropdown>
 </template>

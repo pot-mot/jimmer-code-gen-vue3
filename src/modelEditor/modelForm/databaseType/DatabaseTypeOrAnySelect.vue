@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import FilterableSelect from "@/components/select/FilterableSelect.vue";
-import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
+import FilterableSelect from '@/components/select/FilterableSelect.vue';
+import DatabaseTypeView from '@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue';
 
-const databaseType = defineModel<DatabaseType | "ANY">({
-    required: true
-})
+const databaseType = defineModel<DatabaseType | 'ANY'>({
+    required: true,
+});
 
-const databaseTypes: (DatabaseType | "ANY")[] = [
-    "POSTGRESQL",
-    "MYSQL",
-    "ORACLE",
-    "SQLSERVER",
-    "H2",
-    "SQLITE",
-    "ANY",
-]
+const databaseTypes: (DatabaseType | 'ANY')[] = [
+    'POSTGRESQL',
+    'MYSQL',
+    'ORACLE',
+    'SQLSERVER',
+    'H2',
+    'SQLITE',
+    'ANY',
+];
 </script>
 
 <template>
@@ -26,10 +26,16 @@ const databaseTypes: (DatabaseType | "ANY")[] = [
         :filter="(option, filterText) => option.toLowerCase().includes(filterText.toLowerCase())"
     >
         <template #selected="{option}">
-            <DatabaseTypeView :database-type="option" class="database-type-selected-option"/>
+            <DatabaseTypeView
+                :database-type="option"
+                class="database-type-selected-option"
+            />
         </template>
         <template #option="{option}">
-            <DatabaseTypeView :database-type="option" class="database-type-option"/>
+            <DatabaseTypeView
+                :database-type="option"
+                class="database-type-option"
+            />
         </template>
     </FilterableSelect>
 </template>

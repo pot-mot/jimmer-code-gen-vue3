@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {computed} from "vue";
-import EnumerationViewer from "@/modelEditor/viewer/EnumerationViewer.vue";
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import {computed} from 'vue';
+import EnumerationViewer from '@/modelEditor/viewer/EnumerationViewer.vue';
 
-const {contextData} = useModelEditor()
+const {contextData} = useModelEditor();
 
-const props = withDefaults(defineProps<{
-    id: string
-    ctrlFocus?: boolean
-    hideComment?: boolean
-}>(), {
-    ctrlFocus: false
-})
+const props = withDefaults(
+    defineProps<{
+        id: string;
+        ctrlFocus?: boolean;
+        hideComment?: boolean;
+    }>(),
+    {
+        ctrlFocus: false,
+    },
+);
 
 const enumeration = computed(() => {
-    return contextData.enumerationMap.get(props.id)
-})
+    return contextData.enumerationMap.get(props.id);
+});
 </script>
 
 <template>

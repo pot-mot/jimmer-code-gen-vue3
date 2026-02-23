@@ -1,75 +1,93 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-import IconClose from "@/components/icons/IconClose.vue";
-import {type LoadingTask} from "@/components/loading/LoadingTask.ts";
+import {ref} from 'vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import {type LoadingTask} from '@/components/loading/LoadingTask.ts';
 
-const tasks = ref<LoadingTask[]>([])
+const tasks = ref<LoadingTask[]>([]);
 
-const props = withDefaults(defineProps<{
-    enterDuration?: number,
-    leaveDuration?: number,
-}>(), {
-    enterDuration: 300,
-    leaveDuration: 300,
-})
+const props = withDefaults(
+    defineProps<{
+        enterDuration?: number;
+        leaveDuration?: number;
+    }>(),
+    {
+        enterDuration: 300,
+        leaveDuration: 300,
+    },
+);
 
 const emits = defineEmits<{
-    (event: "stop", symbol: symbol): void,
-    (event: "allStopped"): void
-}>()
+    (event: 'stop', symbol: symbol): void;
+    (event: 'allStopped'): void;
+}>();
 
 const start = (symbol: symbol, message: string) => {
-    tasks.value.push({symbol, message})
-}
+    tasks.value.push({symbol, message});
+};
 
 const stop = (symbol: symbol, success: boolean) => {
-    const item = tasks.value.find(t => t.symbol === symbol)
+    const item = tasks.value.find((t) => t.symbol === symbol);
     if (!item) {
-        throw new Error(`task ${symbol.description} not existed`)
+        throw new Error(`task ${symbol.description} not existed`);
     }
-    if ("status" in item && item.status !== undefined) {
-        throw new Error(`task ${symbol.description} already stopped`)
+    if ('status' in item && item.status !== undefined) {
+        throw new Error(`task ${symbol.description} already stopped`);
     }
 
-    item.status = success ? 'success' : 'fail'
-    emits("stop", symbol)
+    item.status = success ? 'success' : 'fail';
+    emits('stop', symbol);
 
-    if (tasks.value.filter(it => it.status !== undefined).length === tasks.value.length) {
-        tasks.value = tasks.value.filter(it => it.status === 'fail')
+    if (tasks.value.filter((it) => it.status !== undefined).length === tasks.value.length) {
+        tasks.value = tasks.value.filter((it) => it.status === 'fail');
         if (tasks.value.length === 0) {
             window.setTimeout(() => {
                 if (tasks.value.length === 0) {
-                    emits("allStopped")
+                    emits('allStopped');
                 }
-            }, props.leaveDuration)
+            }, props.leaveDuration);
         }
     }
-}
+};
 
 const removeTask = (task: LoadingTask) => {
-    tasks.value = tasks.value.filter(it => it !== task)
-}
+    tasks.value = tasks.value.filter((it) => it !== task);
+};
 
 defineExpose({
     start,
     stop,
-})
+});
 </script>
 
 <template>
     <Transition name="loading-container">
-        <div v-if="tasks.length > 0" class="loading-container">
+        <div
+            v-if="tasks.length > 0"
+            class="loading-container"
+        >
             <div class="loading-task-list">
                 <div
                     v-for="task in tasks"
                     :key="task.symbol"
                     class="loading-task"
                 >
-                    <span v-if="task.status === 'success'" class="success-tag">[SUCCESS]</span>
-                    <span v-else-if="task.status === 'fail'" class="fail-tag">[FAIL]</span>
+                    <span
+                        v-if="task.status === 'success'"
+                        class="success-tag"
+                        >[SUCCESS]</span
+                    >
+                    <span
+                        v-else-if="task.status === 'fail'"
+                        class="fail-tag"
+                        >[FAIL]</span
+                    >
                     <span>{{ task.message }}</span>
-                    <button v-if="task.status !== undefined" class="close-button" @click="removeTask(task)">
-                        <IconClose/>
+                    <button
+                        v-if="task.status !== undefined"
+                        class="close-button"
+                        @click="removeTask(task)"
+                    >
+                        <IconClose />
                     </button>
                 </div>
             </div>

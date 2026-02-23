@@ -1,80 +1,88 @@
 <script setup lang="ts">
 import type {
-    SqlTypeInput, SqlTypeInput_TargetOf_jvmMatchRules, SqlTypeInput_TargetOf_tsMatchRules,
-} from "@/api/__generated/model/static";
-import EditList from "@/components/list/selectableList/EditList.vue";
-import JvmLanguageOrAnySelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue";
-import IconDelete from "@/components/icons/IconDelete.vue";
-import {translate} from "@/store/i18nStore.ts";
-import {ref, watch} from "vue";
-import {isString} from "@/utils/type/typeGuard.ts";
-import {validateTsMatchRule} from "@/type/__generated/jsonSchema/items/TsMatchRule.ts";
-import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
-import DatabaseTypeOrAnySelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeOrAnySelect.vue";
-import {validateRegExp} from "@/utils/regExp/parseRegExp.ts";
+    SqlTypeInput,
+    SqlTypeInput_TargetOf_jvmMatchRules,
+    SqlTypeInput_TargetOf_tsMatchRules,
+} from '@/api/__generated/model/static';
+import EditList from '@/components/list/selectableList/EditList.vue';
+import JvmLanguageOrAnySelect from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue';
+import IconDelete from '@/components/icons/IconDelete.vue';
+import {translate} from '@/store/i18nStore.ts';
+import {ref, watch} from 'vue';
+import {isString} from '@/utils/type/typeGuard.ts';
+import {validateTsMatchRule} from '@/type/__generated/jsonSchema/items/TsMatchRule.ts';
+import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
+import DatabaseTypeOrAnySelect from '@/modelEditor/modelForm/databaseType/DatabaseTypeOrAnySelect.vue';
+import {validateRegExp} from '@/utils/regExp/parseRegExp.ts';
 
 const sqlTypeInput = defineModel<SqlTypeInput>({
-    required: true
-})
+    required: true,
+});
 
-const openState = ref(false)
+const openState = ref(false);
 
 const defaultJvmMatchRule = (): SqlTypeInput_TargetOf_jvmMatchRules => {
     return {
-        jvmSource: "ANY",
-        matchRegExp: "",
-    }
-}
+        jvmSource: 'ANY',
+        matchRegExp: '',
+    };
+};
 
 const defaultTsMatchRule = (): SqlTypeInput_TargetOf_tsMatchRules => {
     return {
-        matchRegExp: "",
-    }
-}
-
+        matchRegExp: '',
+    };
+};
 
 // 表单验证错误
-const errors = ref<Record<string, string>>({})
+const errors = ref<Record<string, string>>({});
 // 验证表单
 const validateForm = (): boolean => {
-    errors.value = {}
+    errors.value = {};
 
     if (!sqlTypeInput.value.type || sqlTypeInput.value.type.trim() === '') {
-        errors.value.type = translate({key: 'not_blank_warning', args: [translate('typeExpression')]})
+        errors.value.type = translate({
+            key: 'not_blank_warning',
+            args: [translate('typeExpression')],
+        });
     }
 
     sqlTypeInput.value.jvmMatchRules.forEach((rule, index) => {
         if (!rule.matchRegExp || rule.matchRegExp.trim() === '') {
             errors.value[`jvmMatchRules.${index}`] = translate({
                 key: 'not_blank_warning',
-                args: [translate('matchRegExp')]
-            })
+                args: [translate('matchRegExp')],
+            });
         } else if (!validateRegExp(rule.matchRegExp)) {
-            errors.value[`jvmMatchRules.${index}`] = translate('invalid_regexp')
+            errors.value[`jvmMatchRules.${index}`] = translate('invalid_regexp');
         }
-    })
+    });
     sqlTypeInput.value.tsMatchRules.forEach((rule, index) => {
         if (!rule.matchRegExp || rule.matchRegExp.trim() === '') {
             errors.value[`tsMatchRules.${index}`] = translate({
                 key: 'not_blank_warning',
-                args: [translate('matchRegExp')]
-            })
+                args: [translate('matchRegExp')],
+            });
         } else if (!validateRegExp(rule.matchRegExp)) {
-            errors.value[`tsMatchRules.${index}`] = translate('invalid_regexp')
+            errors.value[`tsMatchRules.${index}`] = translate('invalid_regexp');
         }
-    })
+    });
 
-    return Object.keys(errors.value).length === 0
-}
+    return Object.keys(errors.value).length === 0;
+};
 
-watch(() => sqlTypeInput.value, () => {
-    errors.value = {}
-}, {deep: true})
+watch(
+    () => sqlTypeInput.value,
+    () => {
+        errors.value = {};
+    },
+    {deep: true},
+);
 
 defineExpose({
     validateForm,
-    errors
-})
+    errors,
+});
 </script>
 
 <template>
@@ -84,20 +92,31 @@ defineExpose({
     >
         <template #head>
             <div class="sql-type-editor-header">
-                <DatabaseTypeOrAnySelect v-model="sqlTypeInput.databaseSource"/>
+                <DatabaseTypeOrAnySelect v-model="sqlTypeInput.databaseSource" />
                 <div class="input-wrapper">
                     <input
                         v-model="sqlTypeInput.type"
-                        :class="{ 'error': errors.type }"
-                        :placeholder="translate({key: 'input_placeholder', args: [translate('typeExpression')]})"
+                        :class="{error: errors.type}"
+                        :placeholder="
+                            translate({
+                                key: 'input_placeholder',
+                                args: [translate('typeExpression')],
+                            })
+                        "
+                    />
+                    <div
+                        v-if="errors.type"
+                        class="error-message"
                     >
-                    <div v-if="errors.type" class="error-message">{{ errors.type }}</div>
+                        {{ errors.type }}
+                    </div>
                     <div
                         class="error-message"
-                        v-if="!openState && (
-                            (!errors.type && Object.keys(errors).length > 0) ||
-                            (Object.keys(errors).length > 1)
-                        )"
+                        v-if="
+                            !openState &&
+                            ((!errors.type && Object.keys(errors).length > 0) ||
+                                Object.keys(errors).length > 1)
+                        "
                     >
                         {{ translate('validate_fail') }}
                     </div>
@@ -107,39 +126,48 @@ defineExpose({
 
         <template #body>
             <div class="editor-item">
-                <span class="label no-drag">{{ translate("dataSize") }}</span>
+                <span class="label no-drag">{{ translate('dataSize') }}</span>
                 <div class="input-wrapper">
                     <input
                         v-model="sqlTypeInput.dataSize"
                         type="number"
-                        :placeholder="translate({key: 'input_placeholder', args: [translate('dataSize')]})"
-                    >
+                        :placeholder="
+                            translate({key: 'input_placeholder', args: [translate('dataSize')]})
+                        "
+                    />
                 </div>
             </div>
 
             <div class="editor-item">
-                <span class="label no-drag">{{ translate("numericPrecision") }}</span>
+                <span class="label no-drag">{{ translate('numericPrecision') }}</span>
                 <div class="input-wrapper">
                     <input
                         v-model="sqlTypeInput.numericPrecision"
                         type="number"
-                        :placeholder="translate({key: 'input_placeholder', args: [translate('numericPrecision')]})"
-                    >
+                        :placeholder="
+                            translate({
+                                key: 'input_placeholder',
+                                args: [translate('numericPrecision')],
+                            })
+                        "
+                    />
                 </div>
             </div>
 
             <div class="editor-item">
-                <span class="label no-drag">{{ translate("defaultValue") }}</span>
+                <span class="label no-drag">{{ translate('defaultValue') }}</span>
                 <div class="input-wrapper">
                     <input
                         v-model="sqlTypeInput.defaultValue"
-                        :placeholder="translate({key: 'input_placeholder', args: [translate('defaultValue')]})"
-                    >
+                        :placeholder="
+                            translate({key: 'input_placeholder', args: [translate('defaultValue')]})
+                        "
+                    />
                 </div>
             </div>
 
             <div class="editor-item">
-                <span class="label no-drag">{{ translate("jvmMatchRules") }}</span>
+                <span class="label no-drag">{{ translate('jvmMatchRules') }}</span>
                 <EditList
                     v-model:lines="sqlTypeInput.jvmMatchRules"
                     :default-line="defaultJvmMatchRule"
@@ -148,19 +176,32 @@ defineExpose({
                     <template #line="{index}">
                         <template v-if="sqlTypeInput.jvmMatchRules[index]">
                             <div class="sub-line">
-                                <JvmLanguageOrAnySelect v-model="sqlTypeInput.jvmMatchRules[index].jvmSource"/>
+                                <JvmLanguageOrAnySelect
+                                    v-model="sqlTypeInput.jvmMatchRules[index].jvmSource"
+                                />
                                 <div class="input-wrapper">
                                     <input
                                         v-model="sqlTypeInput.jvmMatchRules[index].matchRegExp"
-                                        :class="{ 'error': errors[`jvmMatchRules.${index}`] }"
-                                        :placeholder="translate({key: 'input_placeholder', args: [translate('matchRegExp')]})"
+                                        :class="{error: errors[`jvmMatchRules.${index}`]}"
+                                        :placeholder="
+                                            translate({
+                                                key: 'input_placeholder',
+                                                args: [translate('matchRegExp')],
+                                            })
+                                        "
+                                    />
+                                    <div
+                                        v-if="errors[`jvmMatchRules.${index}`]"
+                                        class="error-message"
                                     >
-                                    <div v-if="errors[`jvmMatchRules.${index}`]" class="error-message">
                                         {{ errors[`jvmMatchRules.${index}`] }}
                                     </div>
                                 </div>
-                                <button class="delete-button" @click="sqlTypeInput.jvmMatchRules.splice(index, 1)">
-                                    <IconDelete/>
+                                <button
+                                    class="delete-button"
+                                    @click="sqlTypeInput.jvmMatchRules.splice(index, 1)"
+                                >
+                                    <IconDelete />
                                 </button>
                             </div>
                         </template>
@@ -169,7 +210,7 @@ defineExpose({
             </div>
 
             <div class="editor-item">
-                <span class="label no-drag">{{ translate("tsMatchRules") }}</span>
+                <span class="label no-drag">{{ translate('tsMatchRules') }}</span>
                 <EditList
                     v-model:lines="sqlTypeInput.tsMatchRules"
                     :default-line="defaultTsMatchRule"
@@ -181,15 +222,26 @@ defineExpose({
                                 <div class="input-wrapper">
                                     <input
                                         v-model="sqlTypeInput.tsMatchRules[index].matchRegExp"
-                                        :class="{ 'error': errors[`tsMatchRules.${index}`] }"
-                                        :placeholder="translate({key: 'input_placeholder', args: [translate('matchRegExp')]})"
+                                        :class="{error: errors[`tsMatchRules.${index}`]}"
+                                        :placeholder="
+                                            translate({
+                                                key: 'input_placeholder',
+                                                args: [translate('matchRegExp')],
+                                            })
+                                        "
+                                    />
+                                    <div
+                                        v-if="errors[`tsMatchRules.${index}`]"
+                                        class="error-message"
                                     >
-                                    <div v-if="errors[`tsMatchRules.${index}`]" class="error-message">
                                         {{ errors[`tsMatchRules.${index}`] }}
                                     </div>
                                 </div>
-                                <button class="delete-button" @click="sqlTypeInput.tsMatchRules.splice(index, 1)">
-                                    <IconDelete/>
+                                <button
+                                    class="delete-button"
+                                    @click="sqlTypeInput.tsMatchRules.splice(index, 1)"
+                                >
+                                    <IconDelete />
                                 </button>
                             </div>
                         </template>

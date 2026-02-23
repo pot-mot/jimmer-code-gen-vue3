@@ -1,33 +1,35 @@
 <script setup lang="ts">
-import type {CrossTypeView} from "@/api/__generated/model/static";
-import {computed} from "vue";
-import JvmLanguageView from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue";
-import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
-import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
-import {translate} from "@/store/i18nStore.ts";
+import type {CrossTypeView} from '@/api/__generated/model/static';
+import {computed} from 'vue';
+import JvmLanguageView from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue';
+import DatabaseTypeView from '@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue';
+import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
+import {translate} from '@/store/i18nStore.ts';
 
 const props = defineProps<{
-    crossType: DeepReadonly<CrossTypeView>
-}>()
+    crossType: DeepReadonly<CrossTypeView>;
+}>();
 
-const {jvmTypes, sqlTypes, tsTypes} = useTypeMapping()
+const {jvmTypes, sqlTypes, tsTypes} = useTypeMapping();
 
 const sqlType = computed(() => {
-    return sqlTypes.value.find(t => t.id === props.crossType.sqlTypeId)
-})
+    return sqlTypes.value.find((t) => t.id === props.crossType.sqlTypeId);
+});
 
 const jvmType = computed(() => {
-    return jvmTypes.value.find(t => t.id === props.crossType.jvmTypeId)
-})
+    return jvmTypes.value.find((t) => t.id === props.crossType.jvmTypeId);
+});
 
 const tsType = computed(() => {
-    return tsTypes.value.find(t => t.id === props.crossType.tsTypeId)
-})
+    return tsTypes.value.find((t) => t.id === props.crossType.tsTypeId);
+});
 </script>
 
 <template>
     <div class="cross-type-viewer">
-        <span class="no-drag jvm-type">{{ jvmType?.typeExpression ?? translate('not_existed') }}</span>
+        <span class="no-drag jvm-type">{{
+            jvmType?.typeExpression ?? translate('not_existed')
+        }}</span>
         <JvmLanguageView
             v-if="jvmType?.jvmSource !== 'ANY'"
             :jvm-language="jvmType?.jvmSource"
@@ -39,10 +41,24 @@ const tsType = computed(() => {
             :database-type="sqlType?.databaseSource"
             class="tag"
         />
-        <span class="no-drag ts-type">{{ tsType?.typeExpression ?? translate('not_existed') }}</span>
-        <span class="no-drag" v-if="crossType.nullable === true">{{ translate('nullableLimit_true') }}</span>
-        <span class="no-drag" v-else-if="crossType.nullable === false">{{ translate('nullableLimit_false') }}</span>
-        <span class="no-drag" v-else-if="crossType.nullable === undefined">{{ translate('nullableLimit_undefined') }}</span>
+        <span class="no-drag ts-type">{{
+            tsType?.typeExpression ?? translate('not_existed')
+        }}</span>
+        <span
+            class="no-drag"
+            v-if="crossType.nullable === true"
+            >{{ translate('nullableLimit_true') }}</span
+        >
+        <span
+            class="no-drag"
+            v-else-if="crossType.nullable === false"
+            >{{ translate('nullableLimit_false') }}</span
+        >
+        <span
+            class="no-drag"
+            v-else-if="crossType.nullable === undefined"
+            >{{ translate('nullableLimit_undefined') }}</span
+        >
     </div>
 </template>
 

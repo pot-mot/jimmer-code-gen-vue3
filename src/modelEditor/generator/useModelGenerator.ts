@@ -1,13 +1,13 @@
-import {createStore} from "@/utils/store/createStore.ts";
-import {modelGenerate, type ModelGenerateResult} from "@/modelEditor/generator/modelGenerate.ts";
-import {useDialogOpenState} from "@/components/dialog/DialogOpenState.ts";
-import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
-import {ref} from "vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {useDiagnoseDialog} from "@/modelEditor/diagnostic/useDiagnoseDialog.ts";
+import {createStore} from '@/utils/store/createStore.ts';
+import {modelGenerate, type ModelGenerateResult} from '@/modelEditor/generator/modelGenerate.ts';
+import {useDialogOpenState} from '@/components/dialog/DialogOpenState.ts';
+import {useScriptDialog} from '@/modelEditor/script/useScriptDialog.ts';
+import {ref} from 'vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import {useDiagnoseDialog} from '@/modelEditor/diagnostic/useDiagnoseDialog.ts';
 
 export const useModelGenerator = createStore(() => {
-    const generateScope = ref<"ALL" | "SELECTED">("ALL")
+    const generateScope = ref<'ALL' | 'SELECTED'>('ALL');
 
     return {
         ...useDialogOpenState(),
@@ -16,17 +16,17 @@ export const useModelGenerator = createStore(() => {
             context: DeepReadonly<ModelContext>,
             selectedIds: DeepReadonly<Partial<ModelSubIds>>,
         ): ModelGenerateResult | undefined => {
-            const modelEditor = useModelEditor()
-            modelEditor.diagnose()
+            const modelEditor = useModelEditor();
+            modelEditor.diagnose();
             if (modelEditor.modelDiagnoseInfo.total > 0) {
-                useDiagnoseDialog().open()
+                useDiagnoseDialog().open();
             } else {
                 return modelGenerate(
                     context,
                     useScriptDialog().scriptsStore.value,
                     generateScope.value === 'ALL' ? undefined : selectedIds,
-                )
+                );
             }
         },
-    }
-})
+    };
+});

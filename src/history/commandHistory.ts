@@ -1,361 +1,373 @@
-import cloneDeep from "lodash-es/cloneDeep";
-import mitt, {type Emitter} from "mitt";
+import cloneDeep from 'lodash-es/cloneDeep';
+import mitt, {type Emitter} from 'mitt';
 
 export type CommandDefinition<ApplyOptions, RevertOptions = ApplyOptions> = {
-    applyAction: (options: ApplyOptions) => RevertOptions
-    revertAction: (options: RevertOptions) => ApplyOptions | undefined | void
-}
+    applyAction: (options: ApplyOptions) => RevertOptions;
+    revertAction: (options: RevertOptions) => ApplyOptions | undefined | void;
+};
 
-export type CustomCommandMap = Record<string, CommandDefinition<any>>
+export type CustomCommandMap = Record<string, CommandDefinition<any>>;
 
 export type HistoryCommand<
     CommandMap extends CustomCommandMap,
     Key extends keyof CommandMap,
     ApplyOptions = Parameters<CommandMap[Key]['applyAction']>[0],
-    RevertOptions = Parameters<CommandMap[Key]['revertAction']>[0]
+    RevertOptions = Parameters<CommandMap[Key]['revertAction']>[0],
 > = {
-    key: Key
-} & CommandDefinition<ApplyOptions, RevertOptions>
+    key: Key;
+} & CommandDefinition<ApplyOptions, RevertOptions>;
 
 type HistoryCommandMap<CommandMap extends CustomCommandMap> = {
-    get: <Key extends keyof CommandMap>(key: Key) => HistoryCommand<CommandMap, Key> | undefined,
-    set: <Key extends keyof CommandMap>(key: Key, value: HistoryCommand<CommandMap, Key>) => void,
-    delete: <Key extends keyof CommandMap>(key: Key) => void,
-    has: <Key extends keyof CommandMap>(key: Key) => boolean,
-    clear: () => void,
-    size: number,
-}
+    get: <Key extends keyof CommandMap>(key: Key) => HistoryCommand<CommandMap, Key> | undefined;
+    set: <Key extends keyof CommandMap>(key: Key, value: HistoryCommand<CommandMap, Key>) => void;
+    delete: <Key extends keyof CommandMap>(key: Key) => void;
+    has: <Key extends keyof CommandMap>(key: Key) => boolean;
+    clear: () => void;
+    size: number;
+};
 
-export type HistoryCommandOption<CommandMap extends CustomCommandMap, Key extends keyof CommandMap> =
-    Omit<HistoryCommand<CommandMap, Key>, 'key'>
+export type HistoryCommandOption<
+    CommandMap extends CustomCommandMap,
+    Key extends keyof CommandMap,
+> = Omit<HistoryCommand<CommandMap, Key>, 'key'>;
 
-export type SingleCommandData<CommandMap extends CustomCommandMap, Key extends keyof CommandMap = keyof CommandMap> = {
-    command: HistoryCommand<CommandMap, Key>
-    options: Parameters<CommandMap[Key]['applyAction']>[0]
-    revertOptions: Parameters<CommandMap[Key]['revertAction']>[0]
-}
+export type SingleCommandData<
+    CommandMap extends CustomCommandMap,
+    Key extends keyof CommandMap = keyof CommandMap,
+> = {
+    command: HistoryCommand<CommandMap, Key>;
+    options: Parameters<CommandMap[Key]['applyAction']>[0];
+    revertOptions: Parameters<CommandMap[Key]['revertAction']>[0];
+};
 
-export type BatchCommandData<CommandMap extends CustomCommandMap> = CommandData<CommandMap>[]
+export type BatchCommandData<CommandMap extends CustomCommandMap> = CommandData<CommandMap>[];
 
 export type CommandData<CommandMap extends CustomCommandMap> =
-    SingleCommandData<CommandMap> | BatchCommandData<CommandMap>
+    | SingleCommandData<CommandMap>
+    | BatchCommandData<CommandMap>;
 
-type BatchKey<CommandMap extends CustomCommandMap> = { key: symbol, batch: BatchCommandData<CommandMap> }
+type BatchKey<CommandMap extends CustomCommandMap> = {
+    key: symbol;
+    batch: BatchCommandData<CommandMap>;
+};
 
-const applyType = 'apply'
-const revertType = 'revert'
-const pushType = 'push'
-type CommandChangeInputType = typeof applyType | typeof revertType | typeof pushType
+const applyType = 'apply';
+const revertType = 'revert';
+const pushType = 'push';
+type CommandChangeInputType = typeof applyType | typeof revertType | typeof pushType;
 
 export type CommandChangeInput<CommandMap extends CustomCommandMap> = {
-    type: CommandChangeInputType,
+    type: CommandChangeInputType;
 } & {
-    [K in keyof CommandMap]: { key: K } & SingleCommandData<CommandMap, K>
-}[keyof CommandMap]
+    [K in keyof CommandMap]: {key: K} & SingleCommandData<CommandMap, K>;
+}[keyof CommandMap];
 
 export type CommandHistoryEvents<CommandMap extends CustomCommandMap> = {
-    beforeChange: { key: keyof CommandMap, type: CommandChangeInputType }
-    change: CommandChangeInput<CommandMap>
+    beforeChange: {key: keyof CommandMap; type: CommandChangeInputType};
+    change: CommandChangeInput<CommandMap>;
 
-    beforeUndo: undefined
-    undo: CommandData<CommandMap>
+    beforeUndo: undefined;
+    undo: CommandData<CommandMap>;
 
-    beforeRedo: undefined
-    redo: CommandData<CommandMap>
+    beforeRedo: undefined;
+    redo: CommandData<CommandMap>;
 
-    beforeClean: undefined
-    clean: undefined
+    beforeClean: undefined;
+    clean: undefined;
 
-    registerCommand: { key: keyof CommandMap }
-    unregisterCommand: { key: keyof CommandMap }
+    registerCommand: {key: keyof CommandMap};
+    unregisterCommand: {key: keyof CommandMap};
 
-    batchStart: undefined
-    batchStop: undefined
-}
+    batchStart: undefined;
+    batchStop: undefined;
+};
 
-export type CommandHistory<CommandMap extends CustomCommandMap> =
-    {
-        readonly eventBus: Emitter<CommandHistoryEvents<CommandMap>>
+export type CommandHistory<CommandMap extends CustomCommandMap> = {
+    readonly eventBus: Emitter<CommandHistoryEvents<CommandMap>>;
 
-        readonly canUndo: () => boolean
-        readonly undo: () => void
+    readonly canUndo: () => boolean;
+    readonly undo: () => void;
 
-        readonly canRedo: () => boolean
-        readonly redo: () => void
+    readonly canRedo: () => boolean;
+    readonly redo: () => void;
 
-        readonly clean: () => void
+    readonly clean: () => void;
 
-        // 命令注册方法
-        readonly registerCommand: <Key extends keyof CommandMap>(
-            key: Key,
-            options: HistoryCommandOption<CommandMap, Key>
-        ) => void;
+    // 命令注册方法
+    readonly registerCommand: <Key extends keyof CommandMap>(
+        key: Key,
+        options: HistoryCommandOption<CommandMap, Key>,
+    ) => void;
 
-        readonly unregisterCommand: <Key extends keyof CommandMap>(
-            key: Key
-        ) => HistoryCommand<CommandMap, Key>;
+    readonly unregisterCommand: <Key extends keyof CommandMap>(
+        key: Key,
+    ) => HistoryCommand<CommandMap, Key>;
 
-        // 执行单个命令
-        readonly executeCommand: <Key extends keyof CommandMap>(
-            key: Key,
-            options: Parameters<CommandMap[Key]["applyAction"]>[0],
-        ) => ReturnType<CommandMap[Key]["applyAction"]>;
+    // 执行单个命令
+    readonly executeCommand: <Key extends keyof CommandMap>(
+        key: Key,
+        options: Parameters<CommandMap[Key]['applyAction']>[0],
+    ) => ReturnType<CommandMap[Key]['applyAction']>;
 
-        // 记录单个命令
-        readonly pushCommand: <Key extends keyof CommandMap>(
-            key: Key,
-            options: Parameters<CommandMap[Key]["applyAction"]>[0],
-            revertOptions: Parameters<CommandMap[Key]["revertAction"]>[0],
-        ) => void;
+    // 记录单个命令
+    readonly pushCommand: <Key extends keyof CommandMap>(
+        key: Key,
+        options: Parameters<CommandMap[Key]['applyAction']>[0],
+        revertOptions: Parameters<CommandMap[Key]['revertAction']>[0],
+    ) => void;
 
-        // 批次操作相关方法
-        readonly startBatch: (key: symbol) => void;
-        readonly stopBatch: (key: symbol) => void;
-        readonly executeBatch: (key: symbol, action: () => void) => void;
-        readonly executeAsyncBatch: (key: symbol, action: () => Promise<any>) => Promise<void>;
+    // 批次操作相关方法
+    readonly startBatch: (key: symbol) => void;
+    readonly stopBatch: (key: symbol) => void;
+    readonly executeBatch: (key: symbol, action: () => void) => void;
+    readonly executeAsyncBatch: (key: symbol, action: () => Promise<any>) => Promise<void>;
 
-        readonly __clone_view__: {
-            getCommandMap: () => HistoryCommandMap<CommandMap>;
-            getUndoStack: () => CommandData<CommandMap>[];
-            getRedoStack: () => CommandData<CommandMap>[];
-            getBatchKeyStack: () => BatchKey<CommandMap>[];
-        };
+    readonly __clone_view__: {
+        getCommandMap: () => HistoryCommandMap<CommandMap>;
+        getUndoStack: () => CommandData<CommandMap>[];
+        getRedoStack: () => CommandData<CommandMap>[];
+        getBatchKeyStack: () => BatchKey<CommandMap>[];
     };
+};
 
-export const useCommandHistory = <CommandMap extends CustomCommandMap>(): CommandHistory<CommandMap> => {
-    const commandMap: HistoryCommandMap<CommandMap> =
-        new Map<keyof CommandMap, HistoryCommand<CommandMap, keyof CommandMap>>() as HistoryCommandMap<CommandMap>
+export const useCommandHistory = <
+    CommandMap extends CustomCommandMap,
+>(): CommandHistory<CommandMap> => {
+    const commandMap: HistoryCommandMap<CommandMap> = new Map<
+        keyof CommandMap,
+        HistoryCommand<CommandMap, keyof CommandMap>
+    >() as HistoryCommandMap<CommandMap>;
 
-    const eventBus = mitt<CommandHistoryEvents<CommandMap>>()
+    const eventBus = mitt<CommandHistoryEvents<CommandMap>>();
 
-    let undoStack: CommandData<CommandMap>[] = []
-    let redoStack: CommandData<CommandMap>[] = []
+    let undoStack: CommandData<CommandMap>[] = [];
+    let redoStack: CommandData<CommandMap>[] = [];
 
     let batchKeyStack: BatchKey<CommandMap>[] = [];
-    let currentBatchKey: BatchKey<CommandMap> | undefined
+    let currentBatchKey: BatchKey<CommandMap> | undefined;
 
     const clean = () => {
-        eventBus.emit('beforeClean')
+        eventBus.emit('beforeClean');
 
-        undoStack = []
-        redoStack = []
-        batchKeyStack = []
-        currentBatchKey = undefined
+        undoStack = [];
+        redoStack = [];
+        batchKeyStack = [];
+        currentBatchKey = undefined;
 
-        eventBus.emit('clean')
-    }
+        eventBus.emit('clean');
+    };
 
-
-    let __executeFlag__ = false
+    let __executeFlag__ = false;
     const ifIsExecuteThrow = () => {
         if (__executeFlag__) {
-            throw new Error('Execution does not allow nesting')
+            throw new Error('Execution does not allow nesting');
         }
-    }
+    };
     const protectExecuteNest = <R>(action: () => R): R => {
-        ifIsExecuteThrow()
-        __executeFlag__ = true
+        ifIsExecuteThrow();
+        __executeFlag__ = true;
         try {
-            return action()
+            return action();
         } finally {
-            __executeFlag__ = false
+            __executeFlag__ = false;
         }
-    }
+    };
 
     const registerCommand = <Key extends keyof CommandMap>(
         key: Key,
-        options: HistoryCommandOption<CommandMap, Key>
+        options: HistoryCommandOption<CommandMap, Key>,
     ) => {
         if (commandMap.has(key)) {
-            throw new Error(`command ${String(key)} is already registered`)
+            throw new Error(`command ${String(key)} is already registered`);
         }
 
         const applyWrapper = new Proxy(options.applyAction, {
             apply(target, _thisArg, args) {
-                return protectExecuteNest(() => target(args[0]))
-            }
-        })
+                return protectExecuteNest(() => target(args[0]));
+            },
+        });
         const revertWrapper = new Proxy(options.revertAction, {
             apply(target, _thisArg, args) {
-                return protectExecuteNest(() => target(args[0]))
-            }
-        })
+                return protectExecuteNest(() => target(args[0]));
+            },
+        });
         commandMap.set(key, {
             key,
             applyAction: applyWrapper,
-            revertAction: revertWrapper
-        })
+            revertAction: revertWrapper,
+        });
 
-        eventBus.emit('registerCommand', {key})
-    }
+        eventBus.emit('registerCommand', {key});
+    };
 
     const unregisterCommand = <Key extends keyof CommandMap>(key: Key) => {
-        const command = commandMap.get(key)
+        const command = commandMap.get(key);
         if (command === undefined) {
-            throw new Error(`command ${String(key)} is not registered`)
+            throw new Error(`command ${String(key)} is not registered`);
         }
 
-        commandMap.delete(key)
+        commandMap.delete(key);
 
-        eventBus.emit('unregisterCommand', {key})
-        return command
-    }
+        eventBus.emit('unregisterCommand', {key});
+        return command;
+    };
 
     const push = (commandData: CommandData<CommandMap>) => {
         if (currentBatchKey !== undefined) {
-            currentBatchKey.batch.push(commandData)
+            currentBatchKey.batch.push(commandData);
         } else {
-            undoStack.push(commandData)
-            redoStack = []
+            undoStack.push(commandData);
+            redoStack = [];
         }
-    }
+    };
 
     const executeCommand = <Key extends keyof CommandMap>(
         key: Key,
-        options: Parameters<CommandMap[Key]["applyAction"]>[0],
-    ): ReturnType<CommandMap[Key]["applyAction"]> => {
-        eventBus.emit("beforeChange", {key, type: applyType})
+        options: Parameters<CommandMap[Key]['applyAction']>[0],
+    ): ReturnType<CommandMap[Key]['applyAction']> => {
+        eventBus.emit('beforeChange', {key, type: applyType});
 
-        const command = commandMap.get(key)
+        const command = commandMap.get(key);
         if (command === undefined) {
-            throw new Error(`command ${String(key)} is not registered`)
+            throw new Error(`command ${String(key)} is not registered`);
         }
 
-        const revertOptions = command.applyAction(options)
-        const commandData = {command, options, revertOptions}
-        push(commandData)
+        const revertOptions = command.applyAction(options);
+        const commandData = {command, options, revertOptions};
+        push(commandData);
 
-        eventBus.emit("change", {type: applyType, key: command.key, ...commandData})
+        eventBus.emit('change', {type: applyType, key: command.key, ...commandData});
 
-        return revertOptions
-    }
+        return revertOptions;
+    };
 
     const pushCommand = <Key extends keyof CommandMap>(
         key: Key,
-        options: Parameters<CommandMap[Key]["applyAction"]>[0],
-        revertOptions: Parameters<CommandMap[Key]["revertAction"]>[0],
+        options: Parameters<CommandMap[Key]['applyAction']>[0],
+        revertOptions: Parameters<CommandMap[Key]['revertAction']>[0],
     ) => {
-        eventBus.emit("beforeChange", {key, type: pushType})
+        eventBus.emit('beforeChange', {key, type: pushType});
 
-        const command = commandMap.get(key)
+        const command = commandMap.get(key);
         if (command !== undefined) {
-            const commandData = {command, options, revertOptions}
-            push(commandData)
-            eventBus.emit("change", {type: pushType, key: command.key, ...commandData})
+            const commandData = {command, options, revertOptions};
+            push(commandData);
+            eventBus.emit('change', {type: pushType, key: command.key, ...commandData});
         }
-    }
+    };
 
     const undoCommandData = (commandData: CommandData<CommandMap>) => {
         if (Array.isArray(commandData)) {
             for (const cmd of commandData.slice().reverse()) {
-                undoCommandData(cmd)
+                undoCommandData(cmd);
             }
         } else {
-            const {command, revertOptions} = commandData
+            const {command, revertOptions} = commandData;
 
-            eventBus.emit("beforeChange", {key: command.key, type: revertType})
-            const newOptions = command.revertAction(revertOptions)
+            eventBus.emit('beforeChange', {key: command.key, type: revertType});
+            const newOptions = command.revertAction(revertOptions);
             if (newOptions !== undefined) {
-                commandData.options = newOptions
+                commandData.options = newOptions;
             }
-            eventBus.emit("change", {type: revertType, key: command.key, ...commandData})
+            eventBus.emit('change', {type: revertType, key: command.key, ...commandData});
         }
     };
 
     const redoCommandData = (commandData: CommandData<CommandMap>) => {
         if (Array.isArray(commandData)) {
             for (const cmd of commandData) {
-                redoCommandData(cmd)
+                redoCommandData(cmd);
             }
         } else {
-            const {command, options} = commandData
+            const {command, options} = commandData;
 
-            eventBus.emit("beforeChange", {key: command.key, type: applyType})
-            command.applyAction(options)
-            eventBus.emit("change", {type: applyType, key: command.key, ...commandData})
+            eventBus.emit('beforeChange', {key: command.key, type: applyType});
+            command.applyAction(options);
+            eventBus.emit('change', {type: applyType, key: command.key, ...commandData});
         }
     };
 
     const canUndo = () => {
-        return !__executeFlag__ && undoStack.length > 0
-    }
+        return !__executeFlag__ && undoStack.length > 0;
+    };
 
     const undo = () => {
-        eventBus.emit("beforeUndo")
+        eventBus.emit('beforeUndo');
 
-        ifIsExecuteThrow()
-        if (!canUndo()) return
+        ifIsExecuteThrow();
+        if (!canUndo()) return;
 
-        const commandData = undoStack.pop()
+        const commandData = undoStack.pop();
         if (commandData !== undefined) {
-            redoStack.push(commandData)
-            undoCommandData(commandData)
+            redoStack.push(commandData);
+            undoCommandData(commandData);
 
-            eventBus.emit("undo", commandData)
+            eventBus.emit('undo', commandData);
         }
-    }
+    };
 
     const canRedo = () => {
-        return !__executeFlag__ && redoStack.length > 0
-    }
+        return !__executeFlag__ && redoStack.length > 0;
+    };
 
     const redo = () => {
-        eventBus.emit("beforeRedo")
+        eventBus.emit('beforeRedo');
 
-        ifIsExecuteThrow()
-        if (!canRedo()) return
+        ifIsExecuteThrow();
+        if (!canRedo()) return;
 
-        const commandData = redoStack.pop()
+        const commandData = redoStack.pop();
         if (commandData !== undefined) {
-            undoStack.push(commandData)
-            redoCommandData(commandData)
+            undoStack.push(commandData);
+            redoCommandData(commandData);
 
-            eventBus.emit("redo", commandData)
+            eventBus.emit('redo', commandData);
         }
-    }
+    };
 
     const startBatch = (key: symbol) => {
-        eventBus.emit('batchStart')
+        eventBus.emit('batchStart');
 
-        const newBatchKey: BatchKey<CommandMap> = {key, batch: []}
-        batchKeyStack.push(newBatchKey)
-        currentBatchKey = newBatchKey
-    }
+        const newBatchKey: BatchKey<CommandMap> = {key, batch: []};
+        batchKeyStack.push(newBatchKey);
+        currentBatchKey = newBatchKey;
+    };
 
     const stopBatch = (key: symbol) => {
         if (currentBatchKey !== undefined && currentBatchKey.key === key) {
-            const batch = currentBatchKey.batch
+            const batch = currentBatchKey.batch;
 
-            batchKeyStack.pop()
-            currentBatchKey = batchKeyStack.length > 0 ? batchKeyStack[batchKeyStack.length - 1] : undefined
+            batchKeyStack.pop();
+            currentBatchKey =
+                batchKeyStack.length > 0 ? batchKeyStack[batchKeyStack.length - 1] : undefined;
 
             if (batch.length > 0) {
-                push(batch)
+                push(batch);
             }
 
-            eventBus.emit('batchStop')
+            eventBus.emit('batchStop');
         } else {
-            throw new Error('stopBatch key is not match')
+            throw new Error('stopBatch key is not match');
         }
-    }
+    };
 
     const executeBatch = (key: symbol, action: () => void) => {
-        startBatch(key)
+        startBatch(key);
         try {
-            action()
+            action();
         } finally {
-            stopBatch(key)
+            stopBatch(key);
         }
-    }
+    };
 
     const executeAsyncBatch = async (key: symbol, action: () => Promise<any>) => {
-        startBatch(key)
+        startBatch(key);
         try {
-            await action()
+            await action();
         } finally {
-            stopBatch(key)
+            stopBatch(key);
         }
-    }
+    };
 
     return Object.freeze({
         eventBus,
@@ -383,5 +395,5 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
             getRedoStack: () => cloneDeep(redoStack),
             getBatchKeyStack: () => cloneDeep(batchKeyStack),
         },
-    })
-}
+    });
+};

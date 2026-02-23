@@ -1,128 +1,151 @@
 <script setup lang="ts" generic="T">
-import {ref, computed, watch, useTemplateRef, onBeforeMount} from 'vue'
-import Dropdown from "@/components/dropdown/Dropdown.vue";
-import {translate} from "@/store/i18nStore.ts";
+import {ref, computed, watch, useTemplateRef, onBeforeMount} from 'vue';
+import Dropdown from '@/components/dropdown/Dropdown.vue';
+import {translate} from '@/store/i18nStore.ts';
 
 const model = defineModel<T>({
     required: true,
-})
+});
 const filterText = defineModel('filterText', {
     required: false,
-    default: ''
-})
+    default: '',
+});
 const currentIndex = defineModel<number>('currentIndex', {
     required: false,
-    default: -1
-})
+    default: -1,
+});
 
 onBeforeMount(() => {
-    currentIndex.value = props.options.findIndex(it => props.getId(it) === props.getId(model.value))
-})
+    currentIndex.value = props.options.findIndex(
+        (it) => props.getId(it) === props.getId(model.value),
+    );
+});
 
-const props = defineProps<{
-    getId: (option: T) => string,
-    options: ReadonlyArray<T>,
-    canFilter: true,
-    filter: (option: T, filterText: string) => boolean,
-} | {
-    getId: (option: T) => string,
-    options: ReadonlyArray<T>,
-    canFilter?: false,
-    filter?: (option: T, filterText: string) => boolean,
-}>()
+const props = defineProps<
+    | {
+          getId: (option: T) => string;
+          options: ReadonlyArray<T>;
+          canFilter: true;
+          filter: (option: T, filterText: string) => boolean;
+      }
+    | {
+          getId: (option: T) => string;
+          options: ReadonlyArray<T>;
+          canFilter?: false;
+          filter?: (option: T, filterText: string) => boolean;
+      }
+>();
 
 defineSlots<{
-    selected(props: { option: T }): void,
-    afterInput(): void,
-    option(props: { option: T }): void,
-    empty(): void,
-}>()
+    selected(props: {option: T}): void;
+    afterInput(): void;
+    option(props: {option: T}): void;
+    empty(): void;
+}>();
 
 // 响应式数据
-const isOpen = ref(false)
-const filterInputRef = useTemplateRef('filterInputRef')
-watch(() => isOpen.value, (value) => {
-    if (value) filterInputRef.value?.focus()
-}, {immediate: true})
-watch(() => filterText.value, (value) => {
-    if (value) isOpen.value = true
-})
+const isOpen = ref(false);
+const filterInputRef = useTemplateRef('filterInputRef');
+watch(
+    () => isOpen.value,
+    (value) => {
+        if (value) filterInputRef.value?.focus();
+    },
+    {immediate: true},
+);
+watch(
+    () => filterText.value,
+    (value) => {
+        if (value) isOpen.value = true;
+    },
+);
 
 // 计算属性：根据查询过滤选项
 const filteredOptions = computed(() => {
     if (!filterText.value || !props.canFilter) {
-        return props.options
+        return props.options;
     }
-    return props.options.filter(option =>
-        props.filter(option, filterText.value)
-    )
-})
+    return props.options.filter((option) => props.filter(option, filterText.value));
+});
 
 const closeSelect = () => {
-    filterText.value = ''
-    isOpen.value = false
-}
+    filterText.value = '';
+    isOpen.value = false;
+};
 
-const isInputFocus = ref(false)
+const isInputFocus = ref(false);
 const handleInputFocus = () => {
-    isInputFocus.value = true
-}
+    isInputFocus.value = true;
+};
 const handleInputBlur = async () => {
-    isInputFocus.value = false
-    closeSelect()
-}
+    isInputFocus.value = false;
+    closeSelect();
+};
 
 // 选择选项
 const selectOption = (option: T, index: number) => {
-    model.value = option
-    currentIndex.value = index
-    closeSelect()
-}
+    model.value = option;
+    currentIndex.value = index;
+    closeSelect();
+};
 
 const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
-        e.preventDefault()
-        closeSelect()
+        e.preventDefault();
+        closeSelect();
     } else if (e.key === 'Enter') {
-        e.preventDefault()
+        e.preventDefault();
         if (!isOpen.value) {
-            isOpen.value = true
-            return
+            isOpen.value = true;
+            return;
         }
-        if (currentIndex.value >= 0 && filteredOptions.value.length > 0 && currentIndex.value < filteredOptions.value.length) {
-            const filteredOption = filteredOptions.value[currentIndex.value]
+        if (
+            currentIndex.value >= 0 &&
+            filteredOptions.value.length > 0 &&
+            currentIndex.value < filteredOptions.value.length
+        ) {
+            const filteredOption = filteredOptions.value[currentIndex.value];
             if (filteredOption !== undefined && model.value !== filteredOption) {
-                selectOption(filteredOption, currentIndex.value)
+                selectOption(filteredOption, currentIndex.value);
             }
         }
-        closeSelect()
+        closeSelect();
     } else if (e.key === 'ArrowDown') {
-        e.preventDefault()
+        e.preventDefault();
         if (!isOpen.value) {
-            isOpen.value = true
+            isOpen.value = true;
         }
         if (filteredOptions.value.length > 0) {
-            currentIndex.value = (currentIndex.value + 1) % filteredOptions.value.length
+            currentIndex.value = (currentIndex.value + 1) % filteredOptions.value.length;
         }
     } else if (e.key === 'ArrowUp') {
-        e.preventDefault()
+        e.preventDefault();
         if (!isOpen.value) {
-            isOpen.value = true
+            isOpen.value = true;
         }
         if (filteredOptions.value.length > 0) {
-            currentIndex.value = currentIndex.value <= 0
-                ? filteredOptions.value.length - 1
-                : currentIndex.value - 1
+            currentIndex.value =
+                currentIndex.value <= 0 ? filteredOptions.value.length - 1 : currentIndex.value - 1;
         }
     }
-}
+};
 </script>
 
 <template>
-    <Dropdown v-model="isOpen" ref="filterableSelect" :class="{'input-focus': isInputFocus}">
+    <Dropdown
+        v-model="isOpen"
+        ref="filterableSelect"
+        :class="{'input-focus': isInputFocus}"
+    >
         <template #head>
-            <div class="select-head" :class="{ open: isOpen }">
-                <slot name="selected" :option="model">
+            <div
+                class="select-head"
+                :class="{open: isOpen}"
+            >
+                <slot
+                    name="selected"
+                    :option="model"
+                >
                     <span class="option-view">{{ model }}</span>
                 </slot>
                 <input
@@ -136,13 +159,16 @@ const handleKeyDown = (e: KeyboardEvent) => {
                     :style="{width: props.canFilter ? (isInputFocus ? '100%' : 0) : 0}"
                 />
                 <span class="after-input-wrapper">
-                    <slot name="afterInput"/>
+                    <slot name="afterInput" />
                 </span>
             </div>
         </template>
 
         <template #body>
-            <ul class="options-list" v-if="filteredOptions.length > 0">
+            <ul
+                class="options-list"
+                v-if="filteredOptions.length > 0"
+            >
                 <li
                     v-for="(option, index) in filteredOptions"
                     :key="props.getId(option)"
@@ -150,17 +176,23 @@ const handleKeyDown = (e: KeyboardEvent) => {
                     class="option-item"
                     :class="{
                         selected: props.getId(option) === (model ? props.getId(model) : ''),
-                        active: index === currentIndex
+                        active: index === currentIndex,
                     }"
                 >
-                    <slot name="option" :option="option">
+                    <slot
+                        name="option"
+                        :option="option"
+                    >
                         <span class="option-view">{{ option }}</span>
                     </slot>
                 </li>
             </ul>
-            <slot v-else name="empty">
+            <slot
+                v-else
+                name="empty"
+            >
                 <div class="empty-tip">
-                    {{ translate("no_option_tip") }}
+                    {{ translate('no_option_tip') }}
                 </div>
             </slot>
         </template>
@@ -209,7 +241,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
 }
 
 .option-item.selected {
-    color: var(--primary-color)
+    color: var(--primary-color);
 }
 
 .empty-tip {

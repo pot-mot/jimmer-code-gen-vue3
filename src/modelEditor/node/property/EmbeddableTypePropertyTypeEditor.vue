@@ -1,180 +1,200 @@
 <script setup lang="ts">
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import Dropdown from "@/components/dropdown/Dropdown.vue";
-import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
-import GroupViewer from "@/modelEditor/viewer/GroupViewer.vue";
-import EnumerationViewer from "@/modelEditor/viewer/EnumerationViewer.vue";
-import EmbeddableTypeViewer from "@/modelEditor/viewer/EmbeddableTypeViewer.vue";
-import EmbeddableTypeIdViewer from "@/modelEditor/viewer/EmbeddableTypeIdViewer.vue";
-import EnumerationIdViewer from "@/modelEditor/viewer/EnumerationIdViewer.vue";
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import Dropdown from '@/components/dropdown/Dropdown.vue';
+import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
+import GroupViewer from '@/modelEditor/viewer/GroupViewer.vue';
+import EnumerationViewer from '@/modelEditor/viewer/EnumerationViewer.vue';
+import EmbeddableTypeViewer from '@/modelEditor/viewer/EmbeddableTypeViewer.vue';
+import EmbeddableTypeIdViewer from '@/modelEditor/viewer/EmbeddableTypeIdViewer.vue';
+import EnumerationIdViewer from '@/modelEditor/viewer/EnumerationIdViewer.vue';
 import {
     toScalarEmbeddableProperty,
     toScalarEnumProperty,
-    toScalarCommonProperty
-} from "@/modelEditor/node/property/PropertyConvert.ts";
-import {computed, nextTick, ref} from "vue";
-import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
-import ColorPreview from "@/components/color/ColorPreview.vue";
+    toScalarCommonProperty,
+} from '@/modelEditor/node/property/PropertyConvert.ts';
+import {computed, nextTick, ref} from 'vue';
+import TypePairViewer from '@/modelEditor/viewer/TypePairViewer.vue';
+import ColorPreview from '@/components/color/ColorPreview.vue';
 import {
     getGroupItemTypeOptionName,
     type GroupTypeOptions,
-    type TypeOptions
-} from "@/modelEditor/node/property/TypeOption.ts";
-import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
-import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
-import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
-import {translate} from "@/store/i18nStore.ts";
-import IconEdit from "@/components/icons/IconEdit.vue";
-import IconRefresh from "@/components/icons/IconRefresh.vue";
-import {usePropertyEditDialog} from "@/modelEditor/property/usePropertyEditDialog.ts";
-import {unclearTypeSet} from "@/modelEditor/diagnostic/unclearType.ts";
+    type TypeOptions,
+} from '@/modelEditor/node/property/TypeOption.ts';
+import IconEnumeration from '@/components/icons/modelEditor/IconEnumeration.vue';
+import IconEmbeddableType from '@/components/icons/modelEditor/IconEmbeddableType.vue';
+import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
+import {translate} from '@/store/i18nStore.ts';
+import IconEdit from '@/components/icons/IconEdit.vue';
+import IconRefresh from '@/components/icons/IconRefresh.vue';
+import {usePropertyEditDialog} from '@/modelEditor/property/usePropertyEditDialog.ts';
+import {unclearTypeSet} from '@/modelEditor/diagnostic/unclearType.ts';
 
 const props = defineProps<{
-    embeddableType: DeepReadonly<EmbeddableTypeWithProperties>
-}>()
+    embeddableType: DeepReadonly<EmbeddableTypeWithProperties>;
+}>();
 
 const property = defineModel<EmbeddableTypeProperty>({
-    required: true
-})
+    required: true,
+});
 
-const openState = ref<boolean>(false)
+const openState = ref<boolean>(false);
 
-const {
-    contextData,
-    menuMap,
-    executeAsyncBatch,
-    waitChangeSync,
-} = useModelEditor()
+const {contextData, menuMap, executeAsyncBatch, waitChangeSync} = useModelEditor();
 
-const {
-    open: openPropertyEditDialog,
-} = usePropertyEditDialog()
+const {open: openPropertyEditDialog} = usePropertyEditDialog();
 
-const {
-    crossTypeOptions,
-    open: openTypeMapping,
-    refreshCrossTypes,
-} = useTypeMapping()
+const {crossTypeOptions, open: openTypeMapping, refreshCrossTypes} = useTypeMapping();
 const handleEditTypeMapping = () => {
-    openState.value = false
-    openTypeMapping()
-}
+    openState.value = false;
+    openTypeMapping();
+};
 
-const filterKeyword = ref<string>("")
+const filterKeyword = ref<string>('');
 const options = computed<TypeOptions>(() => {
     const result: TypeOptions = {
         crossTypes: [],
-        groups: []
-    }
+        groups: [],
+    };
 
-    const filteredCrossTypes = crossTypeOptions.value.filter(crossType => {
-        return (crossType.databaseSource === contextData.model.databaseType || crossType.databaseSource === "ANY") &&
-            (crossType.jvmSource === contextData.model.jvmLanguage || crossType.jvmSource === "ANY")
-    })
+    const filteredCrossTypes = crossTypeOptions.value.filter((crossType) => {
+        return (
+            (crossType.databaseSource === contextData.model.databaseType ||
+                crossType.databaseSource === 'ANY') &&
+            (crossType.jvmSource === contextData.model.jvmLanguage || crossType.jvmSource === 'ANY')
+        );
+    });
 
-    const keyword = filterKeyword.value.trim().toLowerCase()
+    const keyword = filterKeyword.value.trim().toLowerCase();
     if (keyword.length === 0) {
-        result.crossTypes = filteredCrossTypes
+        result.crossTypes = filteredCrossTypes;
 
         for (const menuItem of menuMap.value.values()) {
             const current: GroupTypeOptions = {
                 group: menuItem.group,
-                options: []
-            }
+                options: [],
+            };
 
             for (const enumeration of menuItem.enumerations.values()) {
-                current.options.push({type: "Enumeration", enumeration})
+                current.options.push({type: 'Enumeration', enumeration});
             }
             for (const embeddableType of menuItem.embeddableTypes.values()) {
-                if (embeddableType.id === props.embeddableType.id) continue
-                current.options.push({type: "EmbeddableType", embeddableType})
+                if (embeddableType.id === props.embeddableType.id) continue;
+                current.options.push({type: 'EmbeddableType', embeddableType});
             }
 
             if (current.options.length > 0) {
-                current.options.sort((a, b) => getGroupItemTypeOptionName(a).localeCompare(getGroupItemTypeOptionName(b)))
-                result.groups.push(current)
+                current.options.sort((a, b) =>
+                    getGroupItemTypeOptionName(a).localeCompare(getGroupItemTypeOptionName(b)),
+                );
+                result.groups.push(current);
             }
         }
     } else {
-        result.crossTypes = filteredCrossTypes.filter(crossType => {
-            return crossType.jvmType.typeExpression.toLowerCase().includes(keyword) ||
+        result.crossTypes = filteredCrossTypes.filter((crossType) => {
+            return (
+                crossType.jvmType.typeExpression.toLowerCase().includes(keyword) ||
                 crossType.sqlType.type.toLowerCase().includes(keyword) ||
                 crossType.tsType.typeExpression.toLowerCase().includes(keyword)
-        })
+            );
+        });
 
         for (const menuItem of menuMap.value.values()) {
             const current: GroupTypeOptions = {
                 group: menuItem.group,
-                options: []
-            }
+                options: [],
+            };
 
             for (const enumeration of menuItem.enumerations.values()) {
-                if (enumeration.name.toLowerCase().includes(keyword) || enumeration.comment.toLowerCase().includes(keyword)) {
-                    current.options.push({type: "Enumeration", enumeration})
+                if (
+                    enumeration.name.toLowerCase().includes(keyword) ||
+                    enumeration.comment.toLowerCase().includes(keyword)
+                ) {
+                    current.options.push({type: 'Enumeration', enumeration});
                 }
             }
             for (const embeddableType of menuItem.embeddableTypes.values()) {
-                if (embeddableType.id === props.embeddableType.id) continue
-                if (embeddableType.name.toLowerCase().includes(keyword) || embeddableType.comment.toLowerCase().includes(keyword)) {
-                    current.options.push({type: "EmbeddableType", embeddableType})
+                if (embeddableType.id === props.embeddableType.id) continue;
+                if (
+                    embeddableType.name.toLowerCase().includes(keyword) ||
+                    embeddableType.comment.toLowerCase().includes(keyword)
+                ) {
+                    current.options.push({type: 'EmbeddableType', embeddableType});
                 }
             }
 
             if (current.options.length > 0) {
-                current.options.sort((a, b) => getGroupItemTypeOptionName(a).localeCompare(getGroupItemTypeOptionName(b)))
-                result.groups.push(current)
+                current.options.sort((a, b) =>
+                    getGroupItemTypeOptionName(a).localeCompare(getGroupItemTypeOptionName(b)),
+                );
+                result.groups.push(current);
             }
         }
     }
 
-    return result
-})
+    return result;
+});
 
 const selectBaseType = (typePair: DeepReadonly<CrossType>) => {
-    executeAsyncBatch(Symbol("property type to baseType"), async () => {
-        property.value = toScalarCommonProperty(property.value, typePair)
+    executeAsyncBatch(Symbol('property type to baseType'), async () => {
+        property.value = toScalarCommonProperty(property.value, typePair);
 
-        await nextTick()
-        await waitChangeSync()
-    })
-}
+        await nextTick();
+        await waitChangeSync();
+    });
+};
 
 const selectEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
-    if (
-        "enumId" in property.value && property.value.enumId === enumeration.id
-    ) return
+    if ('enumId' in property.value && property.value.enumId === enumeration.id) return;
 
-    executeAsyncBatch(Symbol("property type to enumeration"), async () => {
-        property.value = toScalarEnumProperty(property.value, enumeration)
+    executeAsyncBatch(Symbol('property type to enumeration'), async () => {
+        property.value = toScalarEnumProperty(property.value, enumeration);
 
-        await nextTick()
-        await waitChangeSync()
-    })
-}
+        await nextTick();
+        await waitChangeSync();
+    });
+};
 
 const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
-    if ("embeddableTypeId" in property.value && property.value.embeddableTypeId === embeddableType.id) return
+    if (
+        'embeddableTypeId' in property.value &&
+        property.value.embeddableTypeId === embeddableType.id
+    )
+        return;
 
-    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
-        property.value = toScalarEmbeddableProperty(property.value, embeddableType)
+    executeAsyncBatch(Symbol('property type to embeddableType'), async () => {
+        property.value = toScalarEmbeddableProperty(property.value, embeddableType);
 
-        await nextTick()
-        await waitChangeSync()
-    })
-}
+        await nextTick();
+        await waitChangeSync();
+    });
+};
 </script>
 
 <template>
     <Dropdown v-model="openState">
         <template #head>
             <div class="type-editor-header">
-                <div v-if="'enumId' in property" class="type-editor-header-label">
-                    <IconEnumeration class="type-editor-header-label-icon"/>
-                    <EnumerationIdViewer :id="property.enumId" hide-comment ctrl-focus/>
+                <div
+                    v-if="'enumId' in property"
+                    class="type-editor-header-label"
+                >
+                    <IconEnumeration class="type-editor-header-label-icon" />
+                    <EnumerationIdViewer
+                        :id="property.enumId"
+                        hide-comment
+                        ctrl-focus
+                    />
                 </div>
-                <div v-if="'embeddableTypeId' in property" class="type-editor-header-label">
-                    <IconEmbeddableType class="type-editor-header-label-icon"/>
-                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId" hide-comment ctrl-focus/>
+                <div
+                    v-if="'embeddableTypeId' in property"
+                    class="type-editor-header-label"
+                >
+                    <IconEmbeddableType class="type-editor-header-label-icon" />
+                    <EmbeddableTypeIdViewer
+                        :id="property.embeddableTypeId"
+                        hide-comment
+                        ctrl-focus
+                    />
                 </div>
                 <div
                     v-if="'rawType' in property"
@@ -190,12 +210,14 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
 
                 <button
                     class="type-editor-button"
-                    @click.stop="openPropertyEditDialog({
-                        embeddableTypeId: embeddableType.id,
-                        property: property
-                    })"
+                    @click.stop="
+                        openPropertyEditDialog({
+                            embeddableTypeId: embeddableType.id,
+                            property: property,
+                        })
+                    "
                 >
-                    <IconEdit/>
+                    <IconEdit />
                 </button>
             </div>
         </template>
@@ -208,18 +230,18 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                 {{ property.columnInfo.type }}
             </div>
             <div
-                v-if="
-                    property.category === 'SCALAR_COMMON' ||
-                    property.category === 'SCALAR_ENUM'
-                "
+                v-if="property.category === 'SCALAR_COMMON' || property.category === 'SCALAR_ENUM'"
                 class="view-item"
             >
                 {{ translate('nullable') }}
-                <input type="checkbox" v-model="property.nullable">
+                <input
+                    type="checkbox"
+                    v-model="property.nullable"
+                />
             </div>
 
             <div class="options-filter">
-                <input v-model="filterKeyword">
+                <input v-model="filterKeyword" />
             </div>
 
             <div class="options-container">
@@ -228,10 +250,10 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                         <div class="cross-type-header">
                             {{ translate('cross_type') }}
                             <button @click="handleEditTypeMapping()">
-                                <IconEdit/>
+                                <IconEdit />
                             </button>
                             <button @click="refreshCrossTypes()">
-                                <IconRefresh/>
+                                <IconRefresh />
                             </button>
                         </div>
                     </template>
@@ -245,12 +267,12 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                                         'rawType' in property &&
                                         property.rawType === type.jvmType.typeExpression &&
                                         'columnInfo' in property &&
-                                        property.columnInfo.type === type.sqlType.type
+                                        property.columnInfo.type === type.sqlType.type,
                                 }"
                                 v-for="type in options.crossTypes"
                                 @click="selectBaseType(type)"
                             >
-                                <TypePairViewer :type-pair="type"/>
+                                <TypePairViewer :type-pair="type" />
                             </li>
                         </ul>
                     </template>
@@ -265,8 +287,11 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                 >
                     <template #head>
                         <div class="group-item">
-                            <ColorPreview :value="groupOptions.group.color" class="group-item-color"/>
-                            <GroupViewer :group="groupOptions.group"/>
+                            <ColorPreview
+                                :value="groupOptions.group.color"
+                                class="group-item-color"
+                            />
+                            <GroupViewer :group="groupOptions.group" />
                         </div>
                     </template>
 
@@ -276,22 +301,32 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                                 <li
                                     v-if="option.type === 'Enumeration'"
                                     class="select-item"
-                                    :class="{selected: 'enumId' in property && option.enumeration.id === property.enumId}"
+                                    :class="{
+                                        selected:
+                                            'enumId' in property &&
+                                            option.enumeration.id === property.enumId,
+                                    }"
                                     :key="option.enumeration.id"
                                     @click="selectEnumeration(option.enumeration)"
                                 >
-                                    <IconEnumeration class="select-item-icon"/>
-                                    <EnumerationViewer :enumeration="option.enumeration"/>
+                                    <IconEnumeration class="select-item-icon" />
+                                    <EnumerationViewer :enumeration="option.enumeration" />
                                 </li>
                                 <li
                                     v-if="option.type === 'EmbeddableType'"
                                     class="select-item"
-                                    :class="{selected: 'embeddableTypeId' in property && option.embeddableType.id === property.embeddableTypeId}"
+                                    :class="{
+                                        selected:
+                                            'embeddableTypeId' in property &&
+                                            option.embeddableType.id === property.embeddableTypeId,
+                                    }"
                                     :key="option.embeddableType.id"
                                     @click="selectEmbeddableType(option.embeddableType)"
                                 >
-                                    <IconEmbeddableType class="select-item-icon"/>
-                                    <EmbeddableTypeViewer :embeddable-type="option.embeddableType"/>
+                                    <IconEmbeddableType class="select-item-icon" />
+                                    <EmbeddableTypeViewer
+                                        :embeddable-type="option.embeddableType"
+                                    />
                                 </li>
                             </template>
                         </ul>

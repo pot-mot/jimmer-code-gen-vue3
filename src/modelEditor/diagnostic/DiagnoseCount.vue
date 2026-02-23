@@ -1,31 +1,46 @@
 <script setup lang="ts">
-import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
-import IconDiagnoseError from "@/components/icons/IconDiagnoseError.vue";
-import IconDiagnoseWarning from "@/components/icons/IconDiagnoseWarning.vue";
-import IconDiagnoseInfo from "@/components/icons/IconDiagnoseInfo.vue";
-import {computed} from "vue";
+import type {DiagnoseMessage} from '@/modelEditor/diagnostic/ModelDiagnoseInfo.ts';
+import IconDiagnoseError from '@/components/icons/IconDiagnoseError.vue';
+import IconDiagnoseWarning from '@/components/icons/IconDiagnoseWarning.vue';
+import IconDiagnoseInfo from '@/components/icons/IconDiagnoseInfo.vue';
+import {computed} from 'vue';
 
 const props = defineProps<{
-    messages?: DeepReadonly<DiagnoseMessage[]>
-}>()
+    messages?: DeepReadonly<DiagnoseMessage[]>;
+}>();
 
-const infoMessages = computed(() => props.messages?.filter(message => message.type === "info") ?? [])
-const warningMessages = computed(() => props.messages?.filter(message => message.type === "warning") ?? [])
-const dangerMessages = computed(() => props.messages?.filter(message => message.type === "error") ?? [])
+const infoMessages = computed(
+    () => props.messages?.filter((message) => message.type === 'info') ?? [],
+);
+const warningMessages = computed(
+    () => props.messages?.filter((message) => message.type === 'warning') ?? [],
+);
+const dangerMessages = computed(
+    () => props.messages?.filter((message) => message.type === 'error') ?? [],
+);
 </script>
 
 <template>
     <div class="diagnose-count">
-        <div class="diagnose-count-item" v-if="infoMessages.length > 0">
-            <IconDiagnoseInfo/>
+        <div
+            class="diagnose-count-item"
+            v-if="infoMessages.length > 0"
+        >
+            <IconDiagnoseInfo />
             <span class="count-label info">{{ infoMessages.length }}</span>
         </div>
-        <div class="diagnose-count-item" v-if="warningMessages.length > 0">
-            <IconDiagnoseWarning/>
+        <div
+            class="diagnose-count-item"
+            v-if="warningMessages.length > 0"
+        >
+            <IconDiagnoseWarning />
             <span class="count-label warning">{{ warningMessages.length }}</span>
         </div>
-        <div class="diagnose-count-item" v-if="dangerMessages.length > 0">
-            <IconDiagnoseError/>
+        <div
+            class="diagnose-count-item"
+            v-if="dangerMessages.length > 0"
+        >
+            <IconDiagnoseError />
             <span class="count-label error">{{ dangerMessages.length }}</span>
         </div>
     </div>
@@ -62,7 +77,7 @@ const dangerMessages = computed(() => props.messages?.filter(message => message.
     color: var(--warning-color);
 }
 
- .count-label.info {
+.count-label.info {
     color: var(--info-color);
 }
 </style>

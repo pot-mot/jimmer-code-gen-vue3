@@ -1,35 +1,37 @@
 <script setup lang="ts">
-import FilterableSelect from "@/components/select/FilterableSelect.vue";
-import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
-import {computed} from "vue";
+import FilterableSelect from '@/components/select/FilterableSelect.vue';
+import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
+import {computed} from 'vue';
 
-const {jvmTypes} = useTypeMapping()
+const {jvmTypes} = useTypeMapping();
 
 const id = defineModel<string | undefined>({
-    required: true
-})
+    required: true,
+});
 
 const props = defineProps<{
-    jvmSource?: JvmSource
-}>()
+    jvmSource?: JvmSource;
+}>();
 
 const selectedJvmType = computed({
     get() {
-        return jvmTypes.value.find(it => it.id === id.value)
+        return jvmTypes.value.find((it) => it.id === id.value);
     },
     set(value) {
         if (value === undefined) {
-            id.value = undefined
+            id.value = undefined;
         } else {
-            id.value = value.id
+            id.value = value.id;
         }
-    }
-})
+    },
+});
 
 const options = computed(() => {
-    if (props.jvmSource === undefined || props.jvmSource === 'ANY') return jvmTypes.value
-    return jvmTypes.value.filter(it => it.jvmSource === props.jvmSource || it.jvmSource === 'ANY')
-})
+    if (props.jvmSource === undefined || props.jvmSource === 'ANY') return jvmTypes.value;
+    return jvmTypes.value.filter(
+        (it) => it.jvmSource === props.jvmSource || it.jvmSource === 'ANY',
+    );
+});
 </script>
 
 <template>

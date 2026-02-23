@@ -1,50 +1,56 @@
 <script setup lang="ts">
-import 'vue-color/style.css'
-import {SketchPicker} from "vue-color";
-import {nextTick, ref, useTemplateRef, watch} from "vue";
+import 'vue-color/style.css';
+import {SketchPicker} from 'vue-color';
+import {nextTick, ref, useTemplateRef, watch} from 'vue';
 
 const value = defineModel<string>({
-    required: true
-})
+    required: true,
+});
 
-withDefaults(defineProps<{
-    presetColors?: string[] | undefined
-}>(), {
-    presetColors: () => []
-})
+withDefaults(
+    defineProps<{
+        presetColors?: string[] | undefined;
+    }>(),
+    {
+        presetColors: () => [],
+    },
+);
 
-const colorPreviewRef = useTemplateRef<HTMLDivElement>("colorPreviewRef")
-const colorPickerRef = useTemplateRef<InstanceType<typeof SketchPicker>>("colorPickerRef")
+const colorPreviewRef = useTemplateRef<HTMLDivElement>('colorPreviewRef');
+const colorPickerRef = useTemplateRef<InstanceType<typeof SketchPicker>>('colorPickerRef');
 
-const showPicker = ref(false)
+const showPicker = ref(false);
 const pickerPosition = ref({
     top: 0,
     left: 0,
-})
+});
 
-watch(() => showPicker.value, async (value) => {
-    await nextTick()
-    if (value && colorPreviewRef.value && colorPickerRef.value?.$el) {
-        const colorRect = colorPreviewRef.value.getBoundingClientRect()
-        const pickerRect = colorPickerRef.value.$el.getBoundingClientRect()
+watch(
+    () => showPicker.value,
+    async (value) => {
+        await nextTick();
+        if (value && colorPreviewRef.value && colorPickerRef.value?.$el) {
+            const colorRect = colorPreviewRef.value.getBoundingClientRect();
+            const pickerRect = colorPickerRef.value.$el.getBoundingClientRect();
 
-        // 计算水平位置（优先右侧，空间不足则左侧）
-        let left = colorRect.left + colorRect.width
-        if (left + pickerRect.width > window.innerWidth) {
-            left = Math.max(0, colorRect.left - pickerRect.width)
+            // 计算水平位置（优先右侧，空间不足则左侧）
+            let left = colorRect.left + colorRect.width;
+            if (left + pickerRect.width > window.innerWidth) {
+                left = Math.max(0, colorRect.left - pickerRect.width);
+            }
+            if (left < 0) left = 0;
+
+            // 计算垂直位置（优先下方，空间不足则上方）
+            let top = colorRect.top + colorRect.height;
+            if (top + pickerRect.height > window.innerHeight) {
+                top = Math.max(0, colorRect.top - pickerRect.height);
+            }
+            if (top < 0) top = 0;
+
+            pickerPosition.value = {top, left};
         }
-        if (left < 0) left = 0
-
-        // 计算垂直位置（优先下方，空间不足则上方）
-        let top = colorRect.top + colorRect.height
-        if (top + pickerRect.height > window.innerHeight) {
-            top = Math.max(0, colorRect.top - pickerRect.height)
-        }
-        if (top < 0) top = 0
-
-        pickerPosition.value = { top, left }
-    }
-})
+    },
+);
 </script>
 
 <template>
@@ -53,10 +59,13 @@ watch(() => showPicker.value, async (value) => {
             class="color-preview"
             ref="colorPreviewRef"
             @click="showPicker = !showPicker"
-            :style="{ backgroundColor: value }"
+            :style="{backgroundColor: value}"
         />
 
-        <Teleport to="body" :disabled="!showPicker">
+        <Teleport
+            to="body"
+            :disabled="!showPicker"
+        >
             <div
                 v-if="showPicker"
                 class="picker-mask"

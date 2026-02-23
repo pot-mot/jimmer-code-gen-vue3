@@ -1,347 +1,335 @@
 <script setup lang="ts" generic="T">
-import {nextTick, useTemplateRef} from 'vue'
-import {cloneDeep} from 'lodash-es'
-import type {EditListProps} from "@/components/list/selectableList/ListProps.ts";
-import type {EditListEmits} from "@/components/list/selectableList/ListEmits.ts";
-import {createSelectRange, useListSelection} from "@/components/list/selectableList/listSelection.ts";
-import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
-import {useClickOutside} from "@/components/list/selectableList/useClickOutside.ts";
-import {sendMessage} from "@/components/message/messageApi.ts";
-import IconAdd from "@/components/icons/IconAdd.vue";
-import type {ErrorObject} from "ajv";
-import "./list.css"
-import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
-import {translate} from "@/store/i18nStore.ts";
-import {readText, writeText} from "clipboard-polyfill";
-import {json5Parse} from "@/utils/json/jsonParse.ts";
+import {nextTick, useTemplateRef} from 'vue';
+import {cloneDeep} from 'lodash-es';
+import type {EditListProps} from '@/components/list/selectableList/ListProps.ts';
+import type {EditListEmits} from '@/components/list/selectableList/ListEmits.ts';
+import {
+    createSelectRange,
+    useListSelection,
+} from '@/components/list/selectableList/listSelection.ts';
+import {judgeTargetIsInteraction} from '@/utils/event/judgeEventTarget.ts';
+import {useClickOutside} from '@/components/list/selectableList/useClickOutside.ts';
+import {sendMessage} from '@/components/message/messageApi.ts';
+import IconAdd from '@/components/icons/IconAdd.vue';
+import type {ErrorObject} from 'ajv';
+import './list.css';
+import {cloneDeepReadonlyRaw} from '@/utils/type/cloneDeepReadonly.ts';
+import {translate} from '@/store/i18nStore.ts';
+import {readText, writeText} from 'clipboard-polyfill';
+import {json5Parse} from '@/utils/json/jsonParse.ts';
 
 const lines = defineModel<T[]>('lines', {
-    required: true
-})
+    required: true,
+});
 
 const getTempLines = () => {
-    return cloneDeep(lines.value)
-}
+    return cloneDeep(lines.value);
+};
 
-const props = withDefaults(
-    defineProps<EditListProps<T>>(),
-    {
-        beforeCopy: () => {
-        },
-        beforePaste: () => {
-        },
-        afterPaste: () => {
-        },
-    }
-)
+const props = withDefaults(defineProps<EditListProps<T>>(), {
+    beforeCopy: () => {},
+    beforePaste: () => {},
+    afterPaste: () => {},
+});
 
-const emits = defineEmits<EditListEmits<T>>()
+const emits = defineEmits<EditListEmits<T>>();
 
-const editListBody = useTemplateRef("editListBody")
+const editListBody = useTemplateRef('editListBody');
 
-const listSelection = useListSelection<number>()
+const listSelection = useListSelection<number>();
 
-const {
-    lastSelect,
-    selectedItemSet,
-    isSelected,
-    select,
-    unselect,
-    cleanSelection,
-    resetSelection,
-} = listSelection
+const {lastSelect, selectedItemSet, isSelected, select, unselect, cleanSelection, resetSelection} =
+    listSelection;
 
 const handleItemClick = (e: MouseEvent, item: T, index: number) => {
-    emits('clickItem', item, index)
+    emits('clickItem', item, index);
 
-    e.stopPropagation()
-    e.stopImmediatePropagation()
+    e.stopPropagation();
+    e.stopImmediatePropagation();
 
     if (e.ctrlKey || e.metaKey) {
         if (!isSelected(index)) {
-            select(index)
+            select(index);
         } else {
-            unselect(index)
+            unselect(index);
         }
     } else if (e.shiftKey) {
-        e.preventDefault()
+        e.preventDefault();
         if (lastSelect.value == undefined) {
-            select(index)
-            return
+            select(index);
+            return;
         }
-        resetSelection(createSelectRange(index, lastSelect.value))
+        resetSelection(createSelectRange(index, lastSelect.value));
     } else {
         if (!judgeTargetIsInteraction(e)) {
-            resetSelection([index])
-            lastSelect.value = index
+            resetSelection([index]);
+            lastSelect.value = index;
         }
     }
-}
+};
 
-useClickOutside(() => editListBody.value, () => {
-    cleanSelection()
-})
+useClickOutside(
+    () => editListBody.value,
+    () => {
+        cleanSelection();
+    },
+);
 
 const handleKeyboardEvent = async (e: KeyboardEvent) => {
     if (judgeTargetIsInteraction(e)) {
-        return
+        return;
     }
 
-    const selectedItems: T[] = []
-    const unselectedItems: T[] = []
+    const selectedItems: T[] = [];
+    const unselectedItems: T[] = [];
 
     for (const [index, item] of lines.value.entries()) {
         if (selectedItemSet.value.has(index)) {
-            selectedItems.push(item)
+            selectedItems.push(item);
         } else {
-            unselectedItems.push(item)
+            unselectedItems.push(item);
         }
     }
 
-    if (e.key === "Delete" || e.key === "Backspace") {
-        e.preventDefault()
-        e.stopPropagation()
-        e.stopImmediatePropagation()
-        cleanSelection()
-        emits('delete', selectedItems)
-        lines.value = unselectedItems
-    }
-
-    else if (e.ctrlKey || e.metaKey) {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        cleanSelection();
+        emits('delete', selectedItems);
+        lines.value = unselectedItems;
+    } else if (e.ctrlKey || e.metaKey) {
         if (e.key === 'a') {
-            e.preventDefault()
-            e.stopPropagation()
-            e.stopImmediatePropagation()
-            resetSelection(Array.from(lines.value.keys()))
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            resetSelection(Array.from(lines.value.keys()));
         } else if (e.key === 'c') {
-            e.preventDefault()
-            e.stopPropagation()
-            e.stopImmediatePropagation()
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
 
-            const copyData = cloneDeepReadonlyRaw<T[]>(selectedItems)
-            props.beforeCopy(copyData)
-            await writeText(JSON.stringify(copyData))
+            const copyData = cloneDeepReadonlyRaw<T[]>(selectedItems);
+            props.beforeCopy(copyData);
+            await writeText(JSON.stringify(copyData));
         } else if (e.key === 'x') {
-            e.preventDefault()
-            e.stopPropagation()
-            e.stopImmediatePropagation()
-            await writeText(JSON.stringify(selectedItems))
-            cleanSelection()
-            emits('delete', selectedItems)
-            lines.value = unselectedItems
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            await writeText(JSON.stringify(selectedItems));
+            cleanSelection();
+            emits('delete', selectedItems);
+            lines.value = unselectedItems;
         } else if (e.key === 'v') {
-            e.preventDefault()
-            e.stopPropagation()
-            e.stopImmediatePropagation()
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
 
-            if (props.jsonSchemaValidate === undefined) return
-            const jsonSchemaValidate = props.jsonSchemaValidate
+            if (props.jsonSchemaValidate === undefined) return;
+            const jsonSchemaValidate = props.jsonSchemaValidate;
 
-            const text = await readText()
+            const text = await readText();
             try {
-                const value = json5Parse(text)
-                const tempLines = getTempLines()
+                const value = json5Parse(text);
+                const tempLines = getTempLines();
 
-                const insertIndex = selectedItemSet.value.size > 0 ? Math.max(...selectedItemSet.value.values()) + 1 : tempLines.length
+                const insertIndex =
+                    selectedItemSet.value.size > 0
+                        ? Math.max(...selectedItemSet.value.values()) + 1
+                        : tempLines.length;
 
-                let insertLength = 0
+                let insertLength = 0;
 
-                const validateErrorsMap = new Map<number, ErrorObject[] | null | undefined>
+                const validateErrorsMap = new Map<number, ErrorObject[] | null | undefined>();
 
                 if (
                     Array.isArray(value) &&
                     value.filter((item, index) => {
-                        return jsonSchemaValidate(item, (e) => validateErrorsMap.set(index, e))
+                        return jsonSchemaValidate(item, (e) => validateErrorsMap.set(index, e));
                     }).length === value.length
                 ) {
-                    props.beforePaste(value)
-                    tempLines.splice(insertIndex, 0, ...value)
-                    insertLength = value.length
+                    props.beforePaste(value);
+                    tempLines.splice(insertIndex, 0, ...value);
+                    insertLength = value.length;
                 } else if (jsonSchemaValidate(value, (e) => validateErrorsMap.set(0, e))) {
-                    props.beforePaste([value])
-                    tempLines.splice(insertIndex, 0, value)
-                    insertLength = 1
+                    props.beforePaste([value]);
+                    tempLines.splice(insertIndex, 0, value);
+                    insertLength = 1;
                 } else {
-                    sendMessage(translate("paste_fail_tip"), {type: "error"})
-                    console.error("Paste Fail", validateErrorsMap)
-                    return
+                    sendMessage(translate('paste_fail_tip'), {type: 'error'});
+                    console.error('Paste Fail', validateErrorsMap);
+                    return;
                 }
 
-                lines.value = tempLines
+                lines.value = tempLines;
 
-                await nextTick()
+                await nextTick();
 
-                cleanSelection()
+                cleanSelection();
                 for (let i = insertIndex; i < insertIndex + insertLength; i++) {
-                    select(i)
+                    select(i);
                 }
-                props.afterPaste()
+                props.afterPaste();
             } catch (e) {
-                sendMessage(translate("paste_fail_tip"), {type: "error"})
-                console.error("Paste Fail", e)
+                sendMessage(translate('paste_fail_tip'), {type: 'error'});
+                console.error('Paste Fail', e);
             }
         }
-    }
-
-    else if (e.key === 'ArrowUp') {
-        e.preventDefault()
-        e.stopPropagation()
-        e.stopImmediatePropagation()
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
 
         if (e.shiftKey) {
             if (selectedItemSet.value.size > 0 && lastSelect.value !== undefined) {
-                const minIndex = Math.min(...selectedItemSet.value)
-                const maxIndex = Math.max(...selectedItemSet.value)
+                const minIndex = Math.min(...selectedItemSet.value);
+                const maxIndex = Math.max(...selectedItemSet.value);
                 if (minIndex === lastSelect.value) {
                     if (maxIndex - 1 >= 0)
-                        resetSelection(createSelectRange(minIndex, maxIndex - 1))
+                        resetSelection(createSelectRange(minIndex, maxIndex - 1));
                 } else if (maxIndex === lastSelect.value) {
                     if (minIndex - 1 >= 0)
-                        resetSelection(createSelectRange(minIndex - 1, maxIndex))
+                        resetSelection(createSelectRange(minIndex - 1, maxIndex));
                 }
             }
         } else {
-            const tempLines = getTempLines()
-            const newSelectIndexes: Set<number> = new Set
+            const tempLines = getTempLines();
+            const newSelectIndexes: Set<number> = new Set();
 
             for (let i = 0; i < tempLines.length; i++) {
-                const value = tempLines[i]
-                if (value === undefined) continue
+                const value = tempLines[i];
+                if (value === undefined) continue;
                 if (selectedItemSet.value.has(i)) {
                     if (i === 0 || newSelectIndexes.has(i - 1)) {
-                        newSelectIndexes.add(i)
+                        newSelectIndexes.add(i);
                     } else {
-                        const tempLine = tempLines[i - 1]
-                        if (tempLine === undefined) continue
-                        tempLines[i] = tempLine
-                        tempLines[i - 1] = value
-                        newSelectIndexes.add(i - 1)
+                        const tempLine = tempLines[i - 1];
+                        if (tempLine === undefined) continue;
+                        tempLines[i] = tempLine;
+                        tempLines[i - 1] = value;
+                        newSelectIndexes.add(i - 1);
                     }
                 }
             }
 
-            lines.value = tempLines
+            lines.value = tempLines;
 
-            await nextTick()
+            await nextTick();
 
-            resetSelection([...newSelectIndexes])
-            lastSelect.value = Math.min(...newSelectIndexes)
+            resetSelection([...newSelectIndexes]);
+            lastSelect.value = Math.min(...newSelectIndexes);
         }
-    }
-
-    else if (e.key === 'ArrowDown') {
-        e.preventDefault()
-        e.stopPropagation()
-        e.stopImmediatePropagation()
+    } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
 
         if (e.shiftKey) {
             if (selectedItemSet.value.size > 0 && lastSelect.value !== undefined) {
-                const minIndex = Math.min(...selectedItemSet.value)
-                const maxIndex = Math.max(...selectedItemSet.value)
+                const minIndex = Math.min(...selectedItemSet.value);
+                const maxIndex = Math.max(...selectedItemSet.value);
                 if (minIndex === lastSelect.value) {
                     if (maxIndex + 1 < lines.value.length)
-                        resetSelection(createSelectRange(minIndex, maxIndex + 1))
+                        resetSelection(createSelectRange(minIndex, maxIndex + 1));
                 } else if (maxIndex === lastSelect.value) {
                     if (minIndex + 1 < lines.value.length)
-                        resetSelection(createSelectRange(minIndex + 1, maxIndex))
+                        resetSelection(createSelectRange(minIndex + 1, maxIndex));
                 }
             }
         } else {
-            const tempLines = getTempLines()
-            const newSelectIndexes: Set<number> = new Set
+            const tempLines = getTempLines();
+            const newSelectIndexes: Set<number> = new Set();
 
             for (let i = tempLines.length - 1; i >= 0; i--) {
-                const value = tempLines[i]
-                if (value === undefined) continue
+                const value = tempLines[i];
+                if (value === undefined) continue;
                 if (selectedItemSet.value.has(i)) {
                     if (i === tempLines.length - 1 || newSelectIndexes.has(i + 1)) {
-                        newSelectIndexes.add(i)
+                        newSelectIndexes.add(i);
                     } else {
-                        const tempLine = tempLines[i + 1]
-                        if (tempLine === undefined) continue
-                        tempLines[i] = tempLine
-                        tempLines[i + 1] = value
-                        newSelectIndexes.add(i + 1)
+                        const tempLine = tempLines[i + 1];
+                        if (tempLine === undefined) continue;
+                        tempLines[i] = tempLine;
+                        tempLines[i + 1] = value;
+                        newSelectIndexes.add(i + 1);
                     }
                 }
             }
 
-            lines.value = tempLines
+            lines.value = tempLines;
 
-            await nextTick()
+            await nextTick();
 
-            resetSelection([...newSelectIndexes])
-            lastSelect.value = Math.max(...newSelectIndexes)
+            resetSelection([...newSelectIndexes]);
+            lastSelect.value = Math.max(...newSelectIndexes);
         }
-    }
+    } else if (e.key === 'Enter' && selectedItems.length === 1) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
 
-    else if (e.key === 'Enter' && selectedItems.length === 1) {
-        e.preventDefault()
-        e.stopPropagation()
-        e.stopImmediatePropagation()
-
-        const newIndex = await handleAddLine(lastSelect.value)
-        resetSelection([newIndex])
-        lastSelect.value = newIndex
+        const newIndex = await handleAddLine(lastSelect.value);
+        resetSelection([newIndex]);
+        lastSelect.value = newIndex;
     }
-}
+};
 
 const getDefaultLine = async (): Promise<T> => {
-    let defaultLine: T
+    let defaultLine: T;
 
     if (props.defaultLine instanceof Function) {
-        const temp = props.defaultLine()
+        const temp = props.defaultLine();
         if (temp instanceof Promise) {
-            defaultLine = await temp
+            defaultLine = await temp;
         } else {
-            defaultLine = temp
+            defaultLine = temp;
         }
     } else {
-        defaultLine = <T>props.defaultLine
+        defaultLine = <T>props.defaultLine;
     }
 
-    return cloneDeep(defaultLine)
-}
+    return cloneDeep(defaultLine);
+};
 
 const handleAddLine = async (index: number = lines.value.length - 1) => {
-    const defaultLine = await getDefaultLine()
+    const defaultLine = await getDefaultLine();
 
-    const tempLines = getTempLines()
-    const newIndex = index + 1
-    tempLines.splice(newIndex, 0, defaultLine)
-    lines.value = tempLines
+    const tempLines = getTempLines();
+    const newIndex = index + 1;
+    tempLines.splice(newIndex, 0, defaultLine);
+    lines.value = tempLines;
 
-    await nextTick()
+    await nextTick();
 
-    const newSelectedIndex: number[] = []
-    selectedItemSet.value.forEach(i => {
+    const newSelectedIndex: number[] = [];
+    selectedItemSet.value.forEach((i) => {
         if (i > index) {
-            newSelectedIndex.push(i + 1)
+            newSelectedIndex.push(i + 1);
         } else {
-            newSelectedIndex.push(i)
+            newSelectedIndex.push(i);
         }
-    })
-    resetSelection(newSelectedIndex)
+    });
+    resetSelection(newSelectedIndex);
 
-    return newIndex
-}
+    return newIndex;
+};
 
 const handleRemoveLine = async (index: number) => {
-    const line = lines.value[index]
-    if (line === undefined) return
-    emits('delete', [line])
-    lines.value = lines.value.filter((_, i) => i !== index)
-    await nextTick()
-    const newSelectedIndex: number[] = []
-    selectedItemSet.value.forEach(i => {
+    const line = lines.value[index];
+    if (line === undefined) return;
+    emits('delete', [line]);
+    lines.value = lines.value.filter((_, i) => i !== index);
+    await nextTick();
+    const newSelectedIndex: number[] = [];
+    selectedItemSet.value.forEach((i) => {
         if (i > index) {
-            newSelectedIndex.push(i - 1)
+            newSelectedIndex.push(i - 1);
         } else if (i < index) {
-            newSelectedIndex.push(i)
+            newSelectedIndex.push(i);
         }
-    })
-    resetSelection(newSelectedIndex)
-}
+    });
+    resetSelection(newSelectedIndex);
+};
 
 defineExpose({
     getDefaultLine,
@@ -349,11 +337,15 @@ defineExpose({
     handleAddLine,
     handleRemoveLine,
     selection: listSelection,
-})
+});
 </script>
 
 <template>
-    <div class="edit-list" tabindex="-1" @keydown="handleKeyboardEvent">
+    <div
+        class="edit-list"
+        tabindex="-1"
+        @keydown="handleKeyboardEvent"
+    >
         <slot
             name="head"
             :lines="lines"
@@ -362,14 +354,21 @@ defineExpose({
             :handleRemoveLine="handleRemoveLine"
         />
 
-        <div class="edit-list-body" ref="editListBody">
+        <div
+            class="edit-list-body"
+            ref="editListBody"
+        >
             <div
                 v-for="(item, index) in lines"
                 @click="(e) => handleItemClick(e, item, index)"
                 class="line-container"
                 :class="isSelected(index) ? 'selected' : ''"
             >
-                <slot name="line" :item="item" :index="index"/>
+                <slot
+                    name="line"
+                    :item="item"
+                    :index="index"
+                />
             </div>
         </div>
 
@@ -382,7 +381,7 @@ defineExpose({
         >
             <div class="tail-add-button">
                 <button @click="handleAddLine()">
-                    <IconAdd/>
+                    <IconAdd />
                 </button>
             </div>
         </slot>

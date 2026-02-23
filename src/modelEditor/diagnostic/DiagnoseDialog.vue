@@ -1,39 +1,30 @@
 <script setup lang="ts">
-import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import {useDiagnoseDialog} from "@/modelEditor/diagnostic/useDiagnoseDialog.ts";
-import {useDeviceStore} from "@/store/deviceStore.ts";
-import {translate} from "@/store/i18nStore.ts";
-import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import GroupIdViewer from "@/modelEditor/viewer/GroupIdViewer.vue";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
-import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
-import EntityPropertyIdViewer from "@/modelEditor/viewer/property/EntityPropertyIdViewer.vue";
-import MappedSuperClassIdViewer from "@/modelEditor/viewer/MappedSuperClassIdViewer.vue";
-import MappedSuperClassPropertyIdViewer from "@/modelEditor/viewer/property/MappedSuperClassPropertyIdViewer.vue";
-import EmbeddableTypeIdViewer from "@/modelEditor/viewer/EmbeddableTypeIdViewer.vue";
-import EmbeddableTypePropertyIdViewer from "@/modelEditor/viewer/property/EmbeddableTypePropertyIdViewer.vue";
-import EnumerationIdViewer from "@/modelEditor/viewer/EnumerationIdViewer.vue";
-import EnumerationItemIdViewer from "@/modelEditor/viewer/property/EnumerationItemIdViewer.vue";
-import AssociationIdViewer from "@/modelEditor/viewer/AssociationIdViewer.vue";
-import MappedPropertyIdViewer from "@/modelEditor/viewer/property/MappedPropertyIdViewer.vue";
-import MappedPropertyOwnerIdViewer from "@/modelEditor/viewer/property/MappedPropertyOwnerIdViewer.vue";
-import IconRefresh from "@/components/icons/IconRefresh.vue";
+import DragResizeDialog from '@/components/dialog/DragResizeDialog.vue';
+import {useDiagnoseDialog} from '@/modelEditor/diagnostic/useDiagnoseDialog.ts';
+import {useDeviceStore} from '@/store/deviceStore.ts';
+import {translate} from '@/store/i18nStore.ts';
+import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import GroupIdViewer from '@/modelEditor/viewer/GroupIdViewer.vue';
+import DiagnoseViewer from '@/modelEditor/diagnostic/DiagnoseViewer.vue';
+import EntityIdViewer from '@/modelEditor/viewer/EntityIdViewer.vue';
+import EntityPropertyIdViewer from '@/modelEditor/viewer/property/EntityPropertyIdViewer.vue';
+import MappedSuperClassIdViewer from '@/modelEditor/viewer/MappedSuperClassIdViewer.vue';
+import MappedSuperClassPropertyIdViewer from '@/modelEditor/viewer/property/MappedSuperClassPropertyIdViewer.vue';
+import EmbeddableTypeIdViewer from '@/modelEditor/viewer/EmbeddableTypeIdViewer.vue';
+import EmbeddableTypePropertyIdViewer from '@/modelEditor/viewer/property/EmbeddableTypePropertyIdViewer.vue';
+import EnumerationIdViewer from '@/modelEditor/viewer/EnumerationIdViewer.vue';
+import EnumerationItemIdViewer from '@/modelEditor/viewer/property/EnumerationItemIdViewer.vue';
+import AssociationIdViewer from '@/modelEditor/viewer/AssociationIdViewer.vue';
+import MappedPropertyIdViewer from '@/modelEditor/viewer/property/MappedPropertyIdViewer.vue';
+import MappedPropertyOwnerIdViewer from '@/modelEditor/viewer/property/MappedPropertyOwnerIdViewer.vue';
+import IconRefresh from '@/components/icons/IconRefresh.vue';
 
-const {
-    modelDiagnoseInfo,
-    focusDiagnosticSource,
-    diagnose,
-} = useModelEditor()
+const {modelDiagnoseInfo, focusDiagnosticSource, diagnose} = useModelEditor();
 
-const {
-    openState,
-} = useDiagnoseDialog()
+const {openState} = useDiagnoseDialog();
 
-const {
-    innerWidth,
-    visualHeight,
-} = useDeviceStore()
+const {innerWidth, visualHeight} = useDeviceStore();
 </script>
 
 <template>
@@ -50,15 +41,13 @@ const {
                 {{ translate('diagnose_dialog_title') }}
                 {{ modelDiagnoseInfo.total > 0 ? `(${modelDiagnoseInfo.total})` : '' }}
                 <button @click="diagnose()">
-                    <IconRefresh/>
+                    <IconRefresh />
                 </button>
             </div>
         </template>
 
         <div class="diagnose-body">
-            <div
-                v-if="modelDiagnoseInfo.total === 0"
-            >
+            <div v-if="modelDiagnoseInfo.total === 0">
                 {{ translate('no_more_questions') }}
             </div>
 
@@ -81,8 +70,11 @@ const {
                             v-if="group.length > 0"
                             @click.stop="focusDiagnosticSource({type: 'Group', id: groupId})"
                         >
-                            <GroupIdViewer :id="groupId" ctrl-focus/>
-                            <DiagnoseViewer :messages="group"/>
+                            <GroupIdViewer
+                                :id="groupId"
+                                ctrl-focus
+                            />
+                            <DiagnoseViewer :messages="group" />
                         </div>
                     </template>
                 </template>
@@ -107,8 +99,11 @@ const {
                             v-if="entity.length > 0"
                             @click.stop="focusDiagnosticSource({type: 'Entity', id: entityId})"
                         >
-                            <EntityIdViewer :id="entityId" ctrl-focus/>
-                            <DiagnoseViewer :messages="entity"/>
+                            <EntityIdViewer
+                                :id="entityId"
+                                ctrl-focus
+                            />
+                            <DiagnoseViewer :messages="entity" />
                         </div>
                         <template
                             v-for="[propertyId, messages] in properties"
@@ -117,10 +112,19 @@ const {
                             <div
                                 class="diagnose-item"
                                 v-if="messages.length > 0"
-                                @click.stop="focusDiagnosticSource({type: 'EntityProperty', entityId, propertyId})"
+                                @click.stop="
+                                    focusDiagnosticSource({
+                                        type: 'EntityProperty',
+                                        entityId,
+                                        propertyId,
+                                    })
+                                "
                             >
                                 <div>
-                                    <EntityIdViewer :id="entityId" ctrl-focus/>
+                                    <EntityIdViewer
+                                        :id="entityId"
+                                        ctrl-focus
+                                    />
                                     <span class="sub-item-point">.</span>
                                     <EntityPropertyIdViewer
                                         :entity-id="entityId"
@@ -128,7 +132,7 @@ const {
                                         ctrl-focus
                                     />
                                 </div>
-                                <DiagnoseViewer :messages="messages"/>
+                                <DiagnoseViewer :messages="messages" />
                             </div>
                         </template>
                     </template>
@@ -146,16 +150,27 @@ const {
                 </template>
                 <template #body>
                     <template
-                        v-for="[mappedSuperClassId, {mappedSuperClass, properties}] in modelDiagnoseInfo.mappedSuperClassMap"
+                        v-for="[
+                            mappedSuperClassId,
+                            {mappedSuperClass, properties},
+                        ] in modelDiagnoseInfo.mappedSuperClassMap"
                         :key="mappedSuperClassId"
                     >
                         <div
                             class="diagnose-item"
                             v-if="mappedSuperClass.length > 0"
-                            @click.stop="focusDiagnosticSource({type: 'MappedSuperClass', id: mappedSuperClassId})"
+                            @click.stop="
+                                focusDiagnosticSource({
+                                    type: 'MappedSuperClass',
+                                    id: mappedSuperClassId,
+                                })
+                            "
                         >
-                            <MappedSuperClassIdViewer :id="mappedSuperClassId" ctrl-focus/>
-                            <DiagnoseViewer :messages="mappedSuperClass"/>
+                            <MappedSuperClassIdViewer
+                                :id="mappedSuperClassId"
+                                ctrl-focus
+                            />
+                            <DiagnoseViewer :messages="mappedSuperClass" />
                         </div>
                         <template
                             v-for="[propertyId, messages] in properties"
@@ -164,10 +179,19 @@ const {
                             <div
                                 class="diagnose-item"
                                 v-if="messages.length > 0"
-                                @click.stop="focusDiagnosticSource({type: 'MappedSuperClassProperty', mappedSuperClassId, propertyId})"
+                                @click.stop="
+                                    focusDiagnosticSource({
+                                        type: 'MappedSuperClassProperty',
+                                        mappedSuperClassId,
+                                        propertyId,
+                                    })
+                                "
                             >
                                 <div>
-                                    <MappedSuperClassIdViewer :id="mappedSuperClassId" ctrl-focus/>
+                                    <MappedSuperClassIdViewer
+                                        :id="mappedSuperClassId"
+                                        ctrl-focus
+                                    />
                                     <span class="sub-item-point">.</span>
                                     <MappedSuperClassPropertyIdViewer
                                         :mapped-super-class-id="mappedSuperClassId"
@@ -175,7 +199,7 @@ const {
                                         ctrl-focus
                                     />
                                 </div>
-                                <DiagnoseViewer :messages="messages"/>
+                                <DiagnoseViewer :messages="messages" />
                             </div>
                         </template>
                     </template>
@@ -193,16 +217,27 @@ const {
                 </template>
                 <template #body>
                     <template
-                        v-for="[embeddableTypeId, {embeddableType, properties}] in modelDiagnoseInfo.embeddableTypeMap"
+                        v-for="[
+                            embeddableTypeId,
+                            {embeddableType, properties},
+                        ] in modelDiagnoseInfo.embeddableTypeMap"
                         :key="embeddableTypeId"
                     >
                         <div
                             class="diagnose-item"
                             v-if="embeddableType.length > 0"
-                            @click.stop="focusDiagnosticSource({type: 'EmbeddableType', id: embeddableTypeId})"
+                            @click.stop="
+                                focusDiagnosticSource({
+                                    type: 'EmbeddableType',
+                                    id: embeddableTypeId,
+                                })
+                            "
                         >
-                            <EmbeddableTypeIdViewer :id="embeddableTypeId" ctrl-focus/>
-                            <DiagnoseViewer :messages="embeddableType"/>
+                            <EmbeddableTypeIdViewer
+                                :id="embeddableTypeId"
+                                ctrl-focus
+                            />
+                            <DiagnoseViewer :messages="embeddableType" />
                         </div>
                         <template
                             v-for="[propertyId, messages] in properties"
@@ -211,10 +246,19 @@ const {
                             <div
                                 class="diagnose-item"
                                 v-if="messages.length > 0"
-                                @click.stop="focusDiagnosticSource({type: 'EmbeddableTypeProperty', embeddableTypeId, propertyId})"
+                                @click.stop="
+                                    focusDiagnosticSource({
+                                        type: 'EmbeddableTypeProperty',
+                                        embeddableTypeId,
+                                        propertyId,
+                                    })
+                                "
                             >
                                 <div>
-                                    <EmbeddableTypeIdViewer :id="embeddableTypeId" ctrl-focus/>
+                                    <EmbeddableTypeIdViewer
+                                        :id="embeddableTypeId"
+                                        ctrl-focus
+                                    />
                                     <span class="sub-item-point">.</span>
                                     <EmbeddableTypePropertyIdViewer
                                         :embeddable-type-id="embeddableTypeId"
@@ -222,7 +266,7 @@ const {
                                         ctrl-focus
                                     />
                                 </div>
-                                <DiagnoseViewer :messages="messages"/>
+                                <DiagnoseViewer :messages="messages" />
                             </div>
                         </template>
                     </template>
@@ -240,16 +284,24 @@ const {
                 </template>
                 <template #body>
                     <template
-                        v-for="[enumerationId, {enumeration, items}] in modelDiagnoseInfo.enumerationMap"
+                        v-for="[
+                            enumerationId,
+                            {enumeration, items},
+                        ] in modelDiagnoseInfo.enumerationMap"
                         :key="enumerationId"
                     >
                         <div
                             class="diagnose-item"
                             v-if="enumeration.length > 0"
-                            @click.stop="focusDiagnosticSource({type: 'Enumeration', id: enumerationId})"
+                            @click.stop="
+                                focusDiagnosticSource({type: 'Enumeration', id: enumerationId})
+                            "
                         >
-                            <EnumerationIdViewer :id="enumerationId" ctrl-focus/>
-                            <DiagnoseViewer :messages="enumeration"/>
+                            <EnumerationIdViewer
+                                :id="enumerationId"
+                                ctrl-focus
+                            />
+                            <DiagnoseViewer :messages="enumeration" />
                         </div>
                         <template
                             v-for="[itemId, messages] in items"
@@ -258,10 +310,19 @@ const {
                             <div
                                 class="diagnose-item"
                                 v-if="messages.length > 0"
-                                @click.stop="focusDiagnosticSource({type: 'EnumerationItem', enumerationId, itemId})"
+                                @click.stop="
+                                    focusDiagnosticSource({
+                                        type: 'EnumerationItem',
+                                        enumerationId,
+                                        itemId,
+                                    })
+                                "
                             >
                                 <div>
-                                    <EnumerationIdViewer :id="enumerationId" ctrl-focus/>
+                                    <EnumerationIdViewer
+                                        :id="enumerationId"
+                                        ctrl-focus
+                                    />
                                     <span class="sub-item-point">.</span>
                                     <EnumerationItemIdViewer
                                         :enumeration-id="enumerationId"
@@ -269,7 +330,7 @@ const {
                                         ctrl-focus
                                     />
                                 </div>
-                                <DiagnoseViewer :messages="messages"/>
+                                <DiagnoseViewer :messages="messages" />
                             </div>
                         </template>
                     </template>
@@ -287,28 +348,44 @@ const {
                 </template>
                 <template #body>
                     <template
-                        v-for="[associationId, {association, mappedProperty}] in modelDiagnoseInfo.associationMap"
+                        v-for="[
+                            associationId,
+                            {association, mappedProperty},
+                        ] in modelDiagnoseInfo.associationMap"
                         :key="associationId"
                     >
                         <div
                             class="diagnose-item"
                             v-if="association.length > 0"
-                            @click.stop="focusDiagnosticSource({type: 'Association', id: associationId})"
+                            @click.stop="
+                                focusDiagnosticSource({type: 'Association', id: associationId})
+                            "
                         >
-                            <AssociationIdViewer :id="associationId" ctrl-focus/>
-                            <DiagnoseViewer :messages="association"/>
+                            <AssociationIdViewer
+                                :id="associationId"
+                                ctrl-focus
+                            />
+                            <DiagnoseViewer :messages="association" />
                         </div>
                         <div
                             class="diagnose-item"
                             v-if="mappedProperty.length > 0"
-                            @click.stop="focusDiagnosticSource({type: 'MappedProperty', associationId})"
+                            @click.stop="
+                                focusDiagnosticSource({type: 'MappedProperty', associationId})
+                            "
                         >
                             <div>
-                                <MappedPropertyOwnerIdViewer :association-id="associationId" ctrl-focus/>
+                                <MappedPropertyOwnerIdViewer
+                                    :association-id="associationId"
+                                    ctrl-focus
+                                />
                                 <span class="sub-item-point">.</span>
-                                <MappedPropertyIdViewer :association-id="associationId" ctrl-focus/>
+                                <MappedPropertyIdViewer
+                                    :association-id="associationId"
+                                    ctrl-focus
+                                />
                             </div>
-                            <DiagnoseViewer :messages="mappedProperty"/>
+                            <DiagnoseViewer :messages="mappedProperty" />
                         </div>
                     </template>
                 </template>

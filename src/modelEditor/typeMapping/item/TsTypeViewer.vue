@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import type {TsTypeView} from "@/api/__generated/model/static";
-import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
-import {computed} from "vue";
-import {translate} from "@/store/i18nStore.ts";
-import JvmLanguageView from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue";
-import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
+import type {TsTypeView} from '@/api/__generated/model/static';
+import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
+import {computed} from 'vue';
+import {translate} from '@/store/i18nStore.ts';
+import JvmLanguageView from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue';
+import DatabaseTypeView from '@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue';
 
 const props = defineProps<{
-    tsType: DeepReadonly<TsTypeView>
-}>()
+    tsType: DeepReadonly<TsTypeView>;
+}>();
 
 const collapseDisabled = computed(() => {
     return (
         props.tsType.extraImports.length +
-        props.tsType.jvmMatchRules.length +
-        props.tsType.sqlMatchRules.length
-    ) === 0
-})
+            props.tsType.jvmMatchRules.length +
+            props.tsType.sqlMatchRules.length ===
+        0
+    );
+});
 </script>
 
 <template>
@@ -31,8 +32,11 @@ const collapseDisabled = computed(() => {
         </template>
 
         <template #body>
-            <div class="viewer-item" v-if="tsType.extraImports.length > 0">
-                <span class="label no-drag">{{ translate("extraImports") }}</span>
+            <div
+                class="viewer-item"
+                v-if="tsType.extraImports.length > 0"
+            >
+                <span class="label no-drag">{{ translate('extraImports') }}</span>
                 <ul>
                     <li v-for="item in tsType.extraImports">
                         <span class="no-drag">{{ item.name }}</span>
@@ -42,22 +46,42 @@ const collapseDisabled = computed(() => {
                 </ul>
             </div>
 
-            <div class="viewer-item" v-if="tsType.jvmMatchRules.length > 0">
-                <span class="label no-drag">{{ translate("jvmMatchRules") }}</span>
+            <div
+                class="viewer-item"
+                v-if="tsType.jvmMatchRules.length > 0"
+            >
+                <span class="label no-drag">{{ translate('jvmMatchRules') }}</span>
                 <ul>
-                    <li v-for="item in tsType.jvmMatchRules" class="match-rule">
+                    <li
+                        v-for="item in tsType.jvmMatchRules"
+                        class="match-rule"
+                    >
                         <span class="no-drag">{{ item.matchRegExp }}</span>
-                        <JvmLanguageView v-if="item.jvmSource !== 'ANY'" :jvm-language="item.jvmSource" class="tag"/>
+                        <JvmLanguageView
+                            v-if="item.jvmSource !== 'ANY'"
+                            :jvm-language="item.jvmSource"
+                            class="tag"
+                        />
                     </li>
                 </ul>
             </div>
 
-            <div class="viewer-item" v-if="tsType.sqlMatchRules.length > 0">
-                <span class="label no-drag">{{ translate("sqlMatchRules") }}</span>
+            <div
+                class="viewer-item"
+                v-if="tsType.sqlMatchRules.length > 0"
+            >
+                <span class="label no-drag">{{ translate('sqlMatchRules') }}</span>
                 <ul>
-                    <li v-for="item in tsType.sqlMatchRules" class="match-rule">
+                    <li
+                        v-for="item in tsType.sqlMatchRules"
+                        class="match-rule"
+                    >
                         <span class="no-drag">{{ item.matchRegExp }}</span>
-                        <DatabaseTypeView v-if="item.databaseSource !== 'ANY'" :database-type="item.databaseSource" class="tag"/>
+                        <DatabaseTypeView
+                            v-if="item.databaseSource !== 'ANY'"
+                            :database-type="item.databaseSource"
+                            class="tag"
+                        />
                     </li>
                 </ul>
             </div>

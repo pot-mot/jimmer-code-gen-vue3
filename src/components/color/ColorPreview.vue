@@ -1,14 +1,14 @@
 <script setup lang="ts">
 defineProps<{
-    value: string
-}>()
+    value: string;
+}>();
 </script>
 
 <template>
     <div class="color-preview-wrapper">
         <div
             class="color-preview"
-            :style="{ backgroundColor: value }"
+            :style="{backgroundColor: value}"
         />
     </div>
 </template>

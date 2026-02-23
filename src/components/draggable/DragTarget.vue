@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import {inject} from 'vue'
-import {DragContainerKey} from './DragContainerInjectKey'
+import {inject} from 'vue';
+import {DragContainerKey} from './DragContainerInjectKey';
 
 const props = defineProps<{
-    id: string
-}>()
+    id: string;
+}>();
 
-const dragContext = inject(DragContainerKey)!
+const dragContext = inject(DragContainerKey)!;
 
 const handlePointerEnter = (event: PointerEvent) => {
     if (dragContext.isDragging.value) {
-        dragContext.onDragEnter(props.id, event)
+        dragContext.onDragEnter(props.id, event);
     }
-}
+};
 
 const handlePointerLeave = (event: PointerEvent) => {
     if (dragContext.isDragging.value && dragContext.dragTargetId.value === props.id) {
-        dragContext.onDragLeave(props.id, event)
+        dragContext.onDragLeave(props.id, event);
     }
-}
+};
 </script>
 
 <template>
@@ -28,7 +28,7 @@ const handlePointerLeave = (event: PointerEvent) => {
         @pointerenter.self="handlePointerEnter"
         @pointerleave.self="handlePointerLeave"
     >
-        <slot/>
+        <slot />
     </div>
 </template>
 

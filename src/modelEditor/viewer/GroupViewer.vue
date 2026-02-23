@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import NameCommentViewer from '@/modelEditor/nameComment/NameCommentViewer.vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
 
-const props = withDefaults(defineProps<{
-    group: DeepReadonly<Group> | undefined
-    ctrlFocus?: boolean
-    hideComment?: boolean
-}>(), {
-    ctrlFocus: false
-})
+const props = withDefaults(
+    defineProps<{
+        group: DeepReadonly<Group> | undefined;
+        ctrlFocus?: boolean;
+        hideComment?: boolean;
+    }>(),
+    {
+        ctrlFocus: false,
+    },
+);
 
-const {
-    modelSelection,
-} = useModelEditor()
+const {modelSelection} = useModelEditor();
 
 const handleFocus = () => {
-    if (!props.group) return
-    if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectGroup(props.group.id)
-}
+    if (!props.group) return;
+    if (!props.ctrlFocus) return;
+    modelSelection.unselectAll();
+    modelSelection.selectGroup(props.group.id);
+};
 </script>
 
 <template>

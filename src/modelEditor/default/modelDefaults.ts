@@ -1,6 +1,6 @@
-import {createId} from "@/modelEditor/useModelEditor.ts";
+import {createId} from '@/modelEditor/useModelEditor.ts';
 
-export const defaultColor = "rgb(80, 80, 80)"
+export const defaultColor = 'rgb(80, 80, 80)';
 
 export const presetColor = [
     defaultColor,
@@ -19,162 +19,156 @@ export const presetColor = [
     'rgb(100, 150, 100)',
     'rgb(100, 150, 150)',
     'rgb(70, 140, 110)',
-]
+];
 
 export const defaultSqlType_VARCHAR255 = (): SqlType => ({
-    type: "varchar(255)",
+    type: 'varchar(255)',
     dataSize: 255,
-})
+});
 
 export const defaultSqlType_INT = (): SqlType => ({
-    type: "int",
-})
+    type: 'int',
+});
 
 export const defaultJavaType_Object = (): JvmType => ({
-    typeExpression: "Object",
+    typeExpression: 'Object',
     extraImports: [],
     extraAnnotations: [],
     serialized: false,
-})
+});
 
 export const defaultKotlinType_Any = (): JvmType => ({
-    typeExpression: "Any",
+    typeExpression: 'Any',
     extraImports: [],
     extraAnnotations: [],
     serialized: false,
-})
+});
 
 export const defaultTsType = (): TsType => ({
-    typeExpression: "any",
+    typeExpression: 'any',
     extraImports: [],
-})
+});
 
 export const defaultIdProperty = (): IdCommonProperty => ({
-    id: createId("Property"),
-    name: "id",
-    comment: "",
-    category: "ID_COMMON",
-    rawType: "String",
+    id: createId('Property'),
+    name: 'id',
+    comment: '',
+    category: 'ID_COMMON',
+    rawType: 'String',
     nullable: false,
     extraImports: [],
     extraAnnotations: [],
     columnInfo: {
-        name: "id",
+        name: 'id',
         comment: 'id',
         nullable: false,
         ...defaultSqlType_VARCHAR255(),
     },
     autoSyncColumnName: true,
-})
+});
 
 export const defaultScalarProperty = (): ScalarCommonProperty => ({
-    id: createId("Property"),
-    name: "property",
-    comment: "",
-    category: "SCALAR_COMMON",
-    rawType: "String",
+    id: createId('Property'),
+    name: 'property',
+    comment: '',
+    category: 'SCALAR_COMMON',
+    rawType: 'String',
     nullable: false,
     serialized: false,
     extraImports: [],
     extraAnnotations: [],
     typeIsArray: false,
     columnInfo: {
-        name: "property",
+        name: 'property',
         comment: '',
         nullable: false,
         ...defaultSqlType_VARCHAR255(),
     },
     autoSyncColumnName: true,
-})
+});
 
 export const defaultEntity = (groupId: string): EntityWithProperties => ({
     groupId,
-    id: createId("Entity"),
-    name: "Entity",
-    comment: "",
-    subPackagePath: "",
-    tableName: "entity",
+    id: createId('Entity'),
+    name: 'Entity',
+    comment: '',
+    subPackagePath: '',
+    tableName: 'entity',
     autoSyncTableName: true,
     extendsIds: [],
     extraImports: [],
     extraAnnotations: [],
-    properties: [
-        defaultIdProperty(),
-        defaultScalarProperty()
-    ]
-})
+    properties: [defaultIdProperty(), defaultScalarProperty()],
+});
 
 export const defaultMappedSuperClass = (groupId: string): MappedSuperClassWithProperties => ({
     groupId,
-    id: createId("MappedSuperClass"),
-    name: "BaseEntity",
-    comment: "",
-    subPackagePath: "",
+    id: createId('MappedSuperClass'),
+    name: 'BaseEntity',
+    comment: '',
+    subPackagePath: '',
     extendsIds: [],
     extraImports: [],
     extraAnnotations: [],
-    properties: [
-        defaultScalarProperty()
-    ]
-})
+    properties: [defaultScalarProperty()],
+});
 
 export const defaultEnumerationItem = (): EnumerationItem => ({
-    id: createId("EnumerationItem"),
-    name: "Item",
+    id: createId('EnumerationItem'),
+    name: 'Item',
     ordinal: 1,
-    comment: "",
+    comment: '',
     extraImports: [],
     extraAnnotations: [],
-})
+});
 
-export const defaultEnumeration = (groupId: string, strategy: EnumerationStrategy): Enumeration => ({
+export const defaultEnumeration = (
+    groupId: string,
+    strategy: EnumerationStrategy,
+): Enumeration => ({
     groupId,
-    id: createId("Enumeration"),
-    name: "Enumeration",
-    comment: "",
-    subPackagePath: "",
+    id: createId('Enumeration'),
+    name: 'Enumeration',
+    comment: '',
+    subPackagePath: '',
     extraImports: [],
     extraAnnotations: [],
     strategy,
-    items: [
-        defaultEnumerationItem()
-    ]
-})
+    items: [defaultEnumerationItem()],
+});
 
 export const defaultEmbeddableType = (groupId: string): EmbeddableTypeWithProperties => ({
     groupId,
-    id: createId("EmbeddableType"),
-    name: "EmbeddableType",
-    comment: "",
-    subPackagePath: "",
+    id: createId('EmbeddableType'),
+    name: 'EmbeddableType',
+    comment: '',
+    subPackagePath: '',
     extraImports: [],
     extraAnnotations: [],
-    properties: [
-        defaultScalarProperty()
-    ]
-})
+    properties: [defaultScalarProperty()],
+});
 
 export const defaultGroup = (): Group => ({
-    id: createId("Group"),
-    name: "Group",
-    comment: "",
+    id: createId('Group'),
+    name: 'Group',
+    comment: '',
     color: defaultColor,
-    basePackagePath: "com.example",
-    baseTableSchema: ""
-})
+    basePackagePath: 'com.example',
+    baseTableSchema: '',
+});
 
 export const defaultModelContextData = (): ModelContextData => ({
     model: {
-        id: "",
-        name: "Model",
-        description: "",
-        createdTime: "",
-        modifiedTime: "",
-        databaseType: "POSTGRESQL",
-        databaseNameStrategy: "LOWER_SNAKE",
-        defaultForeignKeyType: "REAL",
-        jvmLanguage: "KOTLIN",
-        defaultEnumerationStrategy: "NAME",
+        id: '',
+        name: 'Model',
+        description: '',
+        createdTime: '',
+        modifiedTime: '',
+        databaseType: 'POSTGRESQL',
+        databaseNameStrategy: 'LOWER_SNAKE',
+        defaultForeignKeyType: 'REAL',
+        jvmLanguage: 'KOTLIN',
+        defaultEnumerationStrategy: 'NAME',
     },
     entityMap: new Map(),
     mappedSuperClassMap: new Map(),
@@ -182,4 +176,4 @@ export const defaultModelContextData = (): ModelContextData => ({
     enumerationMap: new Map(),
     groupMap: new Map(),
     associationMap: new Map(),
-})
+});

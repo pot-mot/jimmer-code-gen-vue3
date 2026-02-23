@@ -1,26 +1,26 @@
-import {createStore} from "@/utils/store/createStore.ts";
-import {useDialogOpenState} from "@/components/dialog/DialogOpenState.ts";
+import {createStore} from '@/utils/store/createStore.ts';
+import {useDialogOpenState} from '@/components/dialog/DialogOpenState.ts';
 import {
     createScriptsStore,
     emptyScriptsStore,
     type ScriptInfo,
-    type ScriptsStore
-} from "@/modelEditor/script/ScriptsStore.ts";
-import {withLoading} from "@/components/loading/loadingApi.ts";
-import {api} from "@/api";
+    type ScriptsStore,
+} from '@/modelEditor/script/ScriptsStore.ts';
+import {withLoading} from '@/components/loading/loadingApi.ts';
+import {api} from '@/api';
 import type {
     GenerateScriptInsertInput,
     GenerateScriptUpdateInput,
-    GenerateScriptView
-} from "@/api/__generated/model/static";
-import {readonly, ref} from "vue";
-import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
-import {createTsScript} from "@/utils/tsExecutor/TsScriptExecutor.ts";
-import {sendMessage} from "@/components/message/messageApi.ts";
-import {sendConfirm} from "@/components/confirm/confirmApi.ts";
-import {translate} from "@/store/i18nStore.ts";
+    GenerateScriptView,
+} from '@/api/__generated/model/static';
+import {readonly, ref} from 'vue';
+import type {ScriptTypeName} from '@/type/__generated/scriptTypeDeclare';
+import {createTsScript} from '@/utils/tsExecutor/TsScriptExecutor.ts';
+import {sendMessage} from '@/components/message/messageApi.ts';
+import {sendConfirm} from '@/components/confirm/confirmApi.ts';
+import {translate} from '@/store/i18nStore.ts';
 
-const scriptsStore = ref<ScriptsStore>(emptyScriptsStore())
+const scriptsStore = ref<ScriptsStore>(emptyScriptsStore());
 
 const scriptInfoToInsertInput = (info: Omit<ScriptInfo<any>, 'id'>): GenerateScriptInsertInput => {
     return {
@@ -29,9 +29,9 @@ const scriptInfoToInsertInput = (info: Omit<ScriptInfo<any>, 'id'>): GenerateScr
         enabled: info.enabled,
         databaseType: info.databaseType,
         jvmLanguage: info.jvmLanguage,
-        scriptContent: info.script.code
-    }
-}
+        scriptContent: info.script.code,
+    };
+};
 
 const scriptInfoToUpdateInput = (info: ScriptInfo<any>): GenerateScriptUpdateInput => {
     return {
@@ -41,14 +41,14 @@ const scriptInfoToUpdateInput = (info: ScriptInfo<any>): GenerateScriptUpdateInp
         enabled: info.enabled,
         databaseType: info.databaseType,
         jvmLanguage: info.jvmLanguage,
-        scriptContent: info.script.code
-    }
-}
+        scriptContent: info.script.code,
+    };
+};
 
 const scriptViewToInfo = async <Name extends ScriptTypeName>(
-    view: GenerateScriptView
+    view: GenerateScriptView,
 ): Promise<ScriptInfo<Name>> => {
-    const scriptResult = await createTsScript(view.type, view.scriptContent)
+    const scriptResult = await createTsScript(view.type, view.scriptContent);
     if (scriptResult.valid) {
         return {
             id: view.id,
@@ -57,36 +57,34 @@ const scriptViewToInfo = async <Name extends ScriptTypeName>(
             enabled: view.enabled,
             databaseType: view.databaseType,
             jvmLanguage: view.jvmLanguage,
-            script: scriptResult.script
-        }
+            script: scriptResult.script,
+        };
     } else {
-        throw scriptResult
+        throw scriptResult;
     }
-}
+};
 
 const fetchScripts = async (): Promise<ScriptsStore> => {
     const scriptViews = await withLoading('fetch scripts', async () => {
-        return await api.generateScriptService.list()
-    })
-    const scriptInfos: ScriptInfo<any>[] = []
+        return await api.generateScriptService.list();
+    });
+    const scriptInfos: ScriptInfo<any>[] = [];
     for (const scriptView of scriptViews) {
         try {
-            const scriptInfo = await scriptViewToInfo(scriptView)
-            scriptInfos.push(scriptInfo)
+            const scriptInfo = await scriptViewToInfo(scriptView);
+            scriptInfos.push(scriptInfo);
         } catch (e) {
-            console.error(e)
-            sendMessage(`GenerateScript ${scriptView.name} pass error`, {type: "warning"})
+            console.error(e);
+            sendMessage(`GenerateScript ${scriptView.name} pass error`, {type: 'warning'});
         }
     }
 
-    return createScriptsStore([
-        ...scriptInfos
-    ])
-}
+    return createScriptsStore([...scriptInfos]);
+};
 
 export const initScriptDialog = async () => {
-    scriptsStore.value = await fetchScripts()
-}
+    scriptsStore.value = await fetchScripts();
+};
 
 export const useScriptDialog = createStore(() => {
     return {
@@ -95,55 +93,74 @@ export const useScriptDialog = createStore(() => {
         insertScript: async (scriptInfo: Omit<ScriptInfo<any>, 'id'>): Promise<string> => {
             try {
                 return await withLoading('insert scripts', async () => {
-                    const result = await api.generateScriptService.insert({body: scriptInfoToInsertInput(scriptInfo)})
-                    scriptsStore.value.add({id: result.id, ...scriptInfo})
-                    sendMessage(translate({key: "insert_success", args: [translate("script")]}), {type: "success"})
-                    return result.id
-                })
+                    const result = await api.generateScriptService.insert({
+                        body: scriptInfoToInsertInput(scriptInfo),
+                    });
+                    scriptsStore.value.add({id: result.id, ...scriptInfo});
+                    sendMessage(translate({key: 'insert_success', args: [translate('script')]}), {
+                        type: 'success',
+                    });
+                    return result.id;
+                });
             } catch (e) {
-                sendMessage(translate({key: "insert_fail", args: [translate("script")]}), {type: "warning"})
-                throw e
+                sendMessage(translate({key: 'insert_fail', args: [translate('script')]}), {
+                    type: 'warning',
+                });
+                throw e;
             }
         },
         updateScript: async (scriptInfo: ScriptInfo<any>) => {
             try {
                 await withLoading('update scripts', async () => {
-                    const result = await api.generateScriptService.update({body: scriptInfoToUpdateInput(scriptInfo)})
-                    scriptsStore.value.update(result.id, scriptInfo)
-                    sendMessage(translate({key: "update_success", args: [translate("script")]}), {type: "success"})
-                })
+                    const result = await api.generateScriptService.update({
+                        body: scriptInfoToUpdateInput(scriptInfo),
+                    });
+                    scriptsStore.value.update(result.id, scriptInfo);
+                    sendMessage(translate({key: 'update_success', args: [translate('script')]}), {
+                        type: 'success',
+                    });
+                });
             } catch (e) {
-                sendMessage(translate({key: "update_fail", args: [translate("script")]}), {type: "warning"})
-                throw e
+                sendMessage(translate({key: 'update_fail', args: [translate('script')]}), {
+                    type: 'warning',
+                });
+                throw e;
             }
         },
         deleteScript: async (ids: string[]) => {
-            const scriptInfo = ids.map(id => scriptsStore.value.scriptInfoMap.get(id))
-            if (scriptInfo.length === 0) return
+            const scriptInfo = ids.map((id) => scriptsStore.value.scriptInfoMap.get(id));
+            if (scriptInfo.length === 0) return;
             await sendConfirm({
-                title: translate({key: "delete_confirm_title", args: [translate("script")]}),
+                title: translate({key: 'delete_confirm_title', args: [translate('script')]}),
                 content: translate({
-                    key: "delete_confirm_content",
-                    args: [` ${translate("script")}[${scriptInfo.map(info => info?.name ?? '').join(", ")}] `]
+                    key: 'delete_confirm_content',
+                    args: [
+                        ` ${translate('script')}[${scriptInfo.map((info) => info?.name ?? '').join(', ')}] `,
+                    ],
                 }),
                 onConfirm: async () => {
                     try {
                         await withLoading('delete scripts', async () => {
-                            await api.generateScriptService.delete({scriptIds: ids})
+                            await api.generateScriptService.delete({scriptIds: ids});
                             for (const id of ids) {
-                                scriptsStore.value.remove(id)
+                                scriptsStore.value.remove(id);
                             }
-                            sendMessage(translate({
-                                key: "delete_success",
-                                args: [translate("script")]
-                            }), {type: "success"})
-                        })
+                            sendMessage(
+                                translate({
+                                    key: 'delete_success',
+                                    args: [translate('script')],
+                                }),
+                                {type: 'success'},
+                            );
+                        });
                     } catch (e) {
-                        sendMessage(translate({key: "delete_fail", args: [translate("script")]}), {type: "warning"})
-                        throw e
+                        sendMessage(translate({key: 'delete_fail', args: [translate('script')]}), {
+                            type: 'warning',
+                        });
+                        throw e;
                     }
-                }
-            })
+                },
+            });
         },
-    }
-})
+    };
+});

@@ -1,303 +1,318 @@
 <script lang="ts" setup>
-import {computed, nextTick, reactive, ref, toRaw, watch} from 'vue'
-import IconFullScreen from "@/components/icons/IconFullScreen.vue";
-import IconClose from "@/components/icons/IconClose.vue";
-import ResizeWrapper from "@/components/resizer/ResizeWrapper.vue";
-import {judgeTarget, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
-import {useDialogZIndex} from "@/components/dialog/DialogZIndex.ts";
-import type {ResizeEventArgs} from "@/components/resizer/ResizeWrapperType.ts";
+import {computed, nextTick, reactive, ref, toRaw, watch} from 'vue';
+import IconFullScreen from '@/components/icons/IconFullScreen.vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import ResizeWrapper from '@/components/resizer/ResizeWrapper.vue';
+import {judgeTarget, judgeTargetIsInteraction} from '@/utils/event/judgeEventTarget.ts';
+import {useDialogZIndex} from '@/components/dialog/DialogZIndex.ts';
+import type {ResizeEventArgs} from '@/components/resizer/ResizeWrapperType.ts';
 
 const openState = defineModel<boolean>({
-    required: true
-})
+    required: true,
+});
 
-const props = withDefaults(defineProps<{
-    to?: HTMLElement | string
-    initX?: number
-    initY?: number
-    initW?: number
-    initH?: number
-    minWidth?: number
-    maxWidth?: number
-    minHeight?: number
-    maxHeight?: number
-    limitByParent?: boolean
-    modal?: boolean
-    canResize?: boolean
-    canDrag?: boolean
-    canFullScreen?: boolean
-    canExitFullScreen?: boolean
-    initFullScreen?: boolean
-}>(), {
-    to: "body",
-    canResize: false,
-    canDrag: true,
-    canFullScreen: true,
-    canExitFullScreen: true,
-    limitByParent: false,
-    modal: false
-})
+const props = withDefaults(
+    defineProps<{
+        to?: HTMLElement | string;
+        initX?: number;
+        initY?: number;
+        initW?: number;
+        initH?: number;
+        minWidth?: number;
+        maxWidth?: number;
+        minHeight?: number;
+        maxHeight?: number;
+        limitByParent?: boolean;
+        modal?: boolean;
+        canResize?: boolean;
+        canDrag?: boolean;
+        canFullScreen?: boolean;
+        canExitFullScreen?: boolean;
+        initFullScreen?: boolean;
+    }>(),
+    {
+        to: 'body',
+        canResize: false,
+        canDrag: true,
+        canFullScreen: true,
+        canExitFullScreen: true,
+        limitByParent: false,
+        modal: false,
+    },
+);
 
 const emits = defineEmits<{
-    (event: "open"): void
-    (event: "opened"): void
-    (event: "close"): void
-    (event: "closed"): void
-    (event: "fullScreenToggle"): void
-    (event: "fullScreenToggled"): void
-}>()
+    (event: 'open'): void;
+    (event: 'opened'): void;
+    (event: 'close'): void;
+    (event: 'closed'): void;
+    (event: 'fullScreenToggle'): void;
+    (event: 'fullScreenToggled'): void;
+}>();
 
-const draggable = ref(props.canDrag)
-const resizable = ref(props.canResize)
+const draggable = ref(props.canDrag);
+const resizable = ref(props.canResize);
 
 const position = reactive({
     x: 0,
-    y: 0
-})
-const positionX = computed(() => position.x + 'px')
-const positionY = computed(() => position.y + 'px')
+    y: 0,
+});
+const positionX = computed(() => position.x + 'px');
+const positionY = computed(() => position.y + 'px');
 const size = ref({
     width: 0,
-    height: 0
-})
+    height: 0,
+});
 
-const {zIndex, toFront} = useDialogZIndex()
+const {zIndex, toFront} = useDialogZIndex();
 
 const getParent = (): HTMLElement | null => {
-    let parent: HTMLElement | null
+    let parent: HTMLElement | null;
 
-    const to: string | HTMLElement = toRaw(props.to)
+    const to: string | HTMLElement = toRaw(props.to);
 
-    if (typeof to === "string") {
-        parent = document.querySelector(to)
+    if (typeof to === 'string') {
+        parent = document.querySelector(to);
     } else {
-        parent = to
+        parent = to;
     }
 
-    return parent
-}
+    return parent;
+};
 
 const initXW = () => {
-    const initW = props.initW ?? window.innerWidth * 0.8
+    const initW = props.initW ?? window.innerWidth * 0.8;
 
-    let tempX = position.x
-    let tempW = size.value.width
+    let tempX = position.x;
+    let tempW = size.value.width;
 
-    let maxWidth: number
+    let maxWidth: number;
 
     if (props.limitByParent) {
-        const parent = getParent()
+        const parent = getParent();
         if (!parent) {
-            return
+            return;
         }
-        maxWidth = parent.clientWidth
+        maxWidth = parent.clientWidth;
     } else {
-        maxWidth = document.documentElement.clientWidth
+        maxWidth = document.documentElement.clientWidth;
     }
     if (maxWidth < initW) {
-        tempX = 0
-        tempW = maxWidth
+        tempX = 0;
+        tempW = maxWidth;
     } else if (props.initX !== undefined) {
-        tempX = initW + props.initX > maxWidth ? maxWidth - initW : props.initX
-        tempW = initW
+        tempX = initW + props.initX > maxWidth ? maxWidth - initW : props.initX;
+        tempW = initW;
     } else {
-        tempX = (maxWidth - initW) / 2
-        tempW = initW
+        tempX = (maxWidth - initW) / 2;
+        tempW = initW;
     }
 
-    position.x = tempX
-    size.value.width = tempW
-}
+    position.x = tempX;
+    size.value.width = tempW;
+};
 
 const initYH = () => {
-    const initH = props.initH ?? window.innerHeight * 0.8
+    const initH = props.initH ?? window.innerHeight * 0.8;
 
-    let tempY = position.y
-    let tempH = size.value.height
+    let tempY = position.y;
+    let tempH = size.value.height;
 
-    let maxHeight: number
+    let maxHeight: number;
 
     if (props.limitByParent) {
-        const parent = getParent()
-        if (!parent) return
+        const parent = getParent();
+        if (!parent) return;
 
-        maxHeight = parent.clientHeight
+        maxHeight = parent.clientHeight;
     } else {
-        maxHeight = document.documentElement.clientHeight
+        maxHeight = document.documentElement.clientHeight;
     }
     if (maxHeight < initH) {
-        tempY = 0
-        tempH = maxHeight
+        tempY = 0;
+        tempH = maxHeight;
     } else if (props.initY !== undefined) {
-        tempY = props.initY
-        tempH = initH
+        tempY = props.initY;
+        tempH = initH;
     } else {
-        tempY = (maxHeight - initH) / 2
-        tempH = initH
+        tempY = (maxHeight - initH) / 2;
+        tempH = initH;
     }
 
-    position.y = tempY
-    size.value.height = tempH
-}
+    position.y = tempY;
+    size.value.height = tempH;
+};
 
-const isFullScreen = computed<boolean>(() =>
-    position.x === 0 &&
-    position.y === 0 &&
-    size.value.height === document.documentElement.offsetHeight &&
-    size.value.width === document.documentElement.offsetWidth
-)
+const isFullScreen = computed<boolean>(
+    () =>
+        position.x === 0 &&
+        position.y === 0 &&
+        size.value.height === document.documentElement.offsetHeight &&
+        size.value.width === document.documentElement.offsetWidth,
+);
 
-watch(() => isFullScreen.value, (value) => {
-    if (value) {
-        draggable.value = false
-    } else {
-        draggable.value = props.canDrag
-    }
-})
+watch(
+    () => isFullScreen.value,
+    (value) => {
+        if (value) {
+            draggable.value = false;
+        } else {
+            draggable.value = props.canDrag;
+        }
+    },
+);
 
 const enterFullScreen = () => {
-    position.x = 0
-    position.y = 0
-    size.value.height = document.documentElement.offsetHeight
-    size.value.width = document.documentElement.offsetWidth
-}
+    position.x = 0;
+    position.y = 0;
+    size.value.height = document.documentElement.offsetHeight;
+    size.value.width = document.documentElement.offsetWidth;
+};
 
 const exitFullScreen = () => {
-    initXW()
-    initYH()
-}
+    initXW();
+    initYH();
+};
 
 const initSizePosition = () => {
     if (props.canFullScreen && props.initFullScreen) {
-        enterFullScreen()
+        enterFullScreen();
     } else {
-        exitFullScreen()
+        exitFullScreen();
     }
-}
+};
 
 const handleOpen = async () => {
-    emits('open')
+    emits('open');
 
-    toFront()
-    initSizePosition()
+    toFront();
+    initSizePosition();
 
-    await nextTick()
-    emits('opened')
-}
+    await nextTick();
+    emits('opened');
+};
 
 const handleClose = async () => {
-    emits("close")
+    emits('close');
 
-    openState.value = false
+    openState.value = false;
 
-    await nextTick()
-    emits('closed')
-}
+    await nextTick();
+    emits('closed');
+};
 
 const toggleFullScreen = async () => {
-    if (!props.canFullScreen) return
+    if (!props.canFullScreen) return;
 
-    emits("fullScreenToggle")
+    emits('fullScreenToggle');
 
-    toFront()
+    toFront();
 
     if (isFullScreen.value) {
-        exitFullScreen()
+        exitFullScreen();
     } else {
-        enterFullScreen()
+        enterFullScreen();
     }
 
     if (props.limitByParent) {
-        await nextTick()
-        position.x = -position.x
-        position.y = -position.y
+        await nextTick();
+        position.x = -position.x;
+        position.y = -position.y;
 
-        await nextTick()
-        position.x = -position.x
-        position.y = -position.y
+        await nextTick();
+        position.x = -position.x;
+        position.y = -position.y;
     }
 
-    emits("fullScreenToggled")
-}
+    emits('fullScreenToggled');
+};
 
-watch(() => openState.value, (value) => {
-    if (value) handleOpen()
-}, {immediate: true})
+watch(
+    () => openState.value,
+    (value) => {
+        if (value) handleOpen();
+    },
+    {immediate: true},
+);
 
 const handleResize = ({currentPositionDiff}: ResizeEventArgs) => {
-    position.x += currentPositionDiff.x
-    position.y += currentPositionDiff.y
-}
+    position.x += currentPositionDiff.x;
+    position.y += currentPositionDiff.y;
+};
 
 const handleInnerOver = (e: PointerEvent) => {
     if (!props.canDrag) {
-        draggable.value = false
-        return
+        draggable.value = false;
+        return;
     }
 
     if (isFullScreen.value) {
-        return
+        return;
     }
 
-    draggable.value = !judgeTargetIsInteraction(e) && !judgeTarget(e, (el) => el.classList.contains('no-drag'))
-}
+    draggable.value =
+        !judgeTargetIsInteraction(e) && !judgeTarget(e, (el) => el.classList.contains('no-drag'));
+};
 
 const handleInnerLeave = () => {
     if (!props.canDrag) {
-        draggable.value = false
-        return
+        draggable.value = false;
+        return;
     }
 
     if (isFullScreen.value) {
-        return
+        return;
     }
 
-    draggable.value = true
-}
+    draggable.value = true;
+};
 
-const isDragging = ref(false)
-let initX = 0
-let initY = 0
+const isDragging = ref(false);
+let initX = 0;
+let initY = 0;
 
 const onDragStart = (event: PointerEvent) => {
-    if (!draggable.value) return
+    if (!draggable.value) return;
 
-    isDragging.value = true
-    initX = position.x - event.clientX
-    initY = position.y - event.clientY
-    document.documentElement.addEventListener('pointermove', onDragMove)
-    document.documentElement.addEventListener('pointerup', onDragEnd)
-}
+    isDragging.value = true;
+    initX = position.x - event.clientX;
+    initY = position.y - event.clientY;
+    document.documentElement.addEventListener('pointermove', onDragMove);
+    document.documentElement.addEventListener('pointerup', onDragEnd);
+};
 
 const onDragMove = (event: PointerEvent) => {
     if (!draggable.value) {
-        onDragEnd()
-        return
+        onDragEnd();
+        return;
     }
 
     if (isDragging.value) {
-        position.x = initX + event.clientX
-        position.y = initY + event.clientY
+        position.x = initX + event.clientX;
+        position.y = initY + event.clientY;
 
-        window.getSelection()?.removeAllRanges()
+        window.getSelection()?.removeAllRanges();
     }
-}
+};
 
 const onDragEnd = () => {
-    isDragging.value = false
-    initX = 0
-    initY = 0
-    document.documentElement.removeEventListener('pointermove', onDragMove)
-    document.documentElement.removeEventListener('pointerup', onDragEnd)
-}
+    isDragging.value = false;
+    initX = 0;
+    initY = 0;
+    document.documentElement.removeEventListener('pointermove', onDragMove);
+    document.documentElement.removeEventListener('pointerup', onDragEnd);
+};
 </script>
 
 <template>
     <Teleport to="body">
         <template v-if="openState">
-            <div v-if="modal" class="modal">
+            <div
+                v-if="modal"
+                class="modal"
+            >
                 <slot name="modal">
-                    <div class="modal-content"/>
+                    <div class="modal-content" />
                 </slot>
             </div>
 
@@ -313,27 +328,33 @@ const onDragEnd = () => {
                 :max-width="maxWidth"
                 :min-height="minHeight"
                 :max-height="maxHeight"
-
                 @pointerdown="onDragStart"
                 @pointerover="handleInnerOver"
                 @pointerleave="handleInnerLeave"
             >
                 <div class="dialog-header">
                     <div>
-                        <slot name="title"/>
+                        <slot name="title" />
                     </div>
                     <div>
-                        <button class="toggle-full-screen" @click="toggleFullScreen" v-if="canFullScreen && canExitFullScreen">
-                            <IconFullScreen/>
+                        <button
+                            class="toggle-full-screen"
+                            @click="toggleFullScreen"
+                            v-if="canFullScreen && canExitFullScreen"
+                        >
+                            <IconFullScreen />
                         </button>
-                        <button class="close" @click="handleClose">
-                            <IconClose/>
+                        <button
+                            class="close"
+                            @click="handleClose"
+                        >
+                            <IconClose />
                         </button>
                     </div>
                 </div>
 
                 <div class="dialog-content">
-                    <slot/>
+                    <slot />
                 </div>
             </ResizeWrapper>
         </template>

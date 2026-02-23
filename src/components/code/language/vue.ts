@@ -5,16 +5,16 @@ export const vueLanguage = {
     script: {
         pattern: /(<script.*?>)([\s\S]*?)(?=<\/script>)/i,
         lookbehind: true,
-        inside: Prism.languages.typescript
+        inside: Prism.languages.typescript,
     },
     style: {
         pattern: /(<style.*?>)([\s\S]*?)(?=<\/style>)/i,
         lookbehind: true,
-        inside: Prism.languages.css
+        inside: Prism.languages.css,
     },
     template: {
         pattern: /(<template.*?>)([\s\S]*?)(?=<\/template>)/i,
         lookbehind: true,
-        inside: Prism.languages.markup
-    }
-}
+        inside: Prism.languages.markup,
+    },
+};

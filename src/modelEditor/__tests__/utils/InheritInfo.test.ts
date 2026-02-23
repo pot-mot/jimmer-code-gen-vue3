@@ -1,325 +1,326 @@
-import {describe, it, expect} from 'vitest'
+import {describe, it, expect} from 'vitest';
 import {
     defaultInheritInfo,
     type InheritInfo,
     type InheritInfoSync,
-    type InheritItem, useInheritInfoSync
-} from "@/modelEditor/utils/InheritInfo.ts";
+    type InheritItem,
+    useInheritInfoSync,
+} from '@/modelEditor/utils/InheritInfo.ts';
 
 describe('EntityInheritInfo', () => {
     const buildInheritInfo = (
         abstractMap: DeepReadonly<Map<string, InheritItem>>,
         concreteMap: DeepReadonly<Map<string, InheritItem>>,
     ): {
-        data: InheritInfo,
-        sync: InheritInfoSync,
+        data: InheritInfo;
+        sync: InheritInfoSync;
     } => {
-        const data = defaultInheritInfo(abstractMap, concreteMap)
-        const sync = useInheritInfoSync(data)
+        const data = defaultInheritInfo(abstractMap, concreteMap);
+        const sync = useInheritInfoSync(data);
 
         return {
             data,
             sync,
-        }
-    }
+        };
+    };
 
     // 创建测试数据，使用数字格式ID
     const abstractMap: DeepReadonly<Map<string, InheritItem>> = new Map([
         ['1', {id: '1', extendsIds: []}],
         ['1-1', {id: '1-1', extendsIds: ['1']}],
         ['1-2', {id: '1-2', extendsIds: ['1']}],
-        ['1-1-1', {id: '1-1-1', extendsIds: ['1-1']}]
-    ])
+        ['1-1-1', {id: '1-1-1', extendsIds: ['1-1']}],
+    ]);
 
     const concreteMap: DeepReadonly<Map<string, InheritItem>> = new Map([
         ['1-1-1-1', {id: '1-1-1-1', extendsIds: ['1-1-1']}],
         ['1-1-2', {id: '1-1-2', extendsIds: ['1-1']}],
         ['1-2-1', {id: '1-2-1', extendsIds: ['1-2']}],
-        ['1-2-2', {id: '1-2-2', extendsIds: ['1-2']}]
-    ])
+        ['1-2-2', {id: '1-2-2', extendsIds: ['1-2']}],
+    ]);
 
     it('build inherit info', () => {
-        const {data} = buildInheritInfo(abstractMap, concreteMap)
+        const {data} = buildInheritInfo(abstractMap, concreteMap);
 
         // 验证抽象实体继承信息
-        const rootInfo = data.abstractInheritInfoMap.get('1')
-        expect(rootInfo?.parentIdSet.size).toBe(0)
-        expect(rootInfo?.ancestorIdSet.size).toBe(0)
-        expect(rootInfo?.abstractChildIdSet).toContain('1-1')
-        expect(rootInfo?.abstractChildIdSet).toContain('1-2')
-        expect(rootInfo?.concreteChildIdSet.size).toBe(0)
-        expect(rootInfo?.allAbstractChildIdSet).toContain('1-1')
-        expect(rootInfo?.allAbstractChildIdSet).toContain('1-2')
-        expect(rootInfo?.allAbstractChildIdSet).toContain('1-1-1')
-        expect(rootInfo?.allConcreteChildIdSet).toContain('1-1-1-1')
-        expect(rootInfo?.allConcreteChildIdSet).toContain('1-1-2')
-        expect(rootInfo?.allConcreteChildIdSet).toContain('1-2-1')
-        expect(rootInfo?.allConcreteChildIdSet).toContain('1-2-2')
+        const rootInfo = data.abstractInheritInfoMap.get('1');
+        expect(rootInfo?.parentIdSet.size).toBe(0);
+        expect(rootInfo?.ancestorIdSet.size).toBe(0);
+        expect(rootInfo?.abstractChildIdSet).toContain('1-1');
+        expect(rootInfo?.abstractChildIdSet).toContain('1-2');
+        expect(rootInfo?.concreteChildIdSet.size).toBe(0);
+        expect(rootInfo?.allAbstractChildIdSet).toContain('1-1');
+        expect(rootInfo?.allAbstractChildIdSet).toContain('1-2');
+        expect(rootInfo?.allAbstractChildIdSet).toContain('1-1-1');
+        expect(rootInfo?.allConcreteChildIdSet).toContain('1-1-1-1');
+        expect(rootInfo?.allConcreteChildIdSet).toContain('1-1-2');
+        expect(rootInfo?.allConcreteChildIdSet).toContain('1-2-1');
+        expect(rootInfo?.allConcreteChildIdSet).toContain('1-2-2');
 
         // 验证具体实体继承信息
-        const concreteInfo = data.concreteInheritInfoMap.get('1-1-1-1')
-        expect(concreteInfo?.parentIdSet).toContain('1-1-1')
-        expect(concreteInfo?.ancestorIdSet).toContain('1-1-1')
-        expect(concreteInfo?.ancestorIdSet).toContain('1-1')
-        expect(concreteInfo?.ancestorIdSet).toContain('1')
-    })
+        const concreteInfo = data.concreteInheritInfoMap.get('1-1-1-1');
+        expect(concreteInfo?.parentIdSet).toContain('1-1-1');
+        expect(concreteInfo?.ancestorIdSet).toContain('1-1-1');
+        expect(concreteInfo?.ancestorIdSet).toContain('1-1');
+        expect(concreteInfo?.ancestorIdSet).toContain('1');
+    });
 
     it('sync entity', () => {
-        const {data, sync} = buildInheritInfo(abstractMap, concreteMap)
+        const {data, sync} = buildInheritInfo(abstractMap, concreteMap);
 
-        const newAbstractItem = {id: '1-3', extendsIds: ['1']}
-        sync.syncAbstract(newAbstractItem)
-        const newConcreteChild = {id: '1-3-1', extendsIds: ['1-3']}
-        sync.syncConcrete(newConcreteChild)
-        const newAbstractChild = {id: '1-3-2', extendsIds: ['1-3']}
-        sync.syncAbstract(newAbstractChild)
+        const newAbstractItem = {id: '1-3', extendsIds: ['1']};
+        sync.syncAbstract(newAbstractItem);
+        const newConcreteChild = {id: '1-3-1', extendsIds: ['1-3']};
+        sync.syncConcrete(newConcreteChild);
+        const newAbstractChild = {id: '1-3-2', extendsIds: ['1-3']};
+        sync.syncAbstract(newAbstractChild);
 
-        const concreteChildInfo = data.concreteInheritInfoMap.get('1-3-1')
-        expect(concreteChildInfo?.parentIdSet.size).toBe(1)
-        expect(concreteChildInfo?.parentIdSet).toContain('1-3')
-        expect(concreteChildInfo?.ancestorIdSet.size).toBe(2)
-        expect(concreteChildInfo?.ancestorIdSet).toContain('1-3')
-        expect(concreteChildInfo?.ancestorIdSet).toContain('1')
-        const abstractChildInfo = data.abstractInheritInfoMap.get('1-3-2')
-        expect(abstractChildInfo?.parentIdSet.size).toBe(1)
-        expect(abstractChildInfo?.parentIdSet).toContain('1-3')
-        expect(abstractChildInfo?.ancestorIdSet.size).toBe(2)
-        expect(abstractChildInfo?.ancestorIdSet).toContain('1-3')
-        expect(abstractChildInfo?.ancestorIdSet).toContain('1')
-        const parentInfo = data.abstractInheritInfoMap.get('1-3')
-        expect(parentInfo?.concreteChildIdSet.size).toBe(1)
-        expect(parentInfo?.concreteChildIdSet).toContain('1-3-1')
-        expect(parentInfo?.allConcreteChildIdSet.size).toBe(1)
-        expect(parentInfo?.allConcreteChildIdSet).toContain('1-3-1')
-        expect(parentInfo?.abstractChildIdSet.size).toBe(1)
-        expect(parentInfo?.abstractChildIdSet).toContain('1-3-2')
-        expect(parentInfo?.allAbstractChildIdSet.size).toBe(1)
-        expect(parentInfo?.allAbstractChildIdSet).toContain('1-3-2')
+        const concreteChildInfo = data.concreteInheritInfoMap.get('1-3-1');
+        expect(concreteChildInfo?.parentIdSet.size).toBe(1);
+        expect(concreteChildInfo?.parentIdSet).toContain('1-3');
+        expect(concreteChildInfo?.ancestorIdSet.size).toBe(2);
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1-3');
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1');
+        const abstractChildInfo = data.abstractInheritInfoMap.get('1-3-2');
+        expect(abstractChildInfo?.parentIdSet.size).toBe(1);
+        expect(abstractChildInfo?.parentIdSet).toContain('1-3');
+        expect(abstractChildInfo?.ancestorIdSet.size).toBe(2);
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1-3');
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1');
+        const parentInfo = data.abstractInheritInfoMap.get('1-3');
+        expect(parentInfo?.concreteChildIdSet.size).toBe(1);
+        expect(parentInfo?.concreteChildIdSet).toContain('1-3-1');
+        expect(parentInfo?.allConcreteChildIdSet.size).toBe(1);
+        expect(parentInfo?.allConcreteChildIdSet).toContain('1-3-1');
+        expect(parentInfo?.abstractChildIdSet.size).toBe(1);
+        expect(parentInfo?.abstractChildIdSet).toContain('1-3-2');
+        expect(parentInfo?.allAbstractChildIdSet.size).toBe(1);
+        expect(parentInfo?.allAbstractChildIdSet).toContain('1-3-2');
 
         // 调整抽象实体继承信息，验证子级是否同步
-        sync.syncAbstract({id: '1-3', extendsIds: []})
-        expect(concreteChildInfo?.parentIdSet.size).toBe(1)
-        expect(concreteChildInfo?.parentIdSet).toContain('1-3')
-        expect(concreteChildInfo?.ancestorIdSet.size).toBe(1)
-        expect(concreteChildInfo?.ancestorIdSet).toContain('1-3')
-        expect(abstractChildInfo?.parentIdSet.size).toBe(1)
-        expect(abstractChildInfo?.parentIdSet).toContain('1-3')
-        expect(abstractChildInfo?.ancestorIdSet.size).toBe(1)
-        expect(abstractChildInfo?.ancestorIdSet).toContain('1-3')
-        expect(parentInfo?.concreteChildIdSet.size).toBe(1)
-        expect(parentInfo?.concreteChildIdSet).toContain('1-3-1')
-        expect(parentInfo?.allConcreteChildIdSet.size).toBe(1)
-        expect(parentInfo?.allConcreteChildIdSet).toContain('1-3-1')
-        expect(parentInfo?.abstractChildIdSet.size).toBe(1)
-        expect(parentInfo?.abstractChildIdSet).toContain('1-3-2')
-        expect(parentInfo?.allAbstractChildIdSet.size).toBe(1)
-        expect(parentInfo?.allAbstractChildIdSet).toContain('1-3-2')
+        sync.syncAbstract({id: '1-3', extendsIds: []});
+        expect(concreteChildInfo?.parentIdSet.size).toBe(1);
+        expect(concreteChildInfo?.parentIdSet).toContain('1-3');
+        expect(concreteChildInfo?.ancestorIdSet.size).toBe(1);
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1-3');
+        expect(abstractChildInfo?.parentIdSet.size).toBe(1);
+        expect(abstractChildInfo?.parentIdSet).toContain('1-3');
+        expect(abstractChildInfo?.ancestorIdSet.size).toBe(1);
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1-3');
+        expect(parentInfo?.concreteChildIdSet.size).toBe(1);
+        expect(parentInfo?.concreteChildIdSet).toContain('1-3-1');
+        expect(parentInfo?.allConcreteChildIdSet.size).toBe(1);
+        expect(parentInfo?.allConcreteChildIdSet).toContain('1-3-1');
+        expect(parentInfo?.abstractChildIdSet.size).toBe(1);
+        expect(parentInfo?.abstractChildIdSet).toContain('1-3-2');
+        expect(parentInfo?.allAbstractChildIdSet.size).toBe(1);
+        expect(parentInfo?.allAbstractChildIdSet).toContain('1-3-2');
 
-        sync.syncAbstract({id: '1-3', extendsIds: ['1']})
-        expect(concreteChildInfo?.parentIdSet.size).toBe(1)
-        expect(concreteChildInfo?.parentIdSet).toContain('1-3')
-        expect(concreteChildInfo?.ancestorIdSet.size).toBe(2)
-        expect(concreteChildInfo?.ancestorIdSet).toContain('1-3')
-        expect(concreteChildInfo?.ancestorIdSet).toContain('1')
-        expect(abstractChildInfo?.parentIdSet.size).toBe(1)
-        expect(abstractChildInfo?.parentIdSet).toContain('1-3')
-        expect(abstractChildInfo?.ancestorIdSet.size).toBe(2)
-        expect(abstractChildInfo?.ancestorIdSet).toContain('1-3')
-        expect(abstractChildInfo?.ancestorIdSet).toContain('1')
-    })
+        sync.syncAbstract({id: '1-3', extendsIds: ['1']});
+        expect(concreteChildInfo?.parentIdSet.size).toBe(1);
+        expect(concreteChildInfo?.parentIdSet).toContain('1-3');
+        expect(concreteChildInfo?.ancestorIdSet.size).toBe(2);
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1-3');
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1');
+        expect(abstractChildInfo?.parentIdSet.size).toBe(1);
+        expect(abstractChildInfo?.parentIdSet).toContain('1-3');
+        expect(abstractChildInfo?.ancestorIdSet.size).toBe(2);
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1-3');
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1');
+    });
 
     it('remove abstract entity', () => {
-        const {data, sync} = buildInheritInfo(abstractMap, concreteMap)
+        const {data, sync} = buildInheritInfo(abstractMap, concreteMap);
 
-        sync.removeAbstract('1-2')
+        sync.removeAbstract('1-2');
 
-        expect(data.abstractInheritInfoMap.size).toBe(3)
-        expect(data.abstractInheritInfoMap.has('1')).toBeTruthy()
-        expect(data.abstractInheritInfoMap.has('1-1')).toBeTruthy()
-        expect(data.abstractInheritInfoMap.has('1-1-1')).toBeTruthy()
+        expect(data.abstractInheritInfoMap.size).toBe(3);
+        expect(data.abstractInheritInfoMap.has('1')).toBeTruthy();
+        expect(data.abstractInheritInfoMap.has('1-1')).toBeTruthy();
+        expect(data.abstractInheritInfoMap.has('1-1-1')).toBeTruthy();
 
         for (const childInfo of data.abstractInheritInfoMap.values()) {
-            expect(childInfo.parentIdSet).not.toContain('1-2')
-            expect(childInfo.ancestorIdSet).not.toContain('1-2')
-            expect(childInfo.abstractChildIdSet).not.toContain('1-2')
-            expect(childInfo.allAbstractChildIdSet).not.toContain('1-2')
+            expect(childInfo.parentIdSet).not.toContain('1-2');
+            expect(childInfo.ancestorIdSet).not.toContain('1-2');
+            expect(childInfo.abstractChildIdSet).not.toContain('1-2');
+            expect(childInfo.allAbstractChildIdSet).not.toContain('1-2');
         }
 
-        expect(data.concreteInheritInfoMap.size).toBe(4)
-        expect(data.concreteInheritInfoMap.has('1-1-1-1')).toBeTruthy()
-        expect(data.concreteInheritInfoMap.has('1-1-2')).toBeTruthy()
-        expect(data.concreteInheritInfoMap.has('1-2-1')).toBeTruthy()
-        expect(data.concreteInheritInfoMap.has('1-2-2')).toBeTruthy()
+        expect(data.concreteInheritInfoMap.size).toBe(4);
+        expect(data.concreteInheritInfoMap.has('1-1-1-1')).toBeTruthy();
+        expect(data.concreteInheritInfoMap.has('1-1-2')).toBeTruthy();
+        expect(data.concreteInheritInfoMap.has('1-2-1')).toBeTruthy();
+        expect(data.concreteInheritInfoMap.has('1-2-2')).toBeTruthy();
 
         for (const childInfo of data.concreteInheritInfoMap.values()) {
-            expect(childInfo.parentIdSet).not.toContain('1-2')
-            expect(childInfo.ancestorIdSet).not.toContain('1-2')
+            expect(childInfo.parentIdSet).not.toContain('1-2');
+            expect(childInfo.ancestorIdSet).not.toContain('1-2');
         }
-    })
+    });
 
     it('remove concrete entity', () => {
-        const {data, sync} = buildInheritInfo(abstractMap, concreteMap)
+        const {data, sync} = buildInheritInfo(abstractMap, concreteMap);
 
-        sync.removeConcrete('1-1-2')
+        sync.removeConcrete('1-1-2');
 
-        const childInfo = data.abstractInheritInfoMap.get('1-1')
-        expect(childInfo?.concreteChildIdSet).not.toContain('1-1-2')
-        expect(childInfo?.allConcreteChildIdSet).not.toContain('1-1-2')
-        const rootInfo = data.abstractInheritInfoMap.get('1')
-        expect(rootInfo?.concreteChildIdSet).not.toContain('1-1-2')
-        expect(rootInfo?.allConcreteChildIdSet).not.toContain('1-1-2')
-    })
+        const childInfo = data.abstractInheritInfoMap.get('1-1');
+        expect(childInfo?.concreteChildIdSet).not.toContain('1-1-2');
+        expect(childInfo?.allConcreteChildIdSet).not.toContain('1-1-2');
+        const rootInfo = data.abstractInheritInfoMap.get('1');
+        expect(rootInfo?.concreteChildIdSet).not.toContain('1-1-2');
+        expect(rootInfo?.allConcreteChildIdSet).not.toContain('1-1-2');
+    });
 
     it('missing dependencies', () => {
         // 创建包含缺失依赖的测试数据
         const abstractMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
             ['1', {id: '1', extendsIds: []}],
-            ['2', {id: '2', extendsIds: ['1', '3', '4']}] // 依赖不存在的 '3' 和 并不是抽象实体的 ‘4’
-        ])
+            ['2', {id: '2', extendsIds: ['1', '3', '4']}], // 依赖不存在的 '3' 和 并不是抽象实体的 ‘4’
+        ]);
 
         const concreteMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
-            ['4', {id: '4', extendsIds: ['5', '6']}] // 依赖不存在的 '5', '6
-        ])
+            ['4', {id: '4', extendsIds: ['5', '6']}], // 依赖不存在的 '5', '6
+        ]);
 
-        const {data} = buildInheritInfo(abstractMapWithMissing, concreteMapWithMissing)
+        const {data} = buildInheritInfo(abstractMapWithMissing, concreteMapWithMissing);
 
         // 验证缺失依赖被正确记录
-        expect(data.missingDependencies.size).toBe(2)
+        expect(data.missingDependencies.size).toBe(2);
 
-        expect(data.missingDependencies.get('2')?.size).toBe(2)
-        expect(data.missingDependencies.get('2')).toContain('3')
-        expect(data.missingDependencies.get('2')).toContain('4')
+        expect(data.missingDependencies.get('2')?.size).toBe(2);
+        expect(data.missingDependencies.get('2')).toContain('3');
+        expect(data.missingDependencies.get('2')).toContain('4');
 
-        expect(data.missingDependencies.get('4')?.size).toBe(2)
-        expect(data.missingDependencies.get('4')).toContain('5')
-        expect(data.missingDependencies.get('4')).toContain('6')
-    })
+        expect(data.missingDependencies.get('4')?.size).toBe(2);
+        expect(data.missingDependencies.get('4')).toContain('5');
+        expect(data.missingDependencies.get('4')).toContain('6');
+    });
 
     it('sync abstract entity with missing dependencies', () => {
-        const {data, sync} = buildInheritInfo(abstractMap, concreteMap)
+        const {data, sync} = buildInheritInfo(abstractMap, concreteMap);
 
         // 同步一个有缺失依赖的抽象实体
-        const newItemWithMissing = {id: '6', extendsIds: ['7']} // 依赖不存在的 '7'
-        sync.syncAbstract(newItemWithMissing)
+        const newItemWithMissing = {id: '6', extendsIds: ['7']}; // 依赖不存在的 '7'
+        sync.syncAbstract(newItemWithMissing);
 
         // 验证缺失依赖被正确记录
-        expect(data.missingDependencies.get('6')?.size).toBe(1)
-        expect(data.missingDependencies.get('6')).toContain('7')
-    })
+        expect(data.missingDependencies.get('6')?.size).toBe(1);
+        expect(data.missingDependencies.get('6')).toContain('7');
+    });
 
     it('sync concrete entity with missing dependencies', () => {
-        const {data, sync} = buildInheritInfo(abstractMap, concreteMap)
+        const {data, sync} = buildInheritInfo(abstractMap, concreteMap);
 
         // 同步一个有缺失依赖的具体实体
-        const newItemWithMissing = {id: '8', extendsIds: ['9']} // 依赖不存在的 '9'
-        sync.syncConcrete(newItemWithMissing)
+        const newItemWithMissing = {id: '8', extendsIds: ['9']}; // 依赖不存在的 '9'
+        sync.syncConcrete(newItemWithMissing);
 
         // 验证缺失依赖被正确记录
-        expect(data.missingDependencies.get('8')?.size).toBe(1)
-        expect(data.missingDependencies.get('8')).toContain('9')
-    })
+        expect(data.missingDependencies.get('8')?.size).toBe(1);
+        expect(data.missingDependencies.get('8')).toContain('9');
+    });
 
     it('remove abstract entity with missing dependencies', () => {
         // 创建包含缺失依赖的测试数据
         const abstractMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
             ['1', {id: '1', extendsIds: []}],
             ['2', {id: '2', extendsIds: ['1', '3']}], // 依赖不存在的 '3'
-        ])
+        ]);
         const concreteMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
             ['4', {id: '4', extendsIds: ['1']}],
             ['5', {id: '5', extendsIds: ['2']}],
-        ])
+        ]);
 
-        const {data, sync} = buildInheritInfo(abstractMapWithMissing, concreteMapWithMissing)
+        const {data, sync} = buildInheritInfo(abstractMapWithMissing, concreteMapWithMissing);
 
-        expect(data.missingDependencies.size).toBe(1)
-        expect(data.missingDependencies.get('2')?.size).toBe(1)
-        expect(data.missingDependencies.get('2')).toContain('3')
+        expect(data.missingDependencies.size).toBe(1);
+        expect(data.missingDependencies.get('2')?.size).toBe(1);
+        expect(data.missingDependencies.get('2')).toContain('3');
 
         // 移除抽象实体
-        sync.removeAbstract('1')
+        sync.removeAbstract('1');
 
-        expect(data.missingDependencies.size).toBe(2)
-        expect(data.missingDependencies.get('2')?.size).toBe(2)
-        expect(data.missingDependencies.get('2')).toContain('1')
-        expect(data.missingDependencies.get('2')).toContain('3')
-        expect(data.missingDependencies.get('4')?.size).toBe(1)
-        expect(data.missingDependencies.get('4')).toContain('1')
+        expect(data.missingDependencies.size).toBe(2);
+        expect(data.missingDependencies.get('2')?.size).toBe(2);
+        expect(data.missingDependencies.get('2')).toContain('1');
+        expect(data.missingDependencies.get('2')).toContain('3');
+        expect(data.missingDependencies.get('4')?.size).toBe(1);
+        expect(data.missingDependencies.get('4')).toContain('1');
 
         // 恢复抽象实体
-        sync.syncAbstract({id: '1', extendsIds: []})
+        sync.syncAbstract({id: '1', extendsIds: []});
 
-        expect(data.missingDependencies.size).toBe(1)
-        expect(data.missingDependencies.get('2')?.size).toBe(1)
-        expect(data.missingDependencies.get('2')).toContain('3')
-    })
+        expect(data.missingDependencies.size).toBe(1);
+        expect(data.missingDependencies.get('2')?.size).toBe(1);
+        expect(data.missingDependencies.get('2')).toContain('3');
+    });
 
     it('remove concrete entity with missing dependencies', () => {
         // 创建包含缺失依赖的测试数据
         const abstractMapNormal: DeepReadonly<Map<string, InheritItem>> = new Map([
-            ['1', {id: '1', extendsIds: []}]
-        ])
+            ['1', {id: '1', extendsIds: []}],
+        ]);
         const concreteMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
             ['2', {id: '2', extendsIds: ['1', '3']}], // 依赖不存在的 '3'
-        ])
+        ]);
 
-        const {data, sync} = buildInheritInfo(abstractMapNormal, concreteMapWithMissing)
+        const {data, sync} = buildInheritInfo(abstractMapNormal, concreteMapWithMissing);
 
-        expect(data.missingDependencies.size).toBe(1)
-        expect(data.missingDependencies.get('2')?.size).toBe(1)
-        expect(data.missingDependencies.get('2')).toContain('3')
+        expect(data.missingDependencies.size).toBe(1);
+        expect(data.missingDependencies.get('2')?.size).toBe(1);
+        expect(data.missingDependencies.get('2')).toContain('3');
 
-        sync.syncConcrete({id: '2', extendsIds: []})
+        sync.syncConcrete({id: '2', extendsIds: []});
 
-        expect(data.missingDependencies.size).toBe(0)
+        expect(data.missingDependencies.size).toBe(0);
 
-        sync.removeConcrete('2')
+        sync.removeConcrete('2');
 
-        expect(data.missingDependencies.size).toBe(0)
+        expect(data.missingDependencies.size).toBe(0);
 
-        sync.syncConcrete({id: '2', extendsIds: ['1', '3']})
+        sync.syncConcrete({id: '2', extendsIds: ['1', '3']});
 
-        expect(data.missingDependencies.size).toBe(1)
-        expect(data.missingDependencies.get('2')?.size).toBe(1)
-        expect(data.missingDependencies.get('2')).toContain('3')
-    })
+        expect(data.missingDependencies.size).toBe(1);
+        expect(data.missingDependencies.get('2')?.size).toBe(1);
+        expect(data.missingDependencies.get('2')).toContain('3');
+    });
 
     // 包含循环引用的测试数据
     const abstractMapWithCircular: DeepReadonly<Map<string, InheritItem>> = new Map([
         ['1', {id: '1', extendsIds: ['2']}], // 1 继承 2
         ['2', {id: '2', extendsIds: ['1']}], // 2 继承 1，形成循环
-        ['3', {id: '3', extendsIds: ['3']}]  // 自循环引用
-    ])
+        ['3', {id: '3', extendsIds: ['3']}], // 自循环引用
+    ]);
     const concreteMapWithCircular: DeepReadonly<Map<string, InheritItem>> = new Map([
         ['4', {id: '4', extendsIds: ['1']}],
-        ['5', {id: '5', extendsIds: ['3']}]
-    ])
+        ['5', {id: '5', extendsIds: ['3']}],
+    ]);
 
     it('circular references', () => {
-        const {data} = buildInheritInfo(abstractMapWithCircular, concreteMapWithCircular)
+        const {data} = buildInheritInfo(abstractMapWithCircular, concreteMapWithCircular);
 
         // 验证循环引用被正确检测和记录
-        expect(data.circularReferences.size).toBe(5)
-        expect(data.circularReferences.get('1')?.length).toBe(1)
-        expect(data.circularReferences.get('1')?.[0]).toEqual(['2', '1'])
+        expect(data.circularReferences.size).toBe(5);
+        expect(data.circularReferences.get('1')?.length).toBe(1);
+        expect(data.circularReferences.get('1')?.[0]).toEqual(['2', '1']);
 
-        expect(data.circularReferences.get('2')?.length).toBe(1)
-        expect(data.circularReferences.get('2')?.[0]).toEqual(['1', '2'])
+        expect(data.circularReferences.get('2')?.length).toBe(1);
+        expect(data.circularReferences.get('2')?.[0]).toEqual(['1', '2']);
 
-        expect(data.circularReferences.get('3')?.length).toBe(1)
-        expect(data.circularReferences.get('3')?.[0]?.length).toBe(1)
-        expect(data.circularReferences.get('3')?.[0]?.[0]).toEqual('3')
+        expect(data.circularReferences.get('3')?.length).toBe(1);
+        expect(data.circularReferences.get('3')?.[0]?.length).toBe(1);
+        expect(data.circularReferences.get('3')?.[0]?.[0]).toEqual('3');
 
-        expect(data.circularReferences.get('4')?.length).toBe(1)
-        expect(data.circularReferences.get('4')?.[0]?.length).toBe(2)
-        expect(data.circularReferences.get('4')?.[0]).toEqual(['1', '2'])
+        expect(data.circularReferences.get('4')?.length).toBe(1);
+        expect(data.circularReferences.get('4')?.[0]?.length).toBe(2);
+        expect(data.circularReferences.get('4')?.[0]).toEqual(['1', '2']);
 
-        expect(data.circularReferences.get('5')?.length).toBe(1)
-        expect(data.circularReferences.get('5')?.[0]?.length).toBe(1)
-        expect(data.circularReferences.get('5')?.[0]?.[0]).toEqual('3')
+        expect(data.circularReferences.get('5')?.length).toBe(1);
+        expect(data.circularReferences.get('5')?.[0]?.length).toBe(1);
+        expect(data.circularReferences.get('5')?.[0]?.[0]).toEqual('3');
 
-        expect(data.missingDependencies.size).toBe(0)
-    })
+        expect(data.missingDependencies.size).toBe(0);
+    });
 
     it('sync abstract entity with circular references', () => {
         const {data, sync} = buildInheritInfo(abstractMapWithCircular, concreteMapWithCircular);
@@ -431,7 +432,7 @@ describe('EntityInheritInfo', () => {
     });
 
     it('build reverse order inherit tree ', () => {
-        const {data, sync} = buildInheritInfo(new Map(), new Map())
+        const {data, sync} = buildInheritInfo(new Map(), new Map());
 
         const abstractItems: [string, InheritItem][] = [
             ['1', {id: '1', extendsIds: ['2']}],
@@ -440,17 +441,15 @@ describe('EntityInheritInfo', () => {
             ['4', {id: '4', extendsIds: ['5']}],
             ['5', {id: '5', extendsIds: ['6']}],
             ['6', {id: '6', extendsIds: ['7']}],
-            ['7', {id: '7', extendsIds: []}]
-        ]
-        const concreteItems: [string, InheritItem][] = [
-            ['8', {id: '8', extendsIds: ['1']}]
-        ]
+            ['7', {id: '7', extendsIds: []}],
+        ];
+        const concreteItems: [string, InheritItem][] = [['8', {id: '8', extendsIds: ['1']}]];
 
         for (const [_, item] of concreteItems) {
-            sync.syncConcrete(item)
+            sync.syncConcrete(item);
         }
         for (const [_, item] of abstractItems) {
-            sync.syncAbstract(item)
+            sync.syncAbstract(item);
         }
 
         expect(data.abstractInheritInfoMap.get('1')).toEqual({
@@ -459,35 +458,35 @@ describe('EntityInheritInfo', () => {
             abstractChildIdSet: new Set(),
             allAbstractChildIdSet: new Set(),
             concreteChildIdSet: new Set(['8']),
-            allConcreteChildIdSet: new Set(['8'])
-        })
+            allConcreteChildIdSet: new Set(['8']),
+        });
         expect(data.abstractInheritInfoMap.get('2')).toEqual({
             parentIdSet: new Set(['3']),
             ancestorIdSet: new Set(['3', '4', '5', '6', '7']),
             abstractChildIdSet: new Set(['1']),
             allAbstractChildIdSet: new Set(['1']),
             concreteChildIdSet: new Set(),
-            allConcreteChildIdSet: new Set(['8'])
-        })
+            allConcreteChildIdSet: new Set(['8']),
+        });
         expect(data.abstractInheritInfoMap.get('3')).toEqual({
             parentIdSet: new Set(['4']),
             ancestorIdSet: new Set(['4', '5', '6', '7']),
             abstractChildIdSet: new Set(['2']),
             allAbstractChildIdSet: new Set(['1', '2']),
             concreteChildIdSet: new Set(),
-            allConcreteChildIdSet: new Set(['8'])
-        })
+            allConcreteChildIdSet: new Set(['8']),
+        });
         expect(data.abstractInheritInfoMap.get('4')).toEqual({
             parentIdSet: new Set(['5']),
             ancestorIdSet: new Set(['5', '6', '7']),
             abstractChildIdSet: new Set(['3']),
             allAbstractChildIdSet: new Set(['1', '2', '3']),
             concreteChildIdSet: new Set(),
-            allConcreteChildIdSet: new Set(['8'])
-        })
+            allConcreteChildIdSet: new Set(['8']),
+        });
         expect(data.concreteInheritInfoMap.get('8')).toEqual({
             parentIdSet: new Set(['1']),
             ancestorIdSet: new Set(['1', '2', '3', '4', '5', '6', '7']),
-        })
-    })
-})
+        });
+    });
+});

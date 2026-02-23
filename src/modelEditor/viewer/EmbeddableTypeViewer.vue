@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import NameCommentViewer from '@/modelEditor/nameComment/NameCommentViewer.vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
 
-const props = withDefaults(defineProps<{
-    embeddableType: DeepReadonly<EmbeddableType> | undefined,
-    ctrlFocus?: boolean
-    hideComment?: boolean
-}>(), {
-    ctrlFocus: false
-})
+const props = withDefaults(
+    defineProps<{
+        embeddableType: DeepReadonly<EmbeddableType> | undefined;
+        ctrlFocus?: boolean;
+        hideComment?: boolean;
+    }>(),
+    {
+        ctrlFocus: false,
+    },
+);
 
-const {
-    focusNode,
-} = useModelEditor()
+const {focusNode} = useModelEditor();
 
 const handleFocus = () => {
-    if (!props.embeddableType) return
-    if (!props.ctrlFocus) return
-    focusNode(props.embeddableType.id)
-}
+    if (!props.embeddableType) return;
+    if (!props.ctrlFocus) return;
+    focusNode(props.embeddableType.id);
+};
 </script>
 
 <template>

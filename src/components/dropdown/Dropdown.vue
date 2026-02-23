@@ -1,78 +1,90 @@
 <script setup lang="ts">
-import {ref, useTemplateRef, nextTick, watch} from 'vue'
-import IconCaretDown from "@/components/icons/IconCaretDown.vue";
+import {ref, useTemplateRef, nextTick, watch} from 'vue';
+import IconCaretDown from '@/components/icons/IconCaretDown.vue';
 
 const isOpen = defineModel<boolean>({
     required: false,
-    default: false
-})
+    default: false,
+});
 
-const props = withDefaults(defineProps<{
-    disabled?: boolean,
-    paddingY?: number,
-}>(), {
-    disabled: false,
-    paddingY: 8,
-})
+const props = withDefaults(
+    defineProps<{
+        disabled?: boolean;
+        paddingY?: number;
+    }>(),
+    {
+        disabled: false,
+        paddingY: 8,
+    },
+);
 
-const dropdownRef = useTemplateRef("dropdownRef")
-const dropdownBodyMaskRef = useTemplateRef("dropdownBodyMaskRef")
-const dropdownBodyRef = useTemplateRef("dropdownBodyRef")
+const dropdownRef = useTemplateRef('dropdownRef');
+const dropdownBodyMaskRef = useTemplateRef('dropdownBodyMaskRef');
+const dropdownBodyRef = useTemplateRef('dropdownBodyRef');
 
 const menuPosition = ref({
     top: 0,
-    left: 0
-})
+    left: 0,
+});
 
 // 切换下拉菜单
 const toggleDropdown = () => {
     if (!props.disabled) {
-        isOpen.value = !isOpen.value
+        isOpen.value = !isOpen.value;
     }
-}
+};
 
-watch(() => isOpen.value, async (value) => {
-    await nextTick()
-    if (value && dropdownRef.value && dropdownBodyMaskRef.value && dropdownBodyRef.value) {
-        if (!document.activeElement || document.activeElement === document.body) {
-            dropdownBodyMaskRef.value.focus()
+watch(
+    () => isOpen.value,
+    async (value) => {
+        await nextTick();
+        if (value && dropdownRef.value && dropdownBodyMaskRef.value && dropdownBodyRef.value) {
+            if (!document.activeElement || document.activeElement === document.body) {
+                dropdownBodyMaskRef.value.focus();
+            }
+
+            const triggerRect = dropdownRef.value.getBoundingClientRect();
+            const menuRect = dropdownBodyRef.value.getBoundingClientRect();
+
+            // 计算水平位置（优先左对齐，但确保不会超出右边界）
+            let left = triggerRect.left;
+            // 确保菜单不会超出右边界
+            if (left + menuRect.width > window.innerWidth) {
+                left = Math.max(0, window.innerWidth - menuRect.width);
+            }
+
+            // 计算垂直位置（优先下方，空间不足则上方）
+            let top = triggerRect.bottom + props.paddingY;
+            if (top + menuRect.height > window.innerHeight) {
+                top = triggerRect.top - menuRect.height - props.paddingY;
+            }
+
+            menuPosition.value = {
+                top,
+                left,
+            };
         }
-
-        const triggerRect = dropdownRef.value.getBoundingClientRect()
-        const menuRect = dropdownBodyRef.value.getBoundingClientRect()
-
-        // 计算水平位置（优先左对齐，但确保不会超出右边界）
-        let left = triggerRect.left
-        // 确保菜单不会超出右边界
-        if (left + menuRect.width > window.innerWidth) {
-            left = Math.max(0, window.innerWidth - menuRect.width)
-        }
-
-        // 计算垂直位置（优先下方，空间不足则上方）
-        let top = triggerRect.bottom + props.paddingY
-        if (top + menuRect.height > window.innerHeight) {
-            top = triggerRect.top - menuRect.height - props.paddingY
-        }
-
-        menuPosition.value = {
-            top,
-            left
-        }
-    }
-})
+    },
+);
 </script>
 
 <template>
     <div
         ref="dropdownRef"
         class="dropdown"
-        :class="{ disabled, open: isOpen }"
+        :class="{disabled, open: isOpen}"
     >
-        <div class="dropdown-trigger" @click="toggleDropdown">
+        <div
+            class="dropdown-trigger"
+            @click="toggleDropdown"
+        >
             <div class="dropdown-header">
-                <slot name="head"/>
+                <slot name="head" />
             </div>
-            <IconCaretDown  class="dropdown-arrow" :class="{ 'rotated': isOpen }"/>
+            <IconCaretDown
+                class="dropdown-arrow"
+                :class="{rotated: isOpen}"
+            />
         </div>
 
         <Teleport to="body">
@@ -92,7 +104,7 @@ watch(() => isOpen.value, async (value) => {
                         left: `${menuPosition.left}px`,
                     }"
                 >
-                    <slot name="body"/>
+                    <slot name="body" />
                 </div>
             </div>
         </Teleport>

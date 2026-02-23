@@ -1,5 +1,5 @@
-import {describe, it, expect} from "vitest";
-import {checkLowerCamelName, checkNoBlank, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
+import {describe, it, expect} from 'vitest';
+import {checkLowerCamelName, checkNoBlank, checkUpperCamelName} from '@/utils/name/nameCheck.ts';
 
 // 测试用例
 describe('nameCheck', () => {
@@ -47,25 +47,25 @@ describe('nameCheck', () => {
 
     describe('checkNoBlank', () => {
         it('NoBlank pass', () => {
-            expect(checkNoBlank('username')).toBe(true)
-            expect(checkNoBlank('user_name')).toBe(true)
-            expect(checkNoBlank('userName')).toBe(true)
-            expect(checkNoBlank('123abc')).toBe(true)
-            expect(checkNoBlank('USER_NAME_123')).toBe(true)
-            expect(checkNoBlank('')).toBe(false) // 空字符串
-        })
+            expect(checkNoBlank('username')).toBe(true);
+            expect(checkNoBlank('user_name')).toBe(true);
+            expect(checkNoBlank('userName')).toBe(true);
+            expect(checkNoBlank('123abc')).toBe(true);
+            expect(checkNoBlank('USER_NAME_123')).toBe(true);
+            expect(checkNoBlank('')).toBe(false); // 空字符串
+        });
 
         it('NoBlank fail', () => {
-            expect(checkNoBlank('user name')).toBe(false) // 包含空格
-            expect(checkNoBlank(' username')).toBe(false) // 开头有空格
-            expect(checkNoBlank('username ')).toBe(false) // 结尾有空格
-            expect(checkNoBlank('user  name')).toBe(false) // 多个空格
-            expect(checkNoBlank('user\tname')).toBe(false) // 包含制表符
-            expect(checkNoBlank('user\nname')).toBe(false) // 包含换行符
-            expect(checkNoBlank('user\rname')).toBe(false) // 包含回车符
-            expect(checkNoBlank(null as any)).toBe(false) // null值
-            expect(checkNoBlank(undefined as any)).toBe(false) // undefined值
-            expect(checkNoBlank(123 as any)).toBe(false) // 非字符串值
-        })
-    })
+            expect(checkNoBlank('user name')).toBe(false); // 包含空格
+            expect(checkNoBlank(' username')).toBe(false); // 开头有空格
+            expect(checkNoBlank('username ')).toBe(false); // 结尾有空格
+            expect(checkNoBlank('user  name')).toBe(false); // 多个空格
+            expect(checkNoBlank('user\tname')).toBe(false); // 包含制表符
+            expect(checkNoBlank('user\nname')).toBe(false); // 包含换行符
+            expect(checkNoBlank('user\rname')).toBe(false); // 包含回车符
+            expect(checkNoBlank(null as any)).toBe(false); // null值
+            expect(checkNoBlank(undefined as any)).toBe(false); // undefined值
+            expect(checkNoBlank(123 as any)).toBe(false); // 非字符串值
+        });
+    });
 });

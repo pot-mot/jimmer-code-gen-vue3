@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
-    jvmLanguage: JvmLanguage | "ANY" | undefined
-}>()
+    jvmLanguage: JvmLanguage | 'ANY' | undefined;
+}>();
 </script>
 
 <template>

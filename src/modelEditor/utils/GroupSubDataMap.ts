@@ -3,26 +3,30 @@ const defaultGroupSubMaps: () => GroupInheritInfoMap = () => ({
     mappedSuperClassMap: new Map<string, MappedSuperClassWithInheritInfo>(),
     embeddableTypeMap: new Map<string, EmbeddableTypeWithProperties>(),
     enumerationMap: new Map<string, Enumeration>(),
-})
+});
 
 export const getGroupSubMaps = (
     groupId: string,
-    contextData: Pick<ModelContext, 'entityMap' | 'enumerationMap' | 'mappedSuperClassMap' | 'embeddableTypeMap'>,
+    contextData: Pick<
+        ModelContext,
+        'entityMap' | 'enumerationMap' | 'mappedSuperClassMap' | 'embeddableTypeMap'
+    >,
 ): GroupInheritInfoMap => {
-    const result = defaultGroupSubMaps()
+    const result = defaultGroupSubMaps();
 
     for (const [id, entity] of contextData.entityMap) {
-        if (entity.groupId === groupId) result.entityMap.set(id, entity)
+        if (entity.groupId === groupId) result.entityMap.set(id, entity);
     }
     for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
-        if (mappedSuperClass.groupId === groupId) result.mappedSuperClassMap.set(id, mappedSuperClass)
+        if (mappedSuperClass.groupId === groupId)
+            result.mappedSuperClassMap.set(id, mappedSuperClass);
     }
     for (const [id, embeddableType] of contextData.embeddableTypeMap) {
-        if (embeddableType.groupId === groupId) result.embeddableTypeMap.set(id, embeddableType)
+        if (embeddableType.groupId === groupId) result.embeddableTypeMap.set(id, embeddableType);
     }
     for (const [id, enumeration] of contextData.enumerationMap) {
-        if (enumeration.groupId === groupId) result.enumerationMap.set(id, enumeration)
+        if (enumeration.groupId === groupId) result.enumerationMap.set(id, enumeration);
     }
 
-    return result
-}
+    return result;
+};

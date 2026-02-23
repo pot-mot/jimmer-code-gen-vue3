@@ -1,65 +1,79 @@
 <script setup lang="ts">
-import {type NodeProps} from "@vue-flow/core";
-import type {EmbeddableTypeNode} from "@/modelEditor/node/EmbeddableTypeNode.ts";
-import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {defaultScalarProperty} from "@/modelEditor/default/modelDefaults.ts";
-import EmbeddableTypePropertyTypeEditor from "@/modelEditor/node/property/EmbeddableTypePropertyTypeEditor.vue";
-import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
-import {computed, onBeforeUnmount, onMounted, useTemplateRef} from "vue";
-import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import {NodeToolbar} from "@vue-flow/node-toolbar";
-import IconAim from "@/components/icons/IconAim.vue";
-import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
-import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
-import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
+import {type NodeProps} from '@vue-flow/core';
+import type {EmbeddableTypeNode} from '@/modelEditor/node/EmbeddableTypeNode.ts';
+import EditList from '@/components/list/selectableList/EditList.vue';
+import {
+    createId,
+    getColorVar,
+    getColorIsDark,
+    useModelEditor,
+} from '@/modelEditor/useModelEditor.ts';
+import {defaultScalarProperty} from '@/modelEditor/default/modelDefaults.ts';
+import EmbeddableTypePropertyTypeEditor from '@/modelEditor/node/property/EmbeddableTypePropertyTypeEditor.vue';
+import {validateEmbeddableTypeProperty} from '@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts';
+import {computed, onBeforeUnmount, onMounted, useTemplateRef} from 'vue';
+import NameCommentEditor from '@/modelEditor/nameComment/NameCommentEditor.vue';
+import {NodeToolbar} from '@vue-flow/node-toolbar';
+import IconAim from '@/components/icons/IconAim.vue';
+import IconDelete from '@/components/icons/IconDelete.vue';
+import {modelSubSelectEventBus} from '@/modelEditor/diagnostic/focusDiagnoseSource.ts';
+import DiagnoseViewer from '@/modelEditor/diagnostic/DiagnoseViewer.vue';
+import IconEmbeddableType from '@/components/icons/modelEditor/IconEmbeddableType.vue';
+import {nodeSubElementId} from '@/modelEditor/node/nodeElementId.ts';
 
-const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
+const props = defineProps<NodeProps<EmbeddableTypeNode['data']>>();
 
 const groupColor = computed(() => {
-    return getColorVar(props.data.embeddableType.groupId)
-})
+    return getColorVar(props.data.embeddableType.groupId);
+});
 const groupTheme = computed(() => {
-    return getColorIsDark(props.data.embeddableType.groupId) ? 'dark' : 'light'
-})
+    return getColorIsDark(props.data.embeddableType.groupId) ? 'dark' : 'light';
+});
 
-const propertyEditListRef = useTemplateRef("propertyEditListRef")
+const propertyEditListRef = useTemplateRef('propertyEditListRef');
 const unselectAllProperty = () => {
-    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection()
-}
-const selectProperty = ({embeddableTypeId, propertyId}: {embeddableTypeId: string, propertyId: string}) => {
+    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection();
+};
+const selectProperty = ({
+    embeddableTypeId,
+    propertyId,
+}: {
+    embeddableTypeId: string;
+    propertyId: string;
+}) => {
     if (embeddableTypeId === props.data.embeddableType.id && propertyEditListRef.value) {
-        const index = props.data.embeddableType.properties.findIndex(property => property.id === propertyId)
-        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index])
+        const index = props.data.embeddableType.properties.findIndex(
+            (property) => property.id === propertyId,
+        );
+        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index]);
     }
-}
+};
 onMounted(() => {
-    modelSubSelectEventBus.on("unselectAll", unselectAllProperty)
-    modelSubSelectEventBus.on("selectEmbeddableTypeProperty", selectProperty)
-})
+    modelSubSelectEventBus.on('unselectAll', unselectAllProperty);
+    modelSubSelectEventBus.on('selectEmbeddableTypeProperty', selectProperty);
+});
 onBeforeUnmount(() => {
-    modelSubSelectEventBus.off("unselectAll", unselectAllProperty)
-    modelSubSelectEventBus.off("selectEmbeddableTypeProperty", selectProperty)
-})
+    modelSubSelectEventBus.off('unselectAll', unselectAllProperty);
+    modelSubSelectEventBus.off('selectEmbeddableTypeProperty', selectProperty);
+});
 
-const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor()
+const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor();
 
 const beforePaste = (properties: Property[]) => {
     for (const property of properties) {
-        property.id = createId("Property")
+        property.id = createId('Property');
     }
-}
+};
 </script>
 
 <template>
-    <div class="embeddable-type-node" :class="{selected}">
+    <div
+        class="embeddable-type-node"
+        :class="{selected}"
+    >
         <div class="embeddable-type-header">
             <div class="header-label">
-                <IconEmbeddableType
-                    class="header-label-icon"
-                />
+                <IconEmbeddableType class="header-label-icon" />
                 <NameCommentEditor
                     v-model="data.embeddableType"
                     :class="groupTheme"
@@ -97,19 +111,31 @@ const beforePaste = (properties: Property[]) => {
                         />
                     </div>
                     <DiagnoseViewer
-                        :messages="modelDiagnoseInfo.embeddableTypeMap.get(id)?.properties.get(item.id)"
+                        :messages="
+                            modelDiagnoseInfo.embeddableTypeMap.get(id)?.properties.get(item.id)
+                        "
                     />
                 </div>
             </template>
         </EditList>
 
         <NodeToolbar class="node-toolbar">
-            <button @click="focusNode(id); focus()">
-                <IconAim/>
+            <button
+                @click="
+                    focusNode(id);
+                    focus();
+                "
+            >
+                <IconAim />
             </button>
 
-            <button @click="remove({embeddableTypeIds: [id]}); focus()">
-                <IconDelete/>
+            <button
+                @click="
+                    remove({embeddableTypeIds: [id]});
+                    focus();
+                "
+            >
+                <IconDelete />
             </button>
         </NodeToolbar>
     </div>

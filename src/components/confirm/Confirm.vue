@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import IconCheck from "@/components/icons/IconCheck.vue";
-import IconClose from "@/components/icons/IconClose.vue";
-import type {ConfirmProps} from "@/components/confirm/ConfirmType.ts";
+import IconCheck from '@/components/icons/IconCheck.vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import type {ConfirmProps} from '@/components/confirm/ConfirmType.ts';
 
-const props = defineProps<ConfirmProps>()
+const props = defineProps<ConfirmProps>();
 
 const handleSubmit = () => {
-    props.onConfirm()
-}
+    props.onConfirm();
+};
 
 const handleCancel = () => {
-    props.onCancel()
-}
+    props.onCancel();
+};
 
 const handleClose = () => {
-    props.onClose()
-}
+    props.onClose();
+};
 </script>
 
 <template>
@@ -23,18 +23,27 @@ const handleClose = () => {
         <div class="confirm-container">
             <div class="confirm-header">
                 <div class="confirm-title">{{ props.title }}</div>
-                <button @click="handleClose" class="close-button">
-                    <IconClose/>
+                <button
+                    @click="handleClose"
+                    class="close-button"
+                >
+                    <IconClose />
                 </button>
             </div>
             <div class="confirm-content">{{ props.content }}</div>
             <div class="confirm-actions">
-                <button @click="handleCancel" class="cancel-button">
-                    <IconClose/>
+                <button
+                    @click="handleCancel"
+                    class="cancel-button"
+                >
+                    <IconClose />
                     {{ props.cancelText }}
                 </button>
-                <button @click="handleSubmit" class="confirm-button">
-                    <IconCheck/>
+                <button
+                    @click="handleSubmit"
+                    class="confirm-button"
+                >
+                    <IconCheck />
                     {{ props.confirmText }}
                 </button>
             </div>

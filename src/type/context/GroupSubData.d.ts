@@ -1,6 +1,6 @@
 type GroupSubData = {
-    entityList: EntityWithProperties[]
-    mappedSuperClassList: MappedSuperClassWithProperties[]
-    embeddableTypeList: EmbeddableTypeWithProperties[]
-    enumerationList: Enumeration[]
-}
+    entityList: EntityWithProperties[];
+    mappedSuperClassList: MappedSuperClassWithProperties[];
+    embeddableTypeList: EmbeddableTypeWithProperties[];
+    enumerationList: Enumeration[];
+};

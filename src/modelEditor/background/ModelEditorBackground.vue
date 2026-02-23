@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import {computed} from 'vue'
-import {type ViewportTransform} from "@vue-flow/core";
+import {computed} from 'vue';
+import {type ViewportTransform} from '@vue-flow/core';
 
 const props = withDefaults(
     defineProps<{
-        viewport: ViewportTransform,
-        gapX?: number,
-        gapY?: number,
+        viewport: ViewportTransform;
+        gapX?: number;
+        gapY?: number;
     }>(),
     {
         gapX: 20,
         gapY: 20,
-    }
-)
+    },
+);
 
 const background = computed(() => {
-    const zoom = props.viewport.zoom
+    const zoom = props.viewport.zoom;
 
     return {
         gapX: props.gapX * zoom,
         gapY: props.gapY * zoom,
         r: zoom,
-    }
-})
+    };
+});
 </script>
 
 <template>
@@ -36,10 +36,21 @@ const background = computed(() => {
                 :height="background.gapY"
                 patternUnits="userSpaceOnUse"
             >
-                <circle :r="background.r" :cx="background.r" :cy="background.r" fill="var(--background-color-hover)"/>
+                <circle
+                    :r="background.r"
+                    :cx="background.r"
+                    :cy="background.r"
+                    fill="var(--background-color-hover)"
+                />
             </pattern>
 
-            <rect :x="-background.r" :y="-background.r" width="100%" height="100%" fill="url(#flow__background_pattern)"/>
+            <rect
+                :x="-background.r"
+                :y="-background.r"
+                width="100%"
+                height="100%"
+                fill="url(#flow__background_pattern)"
+            />
         </svg>
     </div>
 </template>

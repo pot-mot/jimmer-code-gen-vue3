@@ -1,47 +1,47 @@
-import {createRouter, createWebHashHistory, type RouteRecordRaw} from 'vue-router'
-import {sendMessage} from "@/components/message/messageApi.ts";
-import {startLoading} from "@/components/loading/loadingApi.ts";
+import {createRouter, createWebHashHistory, type RouteRecordRaw} from 'vue-router';
+import {sendMessage} from '@/components/message/messageApi.ts';
+import {startLoading} from '@/components/loading/loadingApi.ts';
 
 const routes: RouteRecordRaw[] = [
     {
-        path: "/",
-        redirect: "/models"
+        path: '/',
+        redirect: '/models',
     },
     {
-        path: "/models",
-        name: "ModelList",
-        component: () => import("../pages/modelList/ModelListPage.vue")
+        path: '/models',
+        name: 'ModelList',
+        component: () => import('../pages/modelList/ModelListPage.vue'),
     },
     {
-        path: "/model/:id",
-        name: "ModelEditor",
-        component: () => import("../pages/ModelEditor/ModelEditorPage.vue")
-    }
-]
+        path: '/model/:id',
+        name: 'ModelEditor',
+        component: () => import('../pages/ModelEditor/ModelEditorPage.vue'),
+    },
+];
 
 export const router = createRouter({
     history: createWebHashHistory(),
     routes,
     scrollBehavior(_to, _from, savedPosition) {
         if (savedPosition) {
-            return savedPosition
+            return savedPosition;
         } else {
-            return {top: 0}
+            return {top: 0};
         }
     },
 });
 
-let stopRouteLoading: () => void | undefined
+let stopRouteLoading: () => void | undefined;
 
 router.beforeEach((to, _from, next) => {
-    stopRouteLoading = startLoading(`to: ${to.fullPath}`).stop
-    next()
-})
+    stopRouteLoading = startLoading(`to: ${to.fullPath}`).stop;
+    next();
+});
 
 router.afterEach((_to, _from, _failure) => {
     if (stopRouteLoading !== undefined) {
-        stopRouteLoading()
+        stopRouteLoading();
     } else {
-        sendMessage("Router loading fail", {type: 'warning'})
+        sendMessage('Router loading fail', {type: 'warning'});
     }
-})
+});

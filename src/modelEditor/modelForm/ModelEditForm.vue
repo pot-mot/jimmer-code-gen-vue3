@@ -1,143 +1,165 @@
 <script setup lang="ts" generic="T extends ModelInsertInput | ModelUpdateInput">
-import type {ModelInsertInput, ModelUpdateInput} from "@/api/__generated/model/static";
-import {onMounted, ref, watch} from "vue";
-import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
-import JsonEditor from "@/components/code/jsonEditor/JsonEditor.vue";
-import {jsonPrettyFormat, jsonStrPrettyFormat} from "@/utils/json/jsonStringify.ts";
-import IconCheck from "@/components/icons/IconCheck.vue";
-import IconClose from "@/components/icons/IconClose.vue";
-import JvmLanguageSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageSelect.vue";
-import DatabaseTypeSelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeSelect.vue";
-import type {ErrorObject} from "ajv";
-import {formatErrorMessage} from "@/utils/type/typeGuard.ts";
-import {translate} from "@/store/i18nStore.ts";
+import type {ModelInsertInput, ModelUpdateInput} from '@/api/__generated/model/static';
+import {onMounted, ref, watch} from 'vue';
+import {validatePartialModelGraphSubData} from '@/type/context/jsonSchema/PartialModelGraphSubData.ts';
+import JsonEditor from '@/components/code/jsonEditor/JsonEditor.vue';
+import {jsonPrettyFormat, jsonStrPrettyFormat} from '@/utils/json/jsonStringify.ts';
+import IconCheck from '@/components/icons/IconCheck.vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import JvmLanguageSelect from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageSelect.vue';
+import DatabaseTypeSelect from '@/modelEditor/modelForm/databaseType/DatabaseTypeSelect.vue';
+import type {ErrorObject} from 'ajv';
+import {formatErrorMessage} from '@/utils/type/typeGuard.ts';
+import {translate} from '@/store/i18nStore.ts';
 import {
     getUnfitRawType,
-    fitRawTypeByJvmLanguage, stringifyUnfitRawType
-} from "@/modelEditor/modelForm/jvmLanguage/fitRawTypeByJvmLanguage.ts";
-import {sendConfirm} from "@/components/confirm/confirmApi.ts";
+    fitRawTypeByJvmLanguage,
+    stringifyUnfitRawType,
+} from '@/modelEditor/modelForm/jvmLanguage/fitRawTypeByJvmLanguage.ts';
+import {sendConfirm} from '@/components/confirm/confirmApi.ts';
 
 const model = defineModel<T>({
-    required: true
-})
+    required: true,
+});
 
 onMounted(() => {
-    model.value.jsonData = jsonStrPrettyFormat(model.value.jsonData)
-})
+    model.value.jsonData = jsonStrPrettyFormat(model.value.jsonData);
+});
 
 const emits = defineEmits<{
-    (name: 'submit', value: T): void
-    (name: 'cancel'): void
-}>()
+    (name: 'submit', value: T): void;
+    (name: 'cancel'): void;
+}>();
 
 // 表单验证错误
-const errors = ref<Record<string, string>>({})
+const errors = ref<Record<string, string>>({});
 
 // 根据当前语言切换字面类型
 const toggleRawTypeByLanguage = (currentLanguage: JvmLanguage) => {
     try {
-        const graphSubData = JSON.parse(model.value.jsonData)
+        const graphSubData = JSON.parse(model.value.jsonData);
 
-        let validateError: ErrorObject[] | null | undefined
-        if (!validatePartialModelGraphSubData(graphSubData, e => validateError = e)) {
-            errors.value.jsonData = translate('json_validate_error')
-            console.warn(formatErrorMessage(validateError))
+        let validateError: ErrorObject[] | null | undefined;
+        if (!validatePartialModelGraphSubData(graphSubData, (e) => (validateError = e))) {
+            errors.value.jsonData = translate('json_validate_error');
+            console.warn(formatErrorMessage(validateError));
         } else {
-            fitRawTypeByJvmLanguage(graphSubData, currentLanguage)
-            model.value.jsonData = jsonPrettyFormat(graphSubData)
+            fitRawTypeByJvmLanguage(graphSubData, currentLanguage);
+            model.value.jsonData = jsonPrettyFormat(graphSubData);
         }
     } catch (e) {
-        errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
-        console.error(e)
+        errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`;
+        console.error(e);
     }
-}
+};
 
 // 验证表单
 const validateForm = async (): Promise<boolean> => {
-    errors.value = {}
+    errors.value = {};
 
     if (!model.value.name || model.value.name.trim() === '') {
-        errors.value.name = translate({key: 'not_blank_warning', args: [translate('name')]})
+        errors.value.name = translate({key: 'not_blank_warning', args: [translate('name')]});
     }
 
     try {
-        const graphSubData = JSON.parse(model.value.jsonData)
-        let validateError: ErrorObject[] | null | undefined
-        if (!validatePartialModelGraphSubData(graphSubData, e => validateError = e)) {
-            errors.value.jsonData = translate('json_validate_error')
-            console.warn(formatErrorMessage(validateError))
+        const graphSubData = JSON.parse(model.value.jsonData);
+        let validateError: ErrorObject[] | null | undefined;
+        if (!validatePartialModelGraphSubData(graphSubData, (e) => (validateError = e))) {
+            errors.value.jsonData = translate('json_validate_error');
+            console.warn(formatErrorMessage(validateError));
         } else {
-            const unfitTypeWithPaths = getUnfitRawType(graphSubData, model.value.jvmLanguage)
+            const unfitTypeWithPaths = getUnfitRawType(graphSubData, model.value.jvmLanguage);
             if (Object.keys(unfitTypeWithPaths).length > 0) {
                 await sendConfirm({
                     title: translate('raw_type_not_fit_language_title'),
                     content: translate({
-                        key: "raw_type_not_fit_language",
-                        args: [model.value.jvmLanguage, unfitTypeWithPaths.map(stringifyUnfitRawType).join(",\n")]
+                        key: 'raw_type_not_fit_language',
+                        args: [
+                            model.value.jvmLanguage,
+                            unfitTypeWithPaths.map(stringifyUnfitRawType).join(',\n'),
+                        ],
                     }),
                     confirmText: translate('raw_type_not_fit_auto_toggle'),
                     onConfirm: () => {
-                        toggleRawTypeByLanguage(model.value.jvmLanguage)
+                        toggleRawTypeByLanguage(model.value.jvmLanguage);
                     },
                     onCancel: () => {
                         errors.value.jsonData = translate({
-                            key: "raw_type_not_fit_language",
-                            args: [model.value.jvmLanguage, unfitTypeWithPaths.map(stringifyUnfitRawType).join(",\n")]
-                        })
-                    }
-                })
+                            key: 'raw_type_not_fit_language',
+                            args: [
+                                model.value.jvmLanguage,
+                                unfitTypeWithPaths.map(stringifyUnfitRawType).join(',\n'),
+                            ],
+                        });
+                    },
+                });
             }
         }
     } catch (e) {
-        errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
-        console.error(e)
+        errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`;
+        console.error(e);
     }
 
-    return Object.keys(errors.value).length === 0
-}
+    return Object.keys(errors.value).length === 0;
+};
 
 // 提交表单
 const handleSubmit = async () => {
-    const validateResult = await validateForm()
+    const validateResult = await validateForm();
     if (validateResult) {
-        emits('submit', model.value)
+        emits('submit', model.value);
     }
-}
+};
 
 // 监听模型变化并清除对应错误
-watch(() => model.value, () => {
-    errors.value = {}
-}, { deep: true })
+watch(
+    () => model.value,
+    () => {
+        errors.value = {};
+    },
+    {deep: true},
+);
 
-watch(() => model.value.jvmLanguage, (value) => {
-    toggleRawTypeByLanguage(value)
-})
+watch(
+    () => model.value.jvmLanguage,
+    (value) => {
+        toggleRawTypeByLanguage(value);
+    },
+);
 
 // 取消操作
 const handleCancel = () => {
-    emits('cancel')
-}
+    emits('cancel');
+};
 </script>
 
 <template>
-    <form @submit.prevent class="model-edit-form">
+    <form
+        @submit.prevent
+        class="model-edit-form"
+    >
         <div class="form-item">
             <input
                 v-model="model.name"
                 type="text"
-                :class="{ 'error': errors.name }"
+                :class="{error: errors.name}"
                 :placeholder="translate({key: 'input_placeholder', args: [translate('name')]})"
             />
-            <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
+            <div
+                v-if="errors.name"
+                class="error-message"
+            >
+                {{ errors.name }}
+            </div>
         </div>
 
         <div class="form-row">
             <div class="form-item">
-                <JvmLanguageSelect v-model="model.jvmLanguage"/>
+                <JvmLanguageSelect v-model="model.jvmLanguage" />
             </div>
 
             <div class="form-item">
-                <DatabaseTypeSelect v-model="model.databaseType"/>
+                <DatabaseTypeSelect v-model="model.databaseType" />
             </div>
         </div>
 
@@ -167,23 +189,39 @@ const handleCancel = () => {
         <div class="form-item">
             <textarea
                 v-model="model.description"
-                :placeholder="translate({key: 'input_placeholder', args: [translate('description')]})"
+                :placeholder="
+                    translate({key: 'input_placeholder', args: [translate('description')]})
+                "
                 rows="3"
             />
         </div>
 
         <div class="json-data-editor">
-            <JsonEditor json-type="PartialModelGraphSubData" v-model="model.jsonData"/>
+            <JsonEditor
+                json-type="PartialModelGraphSubData"
+                v-model="model.jsonData"
+            />
         </div>
-        <div v-if="errors.jsonData" class="error-message">{{ errors.jsonData }}</div>
+        <div
+            v-if="errors.jsonData"
+            class="error-message"
+        >
+            {{ errors.jsonData }}
+        </div>
 
         <div class="form-actions">
-            <button @click="handleCancel" class="cancel-button">
-                <IconClose/>
+            <button
+                @click="handleCancel"
+                class="cancel-button"
+            >
+                <IconClose />
                 {{ translate('cancel') }}
             </button>
-            <button @click="handleSubmit" class="submit-button">
-                <IconCheck/>
+            <button
+                @click="handleSubmit"
+                class="submit-button"
+            >
+                <IconCheck />
                 {{ translate('save') }}
             </button>
         </div>
@@ -241,7 +279,9 @@ textarea {
     height: calc(100% - 18rem - 2px);
 }
 
-input.error, select.error, textarea.error {
+input.error,
+select.error,
+textarea.error {
     border-color: var(--danger-color);
 }
 

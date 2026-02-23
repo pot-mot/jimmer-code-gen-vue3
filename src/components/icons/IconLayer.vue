@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-import BaseIcon from "@/components/icons/BaseIcon.vue";
+import BaseIcon from '@/components/icons/BaseIcon.vue';
 </script>

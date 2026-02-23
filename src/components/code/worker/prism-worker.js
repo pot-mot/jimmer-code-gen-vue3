@@ -23,7 +23,7 @@ Token.stringify = function stringify(o, language) {
         tag: 'span',
         classes: ['token', o.type],
         attributes: {},
-        language: language
+        language: language,
     };
 
     let aliases = o.alias;
@@ -37,10 +37,23 @@ Token.stringify = function stringify(o, language) {
 
     let attributes = '';
     for (let name in env.attributes) {
-        attributes += ' ' + name + '="' + (env.attributes[name] || '').replace(/"/g, '&quot;') + '"';
+        attributes +=
+            ' ' + name + '="' + (env.attributes[name] || '').replace(/"/g, '&quot;') + '"';
     }
 
-    return '<' + env.tag + ' class="' + env.classes.join(' ') + '"' + attributes + '>' + env.content + '</' + env.tag + '>';
+    return (
+        '<' +
+        env.tag +
+        ' class="' +
+        env.classes.join(' ') +
+        '"' +
+        attributes +
+        '>' +
+        env.content +
+        '</' +
+        env.tag +
+        '>'
+    );
 };
 
 function matchPattern(pattern, pos, text, lookbehind) {
@@ -84,12 +97,12 @@ function matchGrammar(text, tokenList, grammar, startNode, startPos, rematch) {
             /** @type {RegExp} */
             let pattern = patternObj.pattern || patternObj;
 
-            for ( // iterate the token list and keep track of the current token/string position
+            for (
+                // iterate the token list and keep track of the current token/string position
                 let currentNode = startNode.next, pos = startPos;
                 currentNode !== tokenList.tail;
                 pos += currentNode.value.length, currentNode = currentNode.next
             ) {
-
                 if (rematch && pos >= rematch.reach) {
                     break;
                 }
@@ -174,7 +187,12 @@ function matchGrammar(text, tokenList, grammar, startNode, startPos, rematch) {
 
                 removeRange(tokenList, removeFrom, removeCount);
 
-                let wrapped = new Token(token, inside ? tokenize(matchStr, inside) : matchStr, alias, matchStr);
+                let wrapped = new Token(
+                    token,
+                    inside ? tokenize(matchStr, inside) : matchStr,
+                    alias,
+                    matchStr,
+                );
                 currentNode = addAfter(tokenList, removeFrom, wrapped);
 
                 if (after) {
@@ -187,7 +205,7 @@ function matchGrammar(text, tokenList, grammar, startNode, startPos, rematch) {
 
                     let nestedRematch = {
                         cause: token + ',' + j,
-                        reach: reach
+                        reach: reach,
                     };
                     matchGrammar(text, tokenList, grammar, currentNode.prev, pos, nestedRematch);
 
@@ -224,7 +242,7 @@ function addAfter(list, node, value) {
 
 function removeRange(list, node, count) {
     let next = node.next;
-    let i
+    let i;
     for (i = 0; i < count && next !== list.tail; i++) {
         next = next.next;
     }
@@ -249,7 +267,10 @@ function encode(tokens) {
     } else if (Array.isArray(tokens)) {
         return tokens.map(encode);
     } else {
-        return tokens.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\u00a0/g, ' ');
+        return tokens
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/\u00a0/g, ' ');
     }
 }
 
@@ -257,7 +278,7 @@ function highlight(text, grammar, language) {
     const env = {
         code: text,
         grammar: grammar,
-        language: language
+        language: language,
     };
     if (!env.grammar) {
         throw new Error('The language "' + env.language + '" has no grammar.');
@@ -285,19 +306,19 @@ function tokenize(text, grammar) {
 }
 
 onmessage = (e) => {
-    if (e === undefined || e.data === undefined) return
+    if (e === undefined || e.data === undefined) return;
 
-    const data = e.data
+    const data = e.data;
 
     if (typeof data === 'string') {
         if (data === 'close') {
-            close()
+            close();
         }
-        return
+        return;
     }
 
     if (typeof data === 'object' && 'code' in data && 'grammar' in data && 'language' in data) {
-        const {code, grammar, language} = e.data
-        postMessage(highlight(code, grammar, language))
+        const {code, grammar, language} = e.data;
+        postMessage(highlight(code, grammar, language));
     }
-}
+};

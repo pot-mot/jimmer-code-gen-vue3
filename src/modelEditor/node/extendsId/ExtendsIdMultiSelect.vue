@@ -1,64 +1,76 @@
 <script setup lang="ts">
-import Dropdown from "@/components/dropdown/Dropdown.vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.vue";
-import MappedSuperClassIdViewer from "@/modelEditor/viewer/MappedSuperClassIdViewer.vue";
-import IconClose from "@/components/icons/IconClose.vue";
-import {computed} from "vue";
+import Dropdown from '@/components/dropdown/Dropdown.vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import MappedSuperClassViewer from '@/modelEditor/viewer/MappedSuperClassViewer.vue';
+import MappedSuperClassIdViewer from '@/modelEditor/viewer/MappedSuperClassIdViewer.vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import {computed} from 'vue';
 
-const {contextData, inheritInfo} = useModelEditor()
+const {contextData, inheritInfo} = useModelEditor();
 
 const props = defineProps<{
-    type: "Abstract" | "Concrete"
-    id: string,
-}>()
+    type: 'Abstract' | 'Concrete';
+    id: string;
+}>();
 
 const mappedSuperClassOptions = computed(() => {
-    const result: DeepReadonly<MappedSuperClassWithProperties>[] = []
-    if (props.type === "Concrete") {
+    const result: DeepReadonly<MappedSuperClassWithProperties>[] = [];
+    if (props.type === 'Concrete') {
         for (const mappedSuperClass of contextData.mappedSuperClassMap.values() ?? []) {
-            result.push(mappedSuperClass)
+            result.push(mappedSuperClass);
         }
-    } else if (props.type === "Abstract") {
-        const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(props.id)
-        if (!inheritItem) return result
+    } else if (props.type === 'Abstract') {
+        const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(props.id);
+        if (!inheritItem) return result;
         for (const mappedSuperClass of contextData.mappedSuperClassMap.values() ?? []) {
             if (
                 mappedSuperClass.id !== props.id &&
                 !inheritItem.allAbstractChildIdSet.has(mappedSuperClass.id)
             ) {
-                result.push(mappedSuperClass)
+                result.push(mappedSuperClass);
             }
         }
     }
-    return result
-})
+    return result;
+});
 
 const mappedSuperClassIds = defineModel<string[]>({
-    required: true
-})
-
+    required: true,
+});
 
 const toggleSelect = (id: string) => {
-    const index = mappedSuperClassIds.value.findIndex(it => it === id)
+    const index = mappedSuperClassIds.value.findIndex((it) => it === id);
     if (index !== -1) {
-        mappedSuperClassIds.value.splice(index, 1)
+        mappedSuperClassIds.value.splice(index, 1);
     } else {
-        mappedSuperClassIds.value.push(id)
+        mappedSuperClassIds.value.push(id);
     }
-}
+};
 </script>
 
 <template>
     <Dropdown class="mapped-super-class-select">
         <template #head>
             <ul class="selected-items">
-                <li v-for="id in mappedSuperClassIds" class="selected-item">
-                    <MappedSuperClassIdViewer :id="id" hide-comment ctrl-focus/>
-                    <span class="warning-info" v-if="inheritInfo.circularReferences.has(id)">
+                <li
+                    v-for="id in mappedSuperClassIds"
+                    class="selected-item"
+                >
+                    <MappedSuperClassIdViewer
+                        :id="id"
+                        hide-comment
+                        ctrl-focus
+                    />
+                    <span
+                        class="warning-info"
+                        v-if="inheritInfo.circularReferences.has(id)"
+                    >
                         [Circular Reference]
                     </span>
-                    <IconClose class="remove-button" @click.stop="toggleSelect(id)"/>
+                    <IconClose
+                        class="remove-button"
+                        @click.stop="toggleSelect(id)"
+                    />
                 </li>
             </ul>
         </template>
@@ -69,7 +81,7 @@ const toggleSelect = (id: string) => {
                 class="mapped-super-class-select-option"
                 :class="{selected: mappedSuperClassIds.includes(mappedSuperClass.id)}"
             >
-                <MappedSuperClassViewer :mapped-super-class="mappedSuperClass"/>
+                <MappedSuperClassViewer :mapped-super-class="mappedSuperClass" />
             </div>
             <div
                 v-if="mappedSuperClassOptions.length === 0"

@@ -1,10 +1,15 @@
-import {describe, beforeEach, it, expect, vitest} from 'vitest'
-import {type BatchCommandData, type CommandDefinition, type CommandHistory, useCommandHistory} from '@/history/commandHistory';
+import {describe, beforeEach, it, expect, vitest} from 'vitest';
+import {
+    type BatchCommandData,
+    type CommandDefinition,
+    type CommandHistory,
+    useCommandHistory,
+} from '@/history/commandHistory';
 
 describe('useCommandHistory', () => {
     type TestCommandMap = {
-        testCommand: CommandDefinition<{ value: number }>
-    }
+        testCommand: CommandDefinition<{value: number}>;
+    };
 
     let history: CommandHistory<TestCommandMap>;
 
@@ -22,7 +27,9 @@ describe('useCommandHistory', () => {
             });
 
             expect(history.__clone_view__.getCommandMap().size).toEqual(1);
-            expect(history.__clone_view__.getCommandMap().get('testCommand')?.key).toEqual('testCommand');
+            expect(history.__clone_view__.getCommandMap().get('testCommand')?.key).toEqual(
+                'testCommand',
+            );
         });
     });
 
@@ -94,7 +101,9 @@ describe('useCommandHistory', () => {
             const batchKey1 = Symbol('batch1');
             history.startBatch(batchKey1);
 
-            expect(() => history.stopBatch(Symbol('invalid'))).toThrow('stopBatch key is not match');
+            expect(() => history.stopBatch(Symbol('invalid'))).toThrow(
+                'stopBatch key is not match',
+            );
         });
     });
 
@@ -117,81 +126,87 @@ describe('useCommandHistory', () => {
                     history.executeCommand('testCommand', {value: 2});
 
                     expect(history.__clone_view__.getBatchKeyStack()).toHaveLength(2);
-                })
+                });
 
                 history.executeCommand('testCommand', {value: 1});
 
                 expect(history.__clone_view__.getBatchKeyStack()).toHaveLength(1);
-            })
+            });
 
             expect(history.__clone_view__.getUndoStack()[0]).toHaveLength(3);
-            expect((history.__clone_view__.getUndoStack()[0] as BatchCommandData<TestCommandMap>)[1]).toHaveLength(1);
+            expect(
+                (history.__clone_view__.getUndoStack()[0] as BatchCommandData<TestCommandMap>)[1],
+            ).toHaveLength(1);
 
-            history.undo()
+            history.undo();
 
             expect(history.__clone_view__.getRedoStack()[0]).toHaveLength(3);
-            expect((history.__clone_view__.getRedoStack()[0] as BatchCommandData<TestCommandMap>)[1]).toHaveLength(1);
+            expect(
+                (history.__clone_view__.getRedoStack()[0] as BatchCommandData<TestCommandMap>)[1],
+            ).toHaveLength(1);
 
-            history.redo()
+            history.redo();
 
             expect(history.__clone_view__.getUndoStack()[0]).toHaveLength(3);
-            expect((history.__clone_view__.getUndoStack()[0] as BatchCommandData<TestCommandMap>)[1]).toHaveLength(1);
+            expect(
+                (history.__clone_view__.getUndoStack()[0] as BatchCommandData<TestCommandMap>)[1],
+            ).toHaveLength(1);
         });
     });
 
     it('execute nested apply and revert', () => {
         const history = useCommandHistory<{
-            testCommand1: CommandDefinition<string>,
-            testCommand2: CommandDefinition<string>,
+            testCommand1: CommandDefinition<string>;
+            testCommand2: CommandDefinition<string>;
         }>();
 
         history.registerCommand('testCommand1', {
             applyAction: (value) => {
-                return value
+                return value;
             },
-            revertAction: (_) => {
-
-            },
+            revertAction: (_) => {},
         });
 
         history.registerCommand('testCommand2', {
             applyAction: (value) => {
-                history.executeCommand('testCommand1', value)
-                return value
+                history.executeCommand('testCommand1', value);
+                return value;
             },
             revertAction: (value) => {
-                history.executeCommand('testCommand1', value)
+                history.executeCommand('testCommand1', value);
             },
         });
 
-        expect(() => history.executeCommand('testCommand2', 'test')).toThrow("Execution does not allow nesting")
+        expect(() => history.executeCommand('testCommand2', 'test')).toThrow(
+            'Execution does not allow nesting',
+        );
     });
 
     it('execute nested undo and redo', () => {
         const history = useCommandHistory<{
-            testCommand1: CommandDefinition<string>,
-            testCommand2: CommandDefinition<string>,
+            testCommand1: CommandDefinition<string>;
+            testCommand2: CommandDefinition<string>;
         }>();
 
         history.registerCommand('testCommand1', {
             applyAction: (value) => {
-                return value
+                return value;
             },
-            revertAction: (_) => {
-
-            },
+            revertAction: (_) => {},
         });
 
         history.registerCommand('testCommand2', {
             applyAction: (value) => {
-                history.undo()
-                return value
+                history.undo();
+                return value;
             },
             revertAction: (_) => {
-                history.redo()
+                history.redo();
             },
         });
 
-        expect(() => history.executeCommand('testCommand2', 'test')).toThrow("Execution does not allow nesting")
+        expect(() => history.executeCommand('testCommand2', 'test')).toThrow(
+            'Execution does not allow nesting',
+        );
     });
 });

@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {computed} from "vue";
-import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import {computed} from 'vue';
+import EntityIdViewer from '@/modelEditor/viewer/EntityIdViewer.vue';
 
-const {contextData} = useModelEditor()
+const {contextData} = useModelEditor();
 
-const props = withDefaults(defineProps<{
-    associationId: string
-    ctrlFocus?: boolean
-    hideComment?: boolean
-}>(), {
-    ctrlFocus: false
-})
+const props = withDefaults(
+    defineProps<{
+        associationId: string;
+        ctrlFocus?: boolean;
+        hideComment?: boolean;
+    }>(),
+    {
+        ctrlFocus: false,
+    },
+);
 
 const association = computed(() => {
-    return contextData.associationMap.get(props.associationId)?.association
-})
+    return contextData.associationMap.get(props.associationId)?.association;
+});
 </script>
 
 <template>

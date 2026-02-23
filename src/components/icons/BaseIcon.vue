@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import {computed} from "vue";
+import {computed} from 'vue';
 
-const props = withDefaults(defineProps<{
-    color?: string,
-    size?: string,
-    height?: string,
-    width?: string,
-}>(), {
-    size: "var(--icon-size)",
-    color: "var(--icon-color)"
-})
+const props = withDefaults(
+    defineProps<{
+        color?: string;
+        size?: string;
+        height?: string;
+        width?: string;
+    }>(),
+    {
+        size: 'var(--icon-size)',
+        color: 'var(--icon-color)',
+    },
+);
 
-const computedHeight = computed(() => props.height ?? props.size)
+const computedHeight = computed(() => props.height ?? props.size);
 
-const computedWidth = computed(() => props.width ?? props.size)
+const computedWidth = computed(() => props.width ?? props.size);
 </script>
 
 <template>
@@ -27,7 +30,7 @@ const computedWidth = computed(() => props.width ?? props.size)
         stroke-width="1.5"
         fill="none"
     >
-        <slot/>
+        <slot />
     </svg>
 </template>
 

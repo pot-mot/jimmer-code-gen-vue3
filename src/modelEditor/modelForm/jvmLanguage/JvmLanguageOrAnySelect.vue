@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import FilterableSelect from "@/components/select/FilterableSelect.vue";
-import JvmLanguageView from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue";
+import FilterableSelect from '@/components/select/FilterableSelect.vue';
+import JvmLanguageView from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue';
 
-const jvmLanguage = defineModel<JvmLanguage | "ANY">({
-    required: true
-})
+const jvmLanguage = defineModel<JvmLanguage | 'ANY'>({
+    required: true,
+});
 
-const jvmLanguages: (JvmLanguage | "ANY")[] = [
-    "KOTLIN",
-    "JAVA",
-    "ANY"
-]
+const jvmLanguages: (JvmLanguage | 'ANY')[] = ['KOTLIN', 'JAVA', 'ANY'];
 </script>
 
 <template>
@@ -20,10 +16,16 @@ const jvmLanguages: (JvmLanguage | "ANY")[] = [
         :get-id="(it) => it"
     >
         <template #selected="{option}">
-            <JvmLanguageView :jvm-language="option" class="jvm-language-selected-option"/>
+            <JvmLanguageView
+                :jvm-language="option"
+                class="jvm-language-selected-option"
+            />
         </template>
         <template #option="{option}">
-            <JvmLanguageView :jvm-language="option" class="jvm-language-option"/>
+            <JvmLanguageView
+                :jvm-language="option"
+                class="jvm-language-option"
+            />
         </template>
     </FilterableSelect>
 </template>

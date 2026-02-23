@@ -2,49 +2,48 @@ const typeIdCategoryMap = Object.freeze({
     JvmType: '0',
     SQLType: '1',
     TSType: '2',
-    CrossType: '3'
-})
+    CrossType: '3',
+});
 
-type TypeIdCategory = keyof typeof typeIdCategoryMap
+type TypeIdCategory = keyof typeof typeIdCategoryMap;
 
-let category: TypeIdCategory = 'JvmType'
-let index = 0
+let category: TypeIdCategory = 'JvmType';
+let index = 0;
 
-const generateTypeId = (
-    options?: {
-        category?: TypeIdCategory,
-        index?: number,
-    },
-): {
-    value: string,
-    getRuleId: () => string,
+const generateTypeId = (options?: {
+    category?: TypeIdCategory;
+    index?: number;
+}): {
+    value: string;
+    getRuleId: () => string;
 } => {
     if (options?.category !== undefined) {
-        category = options.category
-        index = 0
+        category = options.category;
+        index = 0;
     }
     if (options?.index !== undefined) {
-        index = options.index
+        index = options.index;
     }
 
-    if (index < 0 || index > 0xFFFF) throw new Error(`Index [${index}] is out of range`)
-    const indexHex = index.toString(16).padStart(4, '0')
-    index++
-    const prefix: string = `0003910${typeIdCategoryMap[category]}-${indexHex}-4000-a000-`
+    if (index < 0 || index > 0xffff) throw new Error(`Index [${index}] is out of range`);
+    const indexHex = index.toString(16).padStart(4, '0');
+    index++;
+    const prefix: string = `0003910${typeIdCategoryMap[category]}-${indexHex}-4000-a000-`;
 
-    let subIndex = 1
+    let subIndex = 1;
     const getRuleId = (): string => {
-        if (subIndex < 1 || subIndex > 0xFFFF_FFFF_FFFF) throw new Error(`SubIndex [${subIndex}] is out of range`)
-        const subIndexHex = subIndex.toString(16).padStart(12, '0')
-        subIndex++
-        return `${prefix}${subIndexHex}`
-    }
+        if (subIndex < 1 || subIndex > 0xffff_ffff_ffff)
+            throw new Error(`SubIndex [${subIndex}] is out of range`);
+        const subIndexHex = subIndex.toString(16).padStart(12, '0');
+        subIndex++;
+        return `${prefix}${subIndexHex}`;
+    };
 
     return {
-        value: `${prefix}${"0".repeat(8)}`,
+        value: `${prefix}${'0'.repeat(8)}`,
         getRuleId,
-    }
-}
+    };
+};
 
 export const typeIds = Object.freeze({
     // JVM type IDs
@@ -98,7 +97,7 @@ export const typeIds = Object.freeze({
     TS_NUMBER_ID: generateTypeId(),
     TS_BOOLEAN_ID: generateTypeId(),
 
-// Cross Type Ids
+    // Cross Type Ids
     CROSS_STRING_TEXT: generateTypeId({category: 'CrossType'}),
     CROSS_STRING_VARCHAR255: generateTypeId(),
     CROSS_STRING_CHAR255: generateTypeId(),

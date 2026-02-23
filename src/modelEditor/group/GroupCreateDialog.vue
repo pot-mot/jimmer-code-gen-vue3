@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import GroupForm from "@/modelEditor/group/GroupForm.vue";
-import {useGroupCreateDialog} from "@/modelEditor/group/useGroupCreateDialog.ts";
+import DragResizeDialog from '@/components/dialog/DragResizeDialog.vue';
+import GroupForm from '@/modelEditor/group/GroupForm.vue';
+import {useGroupCreateDialog} from '@/modelEditor/group/useGroupCreateDialog.ts';
 
-const {
-    openState,
-    groupState,
-    submit,
-    close,
-} = useGroupCreateDialog()
+const {openState, groupState, submit, close} = useGroupCreateDialog();
 </script>
 
 <template>

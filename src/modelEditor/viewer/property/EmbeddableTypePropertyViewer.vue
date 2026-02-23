@@ -1,42 +1,46 @@
 <script setup lang="ts">
-import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
-import {computed} from "vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import NameCommentViewer from '@/modelEditor/nameComment/NameCommentViewer.vue';
+import {computed} from 'vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
 
-const props = withDefaults(defineProps<{
-    embeddableTypeId: string
-    property: DeepReadonly<Property> | undefined
-    ctrlFocus?: boolean
-    hideComment?: boolean
-}>(), {
-    ctrlFocus: false
-})
+const props = withDefaults(
+    defineProps<{
+        embeddableTypeId: string;
+        property: DeepReadonly<Property> | undefined;
+        ctrlFocus?: boolean;
+        hideComment?: boolean;
+    }>(),
+    {
+        ctrlFocus: false,
+    },
+);
 
 const nameComment = computed(() => {
-    if (!props.property) return
+    if (!props.property) return;
 
-    if ( "name" in props.property) {
+    if ('name' in props.property) {
         return {
             name: props.property.name,
             comment: props.property.comment,
-        }
+        };
     } else {
         return {
             name: props.property.nameTemplate,
             comment: props.property.commentTemplate,
-        }
+        };
     }
-})
+});
 
-const {
-    focusEmbeddableTypeProperty,
-} = useModelEditor()
+const {focusEmbeddableTypeProperty} = useModelEditor();
 
 const handleFocus = () => {
-    if (!props.property) return
-    if (!props.ctrlFocus) return
-    focusEmbeddableTypeProperty({embeddableTypeId: props.embeddableTypeId, propertyId: props.property.id})
-}
+    if (!props.property) return;
+    if (!props.ctrlFocus) return;
+    focusEmbeddableTypeProperty({
+        embeddableTypeId: props.embeddableTypeId,
+        propertyId: props.property.id,
+    });
+};
 </script>
 
 <template>

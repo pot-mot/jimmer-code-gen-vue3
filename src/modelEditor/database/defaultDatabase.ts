@@ -1,61 +1,59 @@
-import type {DatabaseInsertInput} from "@/api/__generated/model/static";
+import type {DatabaseInsertInput} from '@/api/__generated/model/static';
 
-export const defaultDatabase = (
-    databaseType: DatabaseType
-): DatabaseInsertInput => {
+export const defaultDatabase = (databaseType: DatabaseType): DatabaseInsertInput => {
     switch (databaseType) {
-        case "MYSQL":
+        case 'MYSQL':
             return {
-                type: "MYSQL",
-                name: "",
-                url: "jdbc:mysql://localhost:3306",
-                username: "root",
-                password: "",
-            }
+                type: 'MYSQL',
+                name: '',
+                url: 'jdbc:mysql://localhost:3306',
+                username: 'root',
+                password: '',
+            };
 
-        case "POSTGRESQL":
+        case 'POSTGRESQL':
             return {
-                type: "POSTGRESQL",
-                name: "",
-                url: "jdbc:postgresql://localhost:5432/",
-                username: "postgres",
-                password: "",
-            }
+                type: 'POSTGRESQL',
+                name: '',
+                url: 'jdbc:postgresql://localhost:5432/',
+                username: 'postgres',
+                password: '',
+            };
 
-        case "ORACLE":
+        case 'ORACLE':
             return {
-                type: "ORACLE",
-                name: "",
-                url: "jdbc:oracle:thin:@localhost:1521:xe",
-                username: "system",
-                password: "",
-            }
+                type: 'ORACLE',
+                name: '',
+                url: 'jdbc:oracle:thin:@localhost:1521:xe',
+                username: 'system',
+                password: '',
+            };
 
-        case "SQLSERVER":
+        case 'SQLSERVER':
             return {
-                type: "SQLSERVER",
-                name: "",
-                url: "jdbc:sqlserver://localhost:1433",
-                username: "sa",
-                password: "",
-            }
+                type: 'SQLSERVER',
+                name: '',
+                url: 'jdbc:sqlserver://localhost:1433',
+                username: 'sa',
+                password: '',
+            };
 
-        case "H2":
+        case 'H2':
             return {
-                type: "H2",
-                name: "",
-                url: "jdbc:h2:mem:test",
-                username: "sa",
-                password: "",
-            }
+                type: 'H2',
+                name: '',
+                url: 'jdbc:h2:mem:test',
+                username: 'sa',
+                password: '',
+            };
 
-        case "SQLITE":
+        case 'SQLITE':
             return {
-                type: "SQLITE",
-                name: "",
-                url: "jdbc:sqlite:test.db",
-                username: "",
-                password: "",
-            }
+                type: 'SQLITE',
+                name: '',
+                url: 'jdbc:sqlite:test.db',
+                username: '',
+                password: '',
+            };
     }
-}
+};

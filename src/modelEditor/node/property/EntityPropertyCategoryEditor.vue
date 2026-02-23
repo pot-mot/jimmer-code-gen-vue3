@@ -1,105 +1,110 @@
 <script setup lang="ts">
-import Dropdown from "@/components/dropdown/Dropdown.vue";
+import Dropdown from '@/components/dropdown/Dropdown.vue';
 import {
     exitIdProperty,
-    exitVersionProperty, isKeyProperty, isLogicalDeleteProperty, isMayKeyProperty, isMayLogicalDeleteProperty,
+    exitVersionProperty,
+    isKeyProperty,
+    isLogicalDeleteProperty,
+    isMayKeyProperty,
+    isMayLogicalDeleteProperty,
     toggleKeyProperty,
     toggleLogicalDeleteProperty,
-    toIdProperty, toVersionProperty
-} from "@/modelEditor/node/property/PropertyConvert.ts";
-import {computed} from "vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import IconBusinessKey from "@/components/icons/modelEditor/IconBusinessKey.vue";
-import IconVersion from "@/components/icons/modelEditor/IconVersion.vue";
-import IconPrimaryKey from "@/components/icons/modelEditor/IconPrimaryKey.vue";
-import IconForeignKey from "@/components/icons/modelEditor/IconForeignKey.vue";
-import IconLogicalDelete from "@/components/icons/modelEditor/IconLogicalDelete.vue";
+    toIdProperty,
+    toVersionProperty,
+} from '@/modelEditor/node/property/PropertyConvert.ts';
+import {computed} from 'vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import IconBusinessKey from '@/components/icons/modelEditor/IconBusinessKey.vue';
+import IconVersion from '@/components/icons/modelEditor/IconVersion.vue';
+import IconPrimaryKey from '@/components/icons/modelEditor/IconPrimaryKey.vue';
+import IconForeignKey from '@/components/icons/modelEditor/IconForeignKey.vue';
+import IconLogicalDelete from '@/components/icons/modelEditor/IconLogicalDelete.vue';
 
 const property = defineModel<EntityProperty | MappedSuperClassProperty>({
-    required: true
-})
+    required: true,
+});
 
 const propertyIsId = computed(() => {
-    return property.value.category === "ID_COMMON" || property.value.category === "ID_EMBEDDABLE"
-})
+    return property.value.category === 'ID_COMMON' || property.value.category === 'ID_EMBEDDABLE';
+});
 const propertyMayKey = computed(() => {
-    return isMayKeyProperty(property.value)
-})
+    return isMayKeyProperty(property.value);
+});
 const propertyIsKey = computed(() => {
-    return isKeyProperty(property.value)
-})
+    return isKeyProperty(property.value);
+});
 const propertyMayLogicalDeleted = computed(() => {
-    return isMayLogicalDeleteProperty(property.value)
-})
+    return isMayLogicalDeleteProperty(property.value);
+});
 const propertyIsLogicalDeleted = computed(() => {
-    return isLogicalDeleteProperty(property.value)
-})
+    return isLogicalDeleteProperty(property.value);
+});
 const propertyIsVersion = computed(() => {
-    return property.value.category === "VERSION"
-})
+    return property.value.category === 'VERSION';
+});
 const propertyIsForeignKey = computed(() => {
-    return property.value.category === "ManyToOne" || property.value.category === "OneToOne_Source"
-})
+    return property.value.category === 'ManyToOne' || property.value.category === 'OneToOne_Source';
+});
 
-const {
-    executeAsyncBatch,
-    remove,
-} = useModelEditor()
+const {executeAsyncBatch, remove} = useModelEditor();
 
 const cleanPropertyReference = () => {
-    if ("associationId" in property.value) {
-        remove({associationIds: [property.value.associationId]})
+    if ('associationId' in property.value) {
+        remove({associationIds: [property.value.associationId]});
     }
-}
+};
 
 const toggleId = () => {
-    executeAsyncBatch(Symbol("property toggle id"), async () => {
-        if (property.value.category === "ID_COMMON" || property.value.category === "ID_EMBEDDABLE") {
-            property.value = exitIdProperty(property.value)
+    executeAsyncBatch(Symbol('property toggle id'), async () => {
+        if (
+            property.value.category === 'ID_COMMON' ||
+            property.value.category === 'ID_EMBEDDABLE'
+        ) {
+            property.value = exitIdProperty(property.value);
         } else {
-            cleanPropertyReference()
-            property.value = toIdProperty(property.value)
+            cleanPropertyReference();
+            property.value = toIdProperty(property.value);
         }
-    })
-}
+    });
+};
 
 const toggleKey = () => {
-    executeAsyncBatch(Symbol("property toggle key"), async () => {
+    executeAsyncBatch(Symbol('property toggle key'), async () => {
         if (isMayKeyProperty(property.value)) {
-            property.value = toggleKeyProperty(property.value)
+            property.value = toggleKeyProperty(property.value);
         }
-    })
-}
+    });
+};
 
 const toggleLogicalDelete = () => {
-    executeAsyncBatch(Symbol("property toggle logicalDeleted"), async () => {
+    executeAsyncBatch(Symbol('property toggle logicalDeleted'), async () => {
         if (isMayLogicalDeleteProperty(property.value)) {
-            property.value = toggleLogicalDeleteProperty(property.value)
+            property.value = toggleLogicalDeleteProperty(property.value);
         }
-    })
-}
+    });
+};
 
 const toggleVersion = () => {
-    executeAsyncBatch(Symbol("property toggle version"), async () => {
-        if (property.value.category === "VERSION") {
-            property.value = exitVersionProperty(property.value)
+    executeAsyncBatch(Symbol('property toggle version'), async () => {
+        if (property.value.category === 'VERSION') {
+            property.value = exitVersionProperty(property.value);
         } else {
-            cleanPropertyReference()
-            property.value = toVersionProperty(property.value)
+            cleanPropertyReference();
+            property.value = toVersionProperty(property.value);
         }
-    })
-}
+    });
+};
 </script>
 
 <template>
     <Dropdown>
         <template #head>
             <div class="category-editor-header">
-                <IconPrimaryKey v-if="propertyIsId"/>
-                <IconForeignKey v-if="propertyIsForeignKey"/>
-                <IconBusinessKey v-if="propertyIsKey"/>
-                <IconLogicalDelete v-if="propertyIsLogicalDeleted"/>
-                <IconVersion v-if="propertyIsVersion"/>
+                <IconPrimaryKey v-if="propertyIsId" />
+                <IconForeignKey v-if="propertyIsForeignKey" />
+                <IconBusinessKey v-if="propertyIsKey" />
+                <IconLogicalDelete v-if="propertyIsLogicalDeleted" />
+                <IconVersion v-if="propertyIsVersion" />
             </div>
         </template>
 
@@ -109,7 +114,7 @@ const toggleVersion = () => {
                 :class="{selected: propertyIsId}"
                 @click="toggleId"
             >
-                <IconPrimaryKey/>
+                <IconPrimaryKey />
                 ID
             </div>
             <div
@@ -117,7 +122,7 @@ const toggleVersion = () => {
                 v-if="propertyIsForeignKey"
                 :class="{selected: propertyIsForeignKey, disabled: true}"
             >
-                <IconForeignKey/>
+                <IconForeignKey />
                 ForeignKey
             </div>
             <div
@@ -125,7 +130,7 @@ const toggleVersion = () => {
                 :class="{selected: propertyIsKey, disabled: !propertyMayKey}"
                 @click="toggleKey"
             >
-                <IconBusinessKey/>
+                <IconBusinessKey />
                 Key
             </div>
             <div
@@ -133,7 +138,7 @@ const toggleVersion = () => {
                 :class="{selected: propertyIsLogicalDeleted, disabled: !propertyMayLogicalDeleted}"
                 @click="toggleLogicalDelete"
             >
-                <IconLogicalDelete/>
+                <IconLogicalDelete />
                 LogicalDelete
             </div>
             <div
@@ -141,7 +146,7 @@ const toggleVersion = () => {
                 :class="{selected: propertyIsVersion}"
                 @click="toggleVersion"
             >
-                <IconVersion/>
+                <IconVersion />
                 Version
             </div>
         </template>
@@ -167,7 +172,7 @@ const toggleVersion = () => {
 }
 
 .category-option.selected {
-    background-color: var(--primary-color-background);;
+    background-color: var(--primary-color-background);
 }
 
 .category-option.disabled {

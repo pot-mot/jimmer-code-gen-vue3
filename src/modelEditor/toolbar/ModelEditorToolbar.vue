@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import IconSave from "@/components/icons/IconSave.vue";
-import IconUndo from "@/components/icons/IconUndo.vue";
-import IconRedo from "@/components/icons/IconRedo.vue";
-import IconFit from "@/components/icons/IconFit.vue";
-import IconDrag from "@/components/icons/IconDrag.vue";
-import IconSelectRect from "@/components/icons/IconSelectRect.vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import IconDownload from "@/components/icons/IconDownload.vue";
-import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
-import IconEdit from "@/components/icons/IconEdit.vue";
-import {useModelEditDialog} from "@/modelEditor/modelForm/useModelEditDialog.ts";
-import IconCode from "@/components/icons/IconCode.vue";
-import {downloadJson} from "@/utils/file/jsonDownload.ts";
-import IconDiagnostic from "@/components/icons/IconDiagnostic.vue";
-import {translate} from "@/store/i18nStore.ts";
-import {useDiagnoseDialog} from "@/modelEditor/diagnostic/useDiagnoseDialog.ts";
-import {watch} from "vue";
-import {sendMessage} from "@/components/message/messageApi.ts";
-import {useVersionDiffDialog} from "@/modelEditor/versionDiff/useVersionDiffDialog.ts";
-import IconHistory from "@/components/icons/IconHistory.vue";
+import IconSave from '@/components/icons/IconSave.vue';
+import IconUndo from '@/components/icons/IconUndo.vue';
+import IconRedo from '@/components/icons/IconRedo.vue';
+import IconFit from '@/components/icons/IconFit.vue';
+import IconDrag from '@/components/icons/IconDrag.vue';
+import IconSelectRect from '@/components/icons/IconSelectRect.vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import IconDownload from '@/components/icons/IconDownload.vue';
+import {useModelGenerator} from '@/modelEditor/generator/useModelGenerator.ts';
+import IconEdit from '@/components/icons/IconEdit.vue';
+import {useModelEditDialog} from '@/modelEditor/modelForm/useModelEditDialog.ts';
+import IconCode from '@/components/icons/IconCode.vue';
+import {downloadJson} from '@/utils/file/jsonDownload.ts';
+import IconDiagnostic from '@/components/icons/IconDiagnostic.vue';
+import {translate} from '@/store/i18nStore.ts';
+import {useDiagnoseDialog} from '@/modelEditor/diagnostic/useDiagnoseDialog.ts';
+import {watch} from 'vue';
+import {sendMessage} from '@/components/message/messageApi.ts';
+import {useVersionDiffDialog} from '@/modelEditor/versionDiff/useVersionDiffDialog.ts';
+import IconHistory from '@/components/icons/IconHistory.vue';
 
 const {
     getModelGraphData,
@@ -33,107 +33,114 @@ const {
     modelSelectionCount,
     modelDiagnoseInfo,
     diagnose,
-} = useModelEditor()
+} = useModelEditor();
 
-const {
-    open: openGenerator,
-    generateScope,
-} = useModelGenerator()
-watch(() => modelSelectionCount.value, (count) => {
-    if (count === 0) {
-        generateScope.value = 'ALL'
-    }
-})
+const {open: openGenerator, generateScope} = useModelGenerator();
+watch(
+    () => modelSelectionCount.value,
+    (count) => {
+        if (count === 0) {
+            generateScope.value = 'ALL';
+        }
+    },
+);
 
-const {
-    open: openForm
-} = useModelEditDialog()
+const {open: openForm} = useModelEditDialog();
 
-const {
-    open: openDiagnoseDialog
-} = useDiagnoseDialog()
+const {open: openDiagnoseDialog} = useDiagnoseDialog();
 
-const {
-    open: openVersionDialog
-} = useVersionDiffDialog()
+const {open: openVersionDialog} = useVersionDiffDialog();
 
 const handleGenerate = () => {
-    diagnose()
+    diagnose();
     if (modelDiagnoseInfo.total > 0) {
-        sendMessage(translate("generate_fail_because_of_some_checked_questions"), {type: "warning"})
-        openDiagnoseDialog()
+        sendMessage(translate('generate_fail_because_of_some_checked_questions'), {
+            type: 'warning',
+        });
+        openDiagnoseDialog();
     } else {
-        openGenerator()
+        openGenerator();
     }
-}
+};
 
 const exportModelJson = () => {
-    const graphData = getModelGraphData()
+    const graphData = getModelGraphData();
     downloadJson<DeepReadonly<ModelGraphData>>({
-        name: graphData.model.name + ".json",
-        content: graphData
-    })
-}
+        name: graphData.model.name + '.json',
+        content: graphData,
+    });
+};
 </script>
 
 <template>
     <div class="toolbar">
         <div class="left">
             <button @click="saveModel()">
-                <IconSave/>
+                <IconSave />
             </button>
             <button @click="openForm()">
-                <IconEdit/>
+                <IconEdit />
             </button>
 
-            <button :disabled="!canUndo" @click="undo()" :class="{disabled: !canUndo}">
-                <IconUndo/>
+            <button
+                :disabled="!canUndo"
+                @click="undo()"
+                :class="{disabled: !canUndo}"
+            >
+                <IconUndo />
             </button>
-            <button :disabled="!canRedo" @click="redo()" :class="{disabled: !canRedo}">
-                <IconRedo/>
+            <button
+                :disabled="!canRedo"
+                @click="redo()"
+                :class="{disabled: !canRedo}"
+            >
+                <IconRedo />
             </button>
             <button @click="fitView()">
-                <IconFit/>
+                <IconFit />
             </button>
-            <button @click="toggleDefaultMouseAction()" :class="{enable: defaultMouseAction === 'selectionRect'}">
-                <IconDrag v-if="defaultMouseAction === 'panDrag'"/>
-                <IconSelectRect v-else-if="defaultMouseAction === 'selectionRect'"/>
+            <button
+                @click="toggleDefaultMouseAction()"
+                :class="{enable: defaultMouseAction === 'selectionRect'}"
+            >
+                <IconDrag v-if="defaultMouseAction === 'panDrag'" />
+                <IconSelectRect v-else-if="defaultMouseAction === 'selectionRect'" />
             </button>
         </div>
 
         <div class="right">
             <button @click="openVersionDialog()">
-                <IconHistory/>
-                {{ translate("history_version") }}
+                <IconHistory />
+                {{ translate('history_version') }}
             </button>
             <button @click="openDiagnoseDialog()">
-                <IconDiagnostic/>
+                <IconDiagnostic />
                 {{ translate('diagnose_dialog_button') }}
                 {{ modelDiagnoseInfo.total > 0 ? `(${modelDiagnoseInfo.total})` : '' }}
             </button>
             <button @click="exportModelJson()">
-                <IconDownload/>
+                <IconDownload />
                 {{ translate('export') }}
             </button>
             <button @click="handleGenerate()">
-                <IconCode/>
+                <IconCode />
                 {{ translate('generate') }}
                 <template v-if="modelSelectionCount > 0">
-                <span
-                    class="generate-option"
-                    :class="{selected: generateScope === 'ALL'}"
-                    @click="generateScope = 'ALL'"
-                >
-                    {{ translate('all') }}
-                </span>
+                    <span
+                        class="generate-option"
+                        :class="{selected: generateScope === 'ALL'}"
+                        @click="generateScope = 'ALL'"
+                    >
+                        {{ translate('all') }}
+                    </span>
                     <span> | </span>
                     <span
                         class="generate-option"
                         :class="{selected: generateScope === 'SELECTED'}"
                         @click="generateScope = 'SELECTED'"
                     >
-                    {{ translate('selected') }}
-                </span>
+                        {{ translate('selected') }}
+                    </span>
                 </template>
             </button>
         </div>

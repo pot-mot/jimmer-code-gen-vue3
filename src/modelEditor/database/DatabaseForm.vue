@@ -1,78 +1,91 @@
 <script setup lang="ts" generic="T extends DatabaseInsertInput | DatabaseUpdateInput">
-import {ref, watch} from 'vue'
-import type {DatabaseInsertInput} from '@/api/__generated/model/static/DatabaseInsertInput'
-import DatabaseTypeSelect from '@/modelEditor/modelForm/databaseType/DatabaseTypeSelect.vue'
-import IconCheck from '@/components/icons/IconCheck.vue'
-import IconClose from '@/components/icons/IconClose.vue'
-import type {DatabaseUpdateInput} from "@/api/__generated/model/static";
-import {defaultDatabase} from "@/modelEditor/database/defaultDatabase.ts";
-import {translate} from "@/store/i18nStore.ts";
+import {ref, watch} from 'vue';
+import type {DatabaseInsertInput} from '@/api/__generated/model/static/DatabaseInsertInput';
+import DatabaseTypeSelect from '@/modelEditor/modelForm/databaseType/DatabaseTypeSelect.vue';
+import IconCheck from '@/components/icons/IconCheck.vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import type {DatabaseUpdateInput} from '@/api/__generated/model/static';
+import {defaultDatabase} from '@/modelEditor/database/defaultDatabase.ts';
+import {translate} from '@/store/i18nStore.ts';
 
 const model = defineModel<T>({
-    required: true
-})
+    required: true,
+});
 
 const emits = defineEmits<{
-    (name: 'submit', value: T): void
-    (name: 'cancel'): void
-}>()
+    (name: 'submit', value: T): void;
+    (name: 'cancel'): void;
+}>();
 
 // 表单验证错误
-const errors = ref<Record<string, string>>({})
+const errors = ref<Record<string, string>>({});
 
 // 验证表单
 const validateForm = (): boolean => {
-    errors.value = {}
+    errors.value = {};
 
     if (!model.value.name || model.value.name.trim() === '') {
-        errors.value.name = translate({key: 'not_blank_warning', args: [translate('name')]})
+        errors.value.name = translate({key: 'not_blank_warning', args: [translate('name')]});
     }
 
     if (!model.value.url || model.value.url.trim() === '') {
-        errors.value.url = translate({key: 'not_blank_warning', args: [translate('url')]})
+        errors.value.url = translate({key: 'not_blank_warning', args: [translate('url')]});
     }
 
     if (!model.value.username || model.value.username.trim() === '') {
-        errors.value.username = translate({key: 'not_blank_warning', args: [translate('username')]})
+        errors.value.username = translate({
+            key: 'not_blank_warning',
+            args: [translate('username')],
+        });
     }
 
     // 对于新增操作，密码是必需的
     if (!model.value.password || model.value.password.trim() === '') {
-        errors.value.password = translate({key: 'not_blank_warning', args: [translate('password')]})
+        errors.value.password = translate({
+            key: 'not_blank_warning',
+            args: [translate('password')],
+        });
     }
 
-    return Object.keys(errors.value).length === 0
-}
+    return Object.keys(errors.value).length === 0;
+};
 
 // 提交表单
 const handleSubmit = () => {
     if (validateForm()) {
-        emits('submit', model.value)
+        emits('submit', model.value);
     }
-}
+};
 
 // 监听模型变化并清除对应错误
-watch(() => model.value, () => {
-    errors.value = {}
-}, {deep: true})
+watch(
+    () => model.value,
+    () => {
+        errors.value = {};
+    },
+    {deep: true},
+);
 
 const handleDatabaseTypeChange = (type: DatabaseType) => {
-    const {url, username} = defaultDatabase(type)
+    const {url, username} = defaultDatabase(type);
     model.value = {
         ...model.value,
         url,
         username,
-    }
-}
+    };
+};
 
 // 取消操作
 const handleCancel = () => {
-    emits('cancel')
-}
+    emits('cancel');
+};
 </script>
 
 <template>
-    <form @submit.prevent class="database-form">
+    <form
+        @submit.prevent
+        class="database-form"
+    >
         <div class="form-item">
             <DatabaseTypeSelect
                 v-model="model.type"
@@ -82,25 +95,35 @@ const handleCancel = () => {
         </div>
 
         <div class="form-item">
-            <label>{{ translate("name") }}</label>
+            <label>{{ translate('name') }}</label>
             <input
                 v-model="model.name"
                 type="text"
-                :class="{ 'error': errors.name }"
+                :class="{error: errors.name}"
                 :placeholder="translate({key: 'input_placeholder', args: [translate('name')]})"
             />
-            <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
+            <div
+                v-if="errors.name"
+                class="error-message"
+            >
+                {{ errors.name }}
+            </div>
         </div>
 
         <div class="form-item">
-            <label>{{ translate("url") }}</label>
+            <label>{{ translate('url') }}</label>
             <input
                 v-model="model.url"
                 type="text"
-                :class="{ 'error': errors.url }"
+                :class="{error: errors.url}"
                 :placeholder="translate({key: 'input_placeholder', args: [translate('url')]})"
             />
-            <div v-if="errors.url" class="error-message">{{ errors.url }}</div>
+            <div
+                v-if="errors.url"
+                class="error-message"
+            >
+                {{ errors.url }}
+            </div>
         </div>
 
         <div class="form-item">
@@ -108,10 +131,15 @@ const handleCancel = () => {
             <input
                 v-model="model.username"
                 type="text"
-                :class="{ 'error': errors.username }"
+                :class="{error: errors.username}"
                 :placeholder="translate({key: 'input_placeholder', args: [translate('username')]})"
             />
-            <div v-if="errors.username" class="error-message">{{ errors.username }}</div>
+            <div
+                v-if="errors.username"
+                class="error-message"
+            >
+                {{ errors.username }}
+            </div>
         </div>
 
         <div class="form-item">
@@ -119,20 +147,31 @@ const handleCancel = () => {
             <input
                 v-model="model.password"
                 type="password"
-                :class="{ 'error': errors.password }"
+                :class="{error: errors.password}"
                 :placeholder="translate({key: 'input_placeholder', args: [translate('password')]})"
                 autocomplete="current-password"
             />
-            <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
+            <div
+                v-if="errors.password"
+                class="error-message"
+            >
+                {{ errors.password }}
+            </div>
         </div>
 
         <div class="form-actions">
-            <button @click="handleCancel" class="cancel-button">
-                <IconClose/>
+            <button
+                @click="handleCancel"
+                class="cancel-button"
+            >
+                <IconClose />
                 {{ translate('cancel') }}
             </button>
-            <button @click="handleSubmit" class="submit-button">
-                <IconCheck/>
+            <button
+                @click="handleSubmit"
+                class="submit-button"
+            >
+                <IconCheck />
                 {{ translate('save') }}
             </button>
         </div>
@@ -173,7 +212,9 @@ input {
     font-size: 0.9rem;
 }
 
-input.error, select.error, textarea.error {
+input.error,
+select.error,
+textarea.error {
     border-color: var(--danger-color);
 }
 

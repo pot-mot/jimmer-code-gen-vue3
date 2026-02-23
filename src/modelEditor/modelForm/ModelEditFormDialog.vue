@@ -1,56 +1,47 @@
 <script setup lang="ts">
-import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {nextTick, ref} from "vue";
-import type {ModelUpdateInput} from "@/api/__generated/model/static";
-import ModelEditForm from "@/modelEditor/modelForm/ModelEditForm.vue";
-import {useModelEditDialog} from "@/modelEditor/modelForm/useModelEditDialog.ts";
-import {api} from "@/api";
-import {withLoading} from "@/components/loading/loadingApi.ts";
-import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
+import DragResizeDialog from '@/components/dialog/DragResizeDialog.vue';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import {nextTick, ref} from 'vue';
+import type {ModelUpdateInput} from '@/api/__generated/model/static';
+import ModelEditForm from '@/modelEditor/modelForm/ModelEditForm.vue';
+import {useModelEditDialog} from '@/modelEditor/modelForm/useModelEditDialog.ts';
+import {api} from '@/api';
+import {withLoading} from '@/components/loading/loadingApi.ts';
+import {jsonPrettyFormat} from '@/utils/json/jsonStringify.ts';
 
-const {
-    contextData,
-    viewport,
-    getModelGraphSubData,
-    loadModel,
-    changeModel,
-} = useModelEditor()
+const {contextData, viewport, getModelGraphSubData, loadModel, changeModel} = useModelEditor();
 
-const {
-    openState,
-    close,
-} = useModelEditDialog()
+const {openState, close} = useModelEditDialog();
 
-const model = ref<ModelUpdateInput>()
-let jsonDataCache: string | undefined
+const model = ref<ModelUpdateInput>();
+let jsonDataCache: string | undefined;
 
 const setModel = async () => {
     model.value = {
         ...contextData.model,
         jsonData: jsonPrettyFormat(getModelGraphSubData()),
-        viewport: {...viewport.value}
-    }
-    await nextTick()
-    jsonDataCache = model.value?.jsonData
-}
+        viewport: {...viewport.value},
+    };
+    await nextTick();
+    jsonDataCache = model.value?.jsonData;
+};
 
 const handleSubmit = async (model: ModelUpdateInput) => {
-    await withLoading("update model", async () => {
-        const result = await api.modelService.update({body: model})
-        close()
+    await withLoading('update model', async () => {
+        const result = await api.modelService.update({body: model});
+        close();
 
         if (model.jsonData !== jsonDataCache) {
-            await loadModel(result, JSON.parse(model.jsonData), result.viewport)
+            await loadModel(result, JSON.parse(model.jsonData), result.viewport);
         } else {
-            changeModel(result)
+            changeModel(result);
         }
-    })
-}
+    });
+};
 
 const handleCancel = () => {
-    close()
-}
+    close();
+};
 </script>
 
 <template>

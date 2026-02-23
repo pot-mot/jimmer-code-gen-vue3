@@ -1,54 +1,63 @@
 <script setup lang="ts">
-import {onMounted, useTemplateRef, watch} from 'vue'
-import IconCaretDown from "@/components/icons/IconCaretDown.vue";
+import {onMounted, useTemplateRef, watch} from 'vue';
+import IconCaretDown from '@/components/icons/IconCaretDown.vue';
 
-const isOpen = defineModel<boolean>({required: false, default: false})
+const isOpen = defineModel<boolean>({required: false, default: false});
 
-const props = withDefaults(defineProps<{
-    minHeight: string,
-    maxHeight: string,
-    triggerPosition?: 'left' | 'right' | undefined,
-    transitionDuration?: number | undefined,
-}>(), {
-    triggerPosition: 'right',
-    transitionDuration: 300,
-})
+const props = withDefaults(
+    defineProps<{
+        minHeight: string;
+        maxHeight: string;
+        triggerPosition?: 'left' | 'right' | undefined;
+        transitionDuration?: number | undefined;
+    }>(),
+    {
+        triggerPosition: 'right',
+        transitionDuration: 300,
+    },
+);
 
-const bodyRef = useTemplateRef("bodyRef")
+const bodyRef = useTemplateRef('bodyRef');
 
 onMounted(() => {
     if (bodyRef.value) {
-        bodyRef.value.style.transition = `max-height ${props.transitionDuration}ms ease-out`
+        bodyRef.value.style.transition = `max-height ${props.transitionDuration}ms ease-out`;
         if (isOpen.value) {
-            bodyRef.value.style.maxHeight = `min(${bodyRef.value.scrollHeight}px, ${props.maxHeight})`
+            bodyRef.value.style.maxHeight = `min(${bodyRef.value.scrollHeight}px, ${props.maxHeight})`;
             window.setTimeout(() => {
-                if (bodyRef.value) bodyRef.value.style.maxHeight = ''
-            }, props.transitionDuration)
+                if (bodyRef.value) bodyRef.value.style.maxHeight = '';
+            }, props.transitionDuration);
         } else {
-            bodyRef.value.style.maxHeight = props.minHeight
+            bodyRef.value.style.maxHeight = props.minHeight;
         }
     }
-})
+});
 
-watch(() => isOpen.value, () => {
-    if (bodyRef.value) {
-        if (isOpen.value) {
-            bodyRef.value.style.maxHeight = `min(${bodyRef.value.scrollHeight}px, ${props.maxHeight})`
-            window.setTimeout(() => {
-                if (bodyRef.value) bodyRef.value.style.maxHeight = ''
-            }, props.transitionDuration)
-        } else {
-            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
-            window.setTimeout(() => {
-                if (bodyRef.value) bodyRef.value.style.maxHeight = props.minHeight
-            })
+watch(
+    () => isOpen.value,
+    () => {
+        if (bodyRef.value) {
+            if (isOpen.value) {
+                bodyRef.value.style.maxHeight = `min(${bodyRef.value.scrollHeight}px, ${props.maxHeight})`;
+                window.setTimeout(() => {
+                    if (bodyRef.value) bodyRef.value.style.maxHeight = '';
+                }, props.transitionDuration);
+            } else {
+                bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`;
+                window.setTimeout(() => {
+                    if (bodyRef.value) bodyRef.value.style.maxHeight = props.minHeight;
+                });
+            }
         }
-    }
-})
+    },
+);
 </script>
 
 <template>
-    <div class="collapse-item-container" :class="`caret-${triggerPosition}`">
+    <div
+        class="collapse-item-container"
+        :class="`caret-${triggerPosition}`"
+    >
         <div
             class="caret-wrapper"
             v-if="triggerPosition === 'left'"
@@ -57,12 +66,15 @@ watch(() => isOpen.value, () => {
         >
             <IconCaretDown
                 class="caret left"
-                :class="{ open: isOpen }"
+                :class="{open: isOpen}"
             />
         </div>
 
-        <div class="collapse-item-body" ref="bodyRef">
-            <slot/>
+        <div
+            class="collapse-item-body"
+            ref="bodyRef"
+        >
+            <slot />
         </div>
 
         <div
@@ -73,7 +85,7 @@ watch(() => isOpen.value, () => {
         >
             <IconCaretDown
                 class="caret right"
-                :class="{ open: isOpen }"
+                :class="{open: isOpen}"
             />
         </div>
     </div>
@@ -110,7 +122,7 @@ watch(() => isOpen.value, () => {
 .caret-wrapper > .caret {
     position: absolute;
     top: 50%;
-    transition: transform v-bind(transitionDuration+ 'ms') ease;
+    transition: transform v-bind(transitionDuration + 'ms') ease;
 }
 
 .caret-wrapper > .caret.left {

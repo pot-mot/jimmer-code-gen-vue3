@@ -1,20 +1,18 @@
-import {readonly, ref} from "vue";
-import type {EdgeChange, NodeChange, VueFlowStore} from "@vue-flow/core";
-import mitt from "mitt";
-import {fillModelSubIds} from "@/modelEditor/utils/ModelSubIds.ts";
-import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
-import type {CommandHistory} from "@/history/commandHistory.ts";
-import {type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
+import {readonly, ref} from 'vue';
+import type {EdgeChange, NodeChange, VueFlowStore} from '@vue-flow/core';
+import mitt from 'mitt';
+import {fillModelSubIds} from '@/modelEditor/utils/ModelSubIds.ts';
+import {findAssociationEdge} from '@/modelEditor/edge/findAssociationEdge.ts';
+import type {CommandHistory} from '@/history/commandHistory.ts';
+import {type ModelEditorHistoryCommands} from '@/modelEditor/history/ModelEditorHistory.ts';
 
-export const useModelEditorSelectIds = (
-    modelEditorState: {
-        getContextData: () => ModelContextData,
-        getVueFlow: () => VueFlowStore,
-        getNextZIndex: () => number,
-        history: CommandHistory<ModelEditorHistoryCommands>,
-    }
-) => {
-    const {getContextData, getVueFlow, getNextZIndex, history} = modelEditorState
+export const useModelEditorSelectIds = (modelEditorState: {
+    getContextData: () => ModelContextData;
+    getVueFlow: () => VueFlowStore;
+    getNextZIndex: () => number;
+    history: CommandHistory<ModelEditorHistoryCommands>;
+}) => {
+    const {getContextData, getVueFlow, getNextZIndex, history} = modelEditorState;
 
     // 选中的 Id
     const selectedIdSets = ref<ModelSubIdSets>({
@@ -24,269 +22,289 @@ export const useModelEditorSelectIds = (
         embeddableTypeIdSet: new Set<string>(),
         enumerationIdSet: new Set<string>(),
         associationIdSet: new Set<string>(),
-    })
+    });
     const clearSelectedIdSets = () => {
-        if (selectedIdSets.value.groupIdSet.size > 0) selectedIdSets.value.groupIdSet.clear()
-        if (selectedIdSets.value.entityIdSet.size > 0) selectedIdSets.value.entityIdSet.clear()
-        if (selectedIdSets.value.mappedSuperClassIdSet.size > 0) selectedIdSets.value.mappedSuperClassIdSet.clear()
-        if (selectedIdSets.value.embeddableTypeIdSet.size > 0) selectedIdSets.value.embeddableTypeIdSet.clear()
-        if (selectedIdSets.value.enumerationIdSet.size > 0) selectedIdSets.value.enumerationIdSet.clear()
-        if (selectedIdSets.value.associationIdSet.size > 0) selectedIdSets.value.associationIdSet.clear()
+        if (selectedIdSets.value.groupIdSet.size > 0) selectedIdSets.value.groupIdSet.clear();
+        if (selectedIdSets.value.entityIdSet.size > 0) selectedIdSets.value.entityIdSet.clear();
+        if (selectedIdSets.value.mappedSuperClassIdSet.size > 0)
+            selectedIdSets.value.mappedSuperClassIdSet.clear();
+        if (selectedIdSets.value.embeddableTypeIdSet.size > 0)
+            selectedIdSets.value.embeddableTypeIdSet.clear();
+        if (selectedIdSets.value.enumerationIdSet.size > 0)
+            selectedIdSets.value.enumerationIdSet.clear();
+        if (selectedIdSets.value.associationIdSet.size > 0)
+            selectedIdSets.value.associationIdSet.clear();
 
-        const vueFlow = getVueFlow()
-        vueFlow.removeSelectedNodes(vueFlow.getSelectedNodes.value)
-        vueFlow.removeSelectedEdges(vueFlow.getSelectedEdges.value)
-    }
+        const vueFlow = getVueFlow();
+        vueFlow.removeSelectedNodes(vueFlow.getSelectedNodes.value);
+        vueFlow.removeSelectedEdges(vueFlow.getSelectedEdges.value);
+    };
     const modelSelectionEventBus = mitt<{
-        "group": { id: string, selected: boolean },
-        "entity": { id: string, selected: boolean },
-        "mappedSuperClass": { id: string, selected: boolean },
-        "embeddableType": { id: string, selected: boolean },
-        "enumeration": { id: string, selected: boolean },
-        "association": { id: string, selected: boolean },
-    }>()
+        group: {id: string; selected: boolean};
+        entity: {id: string; selected: boolean};
+        mappedSuperClass: {id: string; selected: boolean};
+        embeddableType: {id: string; selected: boolean};
+        enumeration: {id: string; selected: boolean};
+        association: {id: string; selected: boolean};
+    }>();
 
     const selectGroup = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getVueFlow()
-        if (!contextData.groupMap.has(id)) throw new Error(`[${id}] is not existed`)
+        const contextData = getContextData();
+        const vueFlow = getVueFlow();
+        if (!contextData.groupMap.has(id)) throw new Error(`[${id}] is not existed`);
 
-        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets()
-        selectedIdSets.value.groupIdSet.add(id)
-        modelSelectionEventBus.emit('group', {id, selected: true})
-    }
+        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets();
+        selectedIdSets.value.groupIdSet.add(id);
+        modelSelectionEventBus.emit('group', {id, selected: true});
+    };
     const unselectGroup = (id: string) => {
-        selectedIdSets.value.groupIdSet.delete(id)
-        modelSelectionEventBus.emit('group', {id, selected: false})
-    }
+        selectedIdSets.value.groupIdSet.delete(id);
+        modelSelectionEventBus.emit('group', {id, selected: false});
+    };
     const selectEntity = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getVueFlow()
-        if (!contextData.entityMap.has(id)) throw new Error(`[${id}] is not existed`)
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
+        const contextData = getContextData();
+        const vueFlow = getVueFlow();
+        if (!contextData.entityMap.has(id)) throw new Error(`[${id}] is not existed`);
+        const node = vueFlow.findNode(id);
+        if (!node) throw new Error(`Node [${id}] is not existed`);
 
-        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets()
-        selectedIdSets.value.entityIdSet.add(id)
-        vueFlow.addSelectedNodes([node])
-        modelSelectionEventBus.emit('entity', {id, selected: true})
-    }
+        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets();
+        selectedIdSets.value.entityIdSet.add(id);
+        vueFlow.addSelectedNodes([node]);
+        modelSelectionEventBus.emit('entity', {id, selected: true});
+    };
     const unselectEntity = (id: string) => {
-        selectedIdSets.value.entityIdSet.delete(id)
-        const vueFlow = getVueFlow()
-        const node = vueFlow.findNode(id)
-        if (node) vueFlow.removeSelectedNodes([node])
-        modelSelectionEventBus.emit('entity', {id, selected: false})
-    }
+        selectedIdSets.value.entityIdSet.delete(id);
+        const vueFlow = getVueFlow();
+        const node = vueFlow.findNode(id);
+        if (node) vueFlow.removeSelectedNodes([node]);
+        modelSelectionEventBus.emit('entity', {id, selected: false});
+    };
     const selectMappedSuperClass = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getVueFlow()
-        if (!contextData.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is not existed`)
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
+        const contextData = getContextData();
+        const vueFlow = getVueFlow();
+        if (!contextData.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is not existed`);
+        const node = vueFlow.findNode(id);
+        if (!node) throw new Error(`Node [${id}] is not existed`);
 
-        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets()
-        selectedIdSets.value.mappedSuperClassIdSet.add(id)
-        vueFlow.addSelectedNodes([node])
-        modelSelectionEventBus.emit('mappedSuperClass', {id, selected: true})
-    }
+        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets();
+        selectedIdSets.value.mappedSuperClassIdSet.add(id);
+        vueFlow.addSelectedNodes([node]);
+        modelSelectionEventBus.emit('mappedSuperClass', {id, selected: true});
+    };
     const unselectMappedSuperClass = (id: string) => {
-        selectedIdSets.value.mappedSuperClassIdSet.delete(id)
-        const vueFlow = getVueFlow()
-        const node = vueFlow.findNode(id)
-        if (node) vueFlow.removeSelectedNodes([node])
-        modelSelectionEventBus.emit('mappedSuperClass', {id, selected: false})
-    }
+        selectedIdSets.value.mappedSuperClassIdSet.delete(id);
+        const vueFlow = getVueFlow();
+        const node = vueFlow.findNode(id);
+        if (node) vueFlow.removeSelectedNodes([node]);
+        modelSelectionEventBus.emit('mappedSuperClass', {id, selected: false});
+    };
     const selectEmbeddableType = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getVueFlow()
-        if (!contextData.embeddableTypeMap.has(id)) throw new Error(`[${id}] is not existed`)
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
+        const contextData = getContextData();
+        const vueFlow = getVueFlow();
+        if (!contextData.embeddableTypeMap.has(id)) throw new Error(`[${id}] is not existed`);
+        const node = vueFlow.findNode(id);
+        if (!node) throw new Error(`Node [${id}] is not existed`);
 
-        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets()
-        selectedIdSets.value.embeddableTypeIdSet.add(id)
-        vueFlow.addSelectedNodes([node])
-        modelSelectionEventBus.emit('embeddableType', {id, selected: true})
-    }
+        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets();
+        selectedIdSets.value.embeddableTypeIdSet.add(id);
+        vueFlow.addSelectedNodes([node]);
+        modelSelectionEventBus.emit('embeddableType', {id, selected: true});
+    };
     const unselectEmbeddableType = (id: string) => {
-        selectedIdSets.value.embeddableTypeIdSet.delete(id)
-        const vueFlow = getVueFlow()
-        const node = vueFlow.findNode(id)
-        if (node) vueFlow.removeSelectedNodes([node])
-        modelSelectionEventBus.emit('embeddableType', {id, selected: false})
-    }
+        selectedIdSets.value.embeddableTypeIdSet.delete(id);
+        const vueFlow = getVueFlow();
+        const node = vueFlow.findNode(id);
+        if (node) vueFlow.removeSelectedNodes([node]);
+        modelSelectionEventBus.emit('embeddableType', {id, selected: false});
+    };
     const selectEnumeration = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getVueFlow()
-        if (!contextData.enumerationMap.has(id)) throw new Error(`[${id}] is not existed`)
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
+        const contextData = getContextData();
+        const vueFlow = getVueFlow();
+        if (!contextData.enumerationMap.has(id)) throw new Error(`[${id}] is not existed`);
+        const node = vueFlow.findNode(id);
+        if (!node) throw new Error(`Node [${id}] is not existed`);
 
-        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets()
-        selectedIdSets.value.enumerationIdSet.add(id)
-        vueFlow.addSelectedNodes([node])
-        modelSelectionEventBus.emit('enumeration', {id, selected: true})
-    }
+        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets();
+        selectedIdSets.value.enumerationIdSet.add(id);
+        vueFlow.addSelectedNodes([node]);
+        modelSelectionEventBus.emit('enumeration', {id, selected: true});
+    };
     const unselectEnumeration = (id: string) => {
-        selectedIdSets.value.enumerationIdSet.delete(id)
-        const vueFlow = getVueFlow()
-        const node = vueFlow.findNode(id)
-        if (node) vueFlow.removeSelectedNodes([node])
-        modelSelectionEventBus.emit('enumeration', {id, selected: false})
-    }
+        selectedIdSets.value.enumerationIdSet.delete(id);
+        const vueFlow = getVueFlow();
+        const node = vueFlow.findNode(id);
+        if (node) vueFlow.removeSelectedNodes([node]);
+        modelSelectionEventBus.emit('enumeration', {id, selected: false});
+    };
     const selectAssociation = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getVueFlow()
-        if (!contextData.associationMap.has(id)) throw new Error(`Association [${id}] is not existed`)
-        const edge = findAssociationEdge(id, vueFlow)
-        if (!edge) throw new Error(`Edge [${id}] is not existed`)
+        const contextData = getContextData();
+        const vueFlow = getVueFlow();
+        if (!contextData.associationMap.has(id))
+            throw new Error(`Association [${id}] is not existed`);
+        const edge = findAssociationEdge(id, vueFlow);
+        if (!edge) throw new Error(`Edge [${id}] is not existed`);
 
-        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets()
-        selectedIdSets.value.associationIdSet.add(id)
-        vueFlow.addSelectedEdges([edge])
-        modelSelectionEventBus.emit('association', {id, selected: true})
-    }
+        if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets();
+        selectedIdSets.value.associationIdSet.add(id);
+        vueFlow.addSelectedEdges([edge]);
+        modelSelectionEventBus.emit('association', {id, selected: true});
+    };
     const unselectAssociation = (id: string) => {
-        selectedIdSets.value.associationIdSet.delete(id)
-        const vueFlow = getVueFlow()
-        const edge = findAssociationEdge(id, vueFlow)
-        if (edge) vueFlow.removeSelectedEdges([edge])
-        modelSelectionEventBus.emit('association', {id, selected: false})
-    }
+        selectedIdSets.value.associationIdSet.delete(id);
+        const vueFlow = getVueFlow();
+        const edge = findAssociationEdge(id, vueFlow);
+        if (edge) vueFlow.removeSelectedEdges([edge]);
+        modelSelectionEventBus.emit('association', {id, selected: false});
+    };
 
     const select = (ids: DeepReadonly<Partial<ModelSubIds>>) => {
-        const vueFlow = getVueFlow()
-        const oldMultiSelectionActive = vueFlow.multiSelectionActive.value
-        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = true
-        const fullIds = fillModelSubIds(ids)
-        for (const id of fullIds.groupIds) selectGroup(id)
-        for (const id of fullIds.entityIds) selectEntity(id)
-        for (const id of fullIds.mappedSuperClassIds) selectMappedSuperClass(id)
-        for (const id of fullIds.embeddableTypeIds) selectEmbeddableType(id)
-        for (const id of fullIds.enumerationIds) selectEnumeration(id)
-        for (const id of fullIds.associationIds) selectAssociation(id)
-        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = false
-    }
+        const vueFlow = getVueFlow();
+        const oldMultiSelectionActive = vueFlow.multiSelectionActive.value;
+        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = true;
+        const fullIds = fillModelSubIds(ids);
+        for (const id of fullIds.groupIds) selectGroup(id);
+        for (const id of fullIds.entityIds) selectEntity(id);
+        for (const id of fullIds.mappedSuperClassIds) selectMappedSuperClass(id);
+        for (const id of fullIds.embeddableTypeIds) selectEmbeddableType(id);
+        for (const id of fullIds.enumerationIds) selectEnumeration(id);
+        for (const id of fullIds.associationIds) selectAssociation(id);
+        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = false;
+    };
 
     const selectAll = () => {
-        const contextData = getContextData()
-        const vueFlow = getVueFlow()
-        const oldMultiSelectionActive = vueFlow.multiSelectionActive.value
-        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = true
-        for (const id of contextData.groupMap.keys()) selectGroup(id)
-        for (const id of contextData.entityMap.keys()) selectEntity(id)
-        for (const id of contextData.mappedSuperClassMap.keys()) selectMappedSuperClass(id)
-        for (const id of contextData.embeddableTypeMap.keys()) selectEmbeddableType(id)
-        for (const id of contextData.enumerationMap.keys()) selectEnumeration(id)
-        for (const id of contextData.associationMap.keys()) selectAssociation(id)
-        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = false
-    }
+        const contextData = getContextData();
+        const vueFlow = getVueFlow();
+        const oldMultiSelectionActive = vueFlow.multiSelectionActive.value;
+        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = true;
+        for (const id of contextData.groupMap.keys()) selectGroup(id);
+        for (const id of contextData.entityMap.keys()) selectEntity(id);
+        for (const id of contextData.mappedSuperClassMap.keys()) selectMappedSuperClass(id);
+        for (const id of contextData.embeddableTypeMap.keys()) selectEmbeddableType(id);
+        for (const id of contextData.enumerationMap.keys()) selectEnumeration(id);
+        for (const id of contextData.associationMap.keys()) selectAssociation(id);
+        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = false;
+    };
 
     const unselect = (ids: DeepReadonly<Partial<ModelSubIds>>) => {
-        const fullIds = fillModelSubIds(ids)
-        for (const id of fullIds.groupIds) unselectGroup(id)
-        for (const id of fullIds.entityIds) unselectEntity(id)
-        for (const id of fullIds.mappedSuperClassIds) unselectMappedSuperClass(id)
-        for (const id of fullIds.embeddableTypeIds) unselectEmbeddableType(id)
-        for (const id of fullIds.enumerationIds) unselectEnumeration(id)
-        for (const id of fullIds.associationIds) unselectAssociation(id)
-    }
+        const fullIds = fillModelSubIds(ids);
+        for (const id of fullIds.groupIds) unselectGroup(id);
+        for (const id of fullIds.entityIds) unselectEntity(id);
+        for (const id of fullIds.mappedSuperClassIds) unselectMappedSuperClass(id);
+        for (const id of fullIds.embeddableTypeIds) unselectEmbeddableType(id);
+        for (const id of fullIds.enumerationIds) unselectEnumeration(id);
+        for (const id of fullIds.associationIds) unselectAssociation(id);
+    };
 
     const unselectAll = () => {
-        for (const id of selectedIdSets.value.groupIdSet) unselectGroup(id)
-        for (const id of selectedIdSets.value.entityIdSet) unselectEntity(id)
-        for (const id of selectedIdSets.value.mappedSuperClassIdSet) unselectMappedSuperClass(id)
-        for (const id of selectedIdSets.value.embeddableTypeIdSet) unselectEmbeddableType(id)
-        for (const id of selectedIdSets.value.enumerationIdSet) unselectEnumeration(id)
-        for (const id of selectedIdSets.value.associationIdSet) unselectAssociation(id)
-    }
+        for (const id of selectedIdSets.value.groupIdSet) unselectGroup(id);
+        for (const id of selectedIdSets.value.entityIdSet) unselectEntity(id);
+        for (const id of selectedIdSets.value.mappedSuperClassIdSet) unselectMappedSuperClass(id);
+        for (const id of selectedIdSets.value.embeddableTypeIdSet) unselectEmbeddableType(id);
+        for (const id of selectedIdSets.value.enumerationIdSet) unselectEnumeration(id);
+        for (const id of selectedIdSets.value.associationIdSet) unselectAssociation(id);
+    };
 
     history.eventBus.on('change', (data) => {
-        if (data.key === "remove") {
-            if (data.type === "apply") {
+        if (data.key === 'remove') {
+            if (data.type === 'apply') {
                 for (const {data: association} of data.revertOptions.associations) {
-                    unselectAssociation(association.id)
+                    unselectAssociation(association.id);
                 }
                 for (const {data: entity} of data.revertOptions.entities) {
-                    unselectEntity(entity.id)
+                    unselectEntity(entity.id);
                 }
                 for (const {data: mappedSuperClass} of data.revertOptions.mappedSuperClasses) {
-                    unselectMappedSuperClass(mappedSuperClass.id)
+                    unselectMappedSuperClass(mappedSuperClass.id);
                 }
                 for (const {data: embeddableType} of data.revertOptions.embeddableTypes) {
-                    unselectEmbeddableType(embeddableType.id)
+                    unselectEmbeddableType(embeddableType.id);
                 }
                 for (const {data: enumeration} of data.revertOptions.enumerations) {
-                    unselectEnumeration(enumeration.id)
+                    unselectEnumeration(enumeration.id);
                 }
                 for (const group of data.revertOptions.groups) {
-                    unselectGroup(group.id)
+                    unselectGroup(group.id);
                 }
             }
         }
-    })
+    });
 
     const syncNodeSelectChange = (changes: NodeChange[]) => {
-        const vueFlow = getVueFlow()
+        const vueFlow = getVueFlow();
 
         for (const change of changes) {
-            if (change.type === "select") {
+            if (change.type === 'select') {
                 if (change.selected) {
-                    const node = vueFlow.findNode(change.id)
-                    if (node) node.zIndex = getNextZIndex()
+                    const node = vueFlow.findNode(change.id);
+                    if (node) node.zIndex = getNextZIndex();
 
-                    if (change.id.startsWith("Entity")) {
-                        selectedIdSets.value.entityIdSet.add(change.id)
-                        modelSelectionEventBus.emit('entity', {id: change.id, selected: true})
-                    } else if (change.id.startsWith("MappedSuperClass")) {
-                        selectedIdSets.value.mappedSuperClassIdSet.add(change.id)
-                        modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: true})
-                    } else if (change.id.startsWith("EmbeddableType")) {
-                        selectedIdSets.value.embeddableTypeIdSet.add(change.id)
-                        modelSelectionEventBus.emit('embeddableType', {id: change.id, selected: true})
-                    } else if (change.id.startsWith("Enumeration")) {
-                        selectedIdSets.value.enumerationIdSet.add(change.id)
-                        modelSelectionEventBus.emit('enumeration', {id: change.id, selected: true})
+                    if (change.id.startsWith('Entity')) {
+                        selectedIdSets.value.entityIdSet.add(change.id);
+                        modelSelectionEventBus.emit('entity', {id: change.id, selected: true});
+                    } else if (change.id.startsWith('MappedSuperClass')) {
+                        selectedIdSets.value.mappedSuperClassIdSet.add(change.id);
+                        modelSelectionEventBus.emit('mappedSuperClass', {
+                            id: change.id,
+                            selected: true,
+                        });
+                    } else if (change.id.startsWith('EmbeddableType')) {
+                        selectedIdSets.value.embeddableTypeIdSet.add(change.id);
+                        modelSelectionEventBus.emit('embeddableType', {
+                            id: change.id,
+                            selected: true,
+                        });
+                    } else if (change.id.startsWith('Enumeration')) {
+                        selectedIdSets.value.enumerationIdSet.add(change.id);
+                        modelSelectionEventBus.emit('enumeration', {id: change.id, selected: true});
                     }
                 } else {
-                    if (change.id.startsWith("Entity")) {
-                        selectedIdSets.value.entityIdSet.delete(change.id)
-                        modelSelectionEventBus.emit('entity', {id: change.id, selected: false})
-                    } else if (change.id.startsWith("MappedSuperClass")) {
-                        selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
-                        modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: false})
-                    } else if (change.id.startsWith("EmbeddableType")) {
-                        selectedIdSets.value.embeddableTypeIdSet.delete(change.id)
-                        modelSelectionEventBus.emit('embeddableType', {id: change.id, selected: false})
-                    } else if (change.id.startsWith("Enumeration")) {
-                        selectedIdSets.value.enumerationIdSet.delete(change.id)
-                        modelSelectionEventBus.emit('enumeration', {id: change.id, selected: false})
+                    if (change.id.startsWith('Entity')) {
+                        selectedIdSets.value.entityIdSet.delete(change.id);
+                        modelSelectionEventBus.emit('entity', {id: change.id, selected: false});
+                    } else if (change.id.startsWith('MappedSuperClass')) {
+                        selectedIdSets.value.mappedSuperClassIdSet.delete(change.id);
+                        modelSelectionEventBus.emit('mappedSuperClass', {
+                            id: change.id,
+                            selected: false,
+                        });
+                    } else if (change.id.startsWith('EmbeddableType')) {
+                        selectedIdSets.value.embeddableTypeIdSet.delete(change.id);
+                        modelSelectionEventBus.emit('embeddableType', {
+                            id: change.id,
+                            selected: false,
+                        });
+                    } else if (change.id.startsWith('Enumeration')) {
+                        selectedIdSets.value.enumerationIdSet.delete(change.id);
+                        modelSelectionEventBus.emit('enumeration', {
+                            id: change.id,
+                            selected: false,
+                        });
                     }
                 }
             }
         }
-    }
+    };
 
     const syncEdgeSelectChange = (changes: EdgeChange[]) => {
-        const vueFlow = getVueFlow()
+        const vueFlow = getVueFlow();
 
         for (const change of changes) {
-            if (change.type === "select") {
+            if (change.type === 'select') {
                 if (change.selected) {
-                    const edge = vueFlow.findEdge(change.id)
-                    if (edge) edge.zIndex = getNextZIndex()
+                    const edge = vueFlow.findEdge(change.id);
+                    if (edge) edge.zIndex = getNextZIndex();
 
-                    selectedIdSets.value.associationIdSet.add(change.id)
-                    modelSelectionEventBus.emit('association', {id: change.id, selected: true})
+                    selectedIdSets.value.associationIdSet.add(change.id);
+                    modelSelectionEventBus.emit('association', {id: change.id, selected: true});
                 } else {
-                    selectedIdSets.value.associationIdSet.delete(change.id)
-                    modelSelectionEventBus.emit('association', {id: change.id, selected: false})
+                    selectedIdSets.value.associationIdSet.delete(change.id);
+                    modelSelectionEventBus.emit('association', {id: change.id, selected: false});
                 }
             }
         }
-    }
-    
+    };
+
     return {
         selectedIdSets: readonly(selectedIdSets),
         select,
@@ -309,5 +327,5 @@ export const useModelEditorSelectIds = (
 
         syncNodeSelectChange,
         syncEdgeSelectChange,
-    }
-}
+    };
+};

@@ -1,63 +1,58 @@
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {nextTick} from "vue";
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import {nextTick} from 'vue';
 import {
     MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
     LIST_ID_VIEW_TEMPLATE,
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
     MID_TABLE_COMMENT_TEMPLATE,
     MID_TABLE_NAME_TEMPLATE,
-} from "@/modelEditor/utils/AssociationTemplate.ts";
+} from '@/modelEditor/utils/AssociationTemplate.ts';
 
-export const toManyToMany = async (
-    association: DeepReadonly<ConcreteAssociationIdOnly>,
-) => {
-    const {
-        executeAsyncBatch,
-        waitChangeSync,
-        contextData,
-        changeEntity,
-        changeAssociation
-    } = useModelEditor()
+export const toManyToMany = async (association: DeepReadonly<ConcreteAssociationIdOnly>) => {
+    const {executeAsyncBatch, waitChangeSync, contextData, changeEntity, changeAssociation} =
+        useModelEditor();
 
-    const mappedProperty = association.mappedProperty
-    const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
+    const mappedProperty = association.mappedProperty;
+    const sourceEntity = contextData.entityMap.get(association.sourceEntityId);
     if (!sourceEntity) {
-        throw new Error(`[${association.sourceEntityId}] not found`)
+        throw new Error(`[${association.sourceEntityId}] not found`);
     }
-    const sourcePropertyIndex = sourceEntity.properties.findIndex(it => it.id === association.sourcePropertyId)
+    const sourcePropertyIndex = sourceEntity.properties.findIndex(
+        (it) => it.id === association.sourcePropertyId,
+    );
     if (sourcePropertyIndex === -1) {
-        throw new Error(`[${association.sourcePropertyId}] not found`)
+        throw new Error(`[${association.sourcePropertyId}] not found`);
     }
-    const sourceProperty = sourceEntity.properties[sourcePropertyIndex]
+    const sourceProperty = sourceEntity.properties[sourcePropertyIndex];
     if (!sourceProperty) {
-        throw new Error(`[${association.sourcePropertyId}] not found`)
+        throw new Error(`[${association.sourcePropertyId}] not found`);
     }
     if (
-        sourceProperty.category !== "ManyToOne" &&
-        sourceProperty.category !== "OneToOne_Source" &&
-        sourceProperty.category !== "ManyToMany_Source"
+        sourceProperty.category !== 'ManyToOne' &&
+        sourceProperty.category !== 'OneToOne_Source' &&
+        sourceProperty.category !== 'ManyToMany_Source'
     ) {
-        throw new Error(`[${association.sourcePropertyId}] is not AssociationSource`)
+        throw new Error(`[${association.sourcePropertyId}] is not AssociationSource`);
     }
 
-    await executeAsyncBatch(Symbol("toManyToMany"), async () => {
+    await executeAsyncBatch(Symbol('toManyToMany'), async () => {
         const newSourceProperty: ManyToManySourceProperty = {
             id: sourceProperty.id,
             associationId: association.id,
-            category: "ManyToMany_Source",
+            category: 'ManyToMany_Source',
             name: sourceProperty.name,
             comment: sourceProperty.comment,
             idViewName: sourceProperty.idViewName,
             idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
             useIdViewNameTemplate: true,
             joinInfo: {
-                type: "MidTable",
+                type: 'MidTable',
                 sourceJoinInfo: {
-                    type: "Unknown",
+                    type: 'Unknown',
                     foreignKeyType: association.foreignKeyType,
                 },
                 targetJoinInfo: {
-                    type: "Unknown",
+                    type: 'Unknown',
                     foreignKeyType: association.foreignKeyType,
                 },
                 midTableExtraInfo: {},
@@ -68,12 +63,12 @@ export const toManyToMany = async (
             typeIsList: true,
             extraAnnotations: [...sourceProperty.extraAnnotations],
             extraImports: [...sourceProperty.extraImports],
-        }
+        };
 
         const newMappedProperty: ManyToManyMappedProperty = {
             id: mappedProperty.id,
             associationId: association.id,
-            category: "ManyToMany_Mapped",
+            category: 'ManyToMany_Mapped',
             name: mappedProperty.name,
             nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
             useNameTemplate: true,
@@ -89,7 +84,7 @@ export const toManyToMany = async (
             typeIsList: true,
             extraAnnotations: [...mappedProperty.extraAnnotations],
             extraImports: [...mappedProperty.extraImports],
-        }
+        };
 
         const newAssociation: ManyToManyAssociationIdOnly = {
             id: association.id,
@@ -103,20 +98,20 @@ export const toManyToMany = async (
             referencedEntityId: association.referencedEntityId,
             sourceEntityId: association.sourceEntityId,
             sourcePropertyId: association.sourcePropertyId,
-            type: "ManyToMany",
+            type: 'ManyToMany',
             mappedProperty: newMappedProperty,
             withMappedProperty: association.withMappedProperty,
-        }
+        };
 
-        const properties = [...sourceEntity.properties]
-        properties[sourcePropertyIndex] = newSourceProperty
+        const properties = [...sourceEntity.properties];
+        properties[sourcePropertyIndex] = newSourceProperty;
         changeEntity({
             ...sourceEntity,
             properties,
-        })
-        changeAssociation(newAssociation)
+        });
+        changeAssociation(newAssociation);
 
-        await nextTick()
-        await waitChangeSync()
-    })
-}
+        await nextTick();
+        await waitChangeSync();
+    });
+};

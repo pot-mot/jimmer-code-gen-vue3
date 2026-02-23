@@ -1,46 +1,45 @@
 <script setup lang="ts">
-import {nextTick, ref, useTemplateRef, watch} from "vue"
-import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
-import ModelBaseContextMenu from "@/modelEditor/contextMenu/item/ModelBaseContextMenu.vue";
-import GroupContextMenu from "@/modelEditor/contextMenu/item/GroupContextMenu.vue";
-import EntityContextMenu from "@/modelEditor/contextMenu/item/EntityContextMenu.vue";
-import MappedSuperClassContextMenu from "@/modelEditor/contextMenu/item/MappedSuperClassContextMenu.vue";
-import EnumerationContextMenu from "@/modelEditor/contextMenu/item/EnumerationContextMenu.vue";
-import EmbeddableTypeContextMenu from "@/modelEditor/contextMenu/item/EmbeddableTypeContextMenu.vue";
-import AssociationContextMenu from "@/modelEditor/contextMenu/item/AssociationContextMenu.vue";
+import {nextTick, ref, useTemplateRef, watch} from 'vue';
+import {useModelContextMenu} from '@/modelEditor/contextMenu/useModelContextMenu.ts';
+import ModelBaseContextMenu from '@/modelEditor/contextMenu/item/ModelBaseContextMenu.vue';
+import GroupContextMenu from '@/modelEditor/contextMenu/item/GroupContextMenu.vue';
+import EntityContextMenu from '@/modelEditor/contextMenu/item/EntityContextMenu.vue';
+import MappedSuperClassContextMenu from '@/modelEditor/contextMenu/item/MappedSuperClassContextMenu.vue';
+import EnumerationContextMenu from '@/modelEditor/contextMenu/item/EnumerationContextMenu.vue';
+import EmbeddableTypeContextMenu from '@/modelEditor/contextMenu/item/EmbeddableTypeContextMenu.vue';
+import AssociationContextMenu from '@/modelEditor/contextMenu/item/AssociationContextMenu.vue';
 
-const {
-    openState,
-    target,
-    position,
-    close,
-} = useModelContextMenu()
+const {openState, target, position, close} = useModelContextMenu();
 
-const menuRef = useTemplateRef<HTMLDivElement>("menuRef")
-const menuPosition = ref<{ top: number, left: number }>({top: 0, left: 0})
+const menuRef = useTemplateRef<HTMLDivElement>('menuRef');
+const menuPosition = ref<{top: number; left: number}>({top: 0, left: 0});
 
-watch(() => openState.value, async (value) => {
-    await nextTick()
-    if (value && menuRef.value) {
-        const menuRect = menuRef.value.getBoundingClientRect()
+watch(
+    () => openState.value,
+    async (value) => {
+        await nextTick();
+        if (value && menuRef.value) {
+            const menuRect = menuRef.value.getBoundingClientRect();
 
-        // 计算水平位置（优先右侧，空间不足则左侧）
-        let left = position.value.x
-        if (left + menuRect.width > window.innerWidth) {
-            left = Math.max(0, left - menuRect.width)
+            // 计算水平位置（优先右侧，空间不足则左侧）
+            let left = position.value.x;
+            if (left + menuRect.width > window.innerWidth) {
+                left = Math.max(0, left - menuRect.width);
+            }
+            if (left < 0) left = 0;
+
+            // 计算垂直位置（优先下方，空间不足则上方）
+            let top = position.value.y;
+            if (top + menuRect.height > window.innerHeight) {
+                top = Math.max(0, top - menuRect.height);
+            }
+            if (top < 0) top = 0;
+
+            menuPosition.value = {left, top};
         }
-        if (left < 0) left = 0
-
-        // 计算垂直位置（优先下方，空间不足则上方）
-        let top = position.value.y
-        if (top + menuRect.height > window.innerHeight) {
-            top = Math.max(0, top - menuRect.height)
-        }
-        if (top < 0) top = 0
-
-        menuPosition.value = {left, top}
-    }
-}, {immediate: true})
+    },
+    {immediate: true},
+);
 </script>
 
 <template>
@@ -56,12 +55,10 @@ watch(() => openState.value, async (value) => {
                 class="context-menu-container"
                 :style="{
                     left: `${menuPosition.left}px`,
-                    top: `${menuPosition.top}px`
+                    top: `${menuPosition.top}px`,
                 }"
             >
-                <ModelBaseContextMenu
-                    v-if="target.type === 'Model'"
-                />
+                <ModelBaseContextMenu v-if="target.type === 'Model'" />
                 <GroupContextMenu
                     v-else-if="target.type === 'Group'"
                     :id="target.id"
@@ -121,7 +118,7 @@ watch(() => openState.value, async (value) => {
     line-height: 1rem;
     padding: 0.5rem;
     display: grid;
-    grid-template-areas: "icon label shortcut";
+    grid-template-areas: 'icon label shortcut';
     grid-template-columns: 1rem 1fr auto;
     grid-gap: 0.25rem;
     min-width: 6rem;

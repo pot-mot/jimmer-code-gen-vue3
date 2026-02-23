@@ -19,6 +19,7 @@
     background-color: var(--list-line-selected-bg-color);
 }
 
-.edit-list:focus, .view-list:focus {
+.edit-list:focus,
+.view-list:focus {
     outline: 0;
 }

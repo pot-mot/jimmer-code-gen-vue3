@@ -1,12 +1,12 @@
 <script setup lang="ts">
 defineProps<{
     rect: {
-        x: number,
-        y: number,
-        width: number,
-        height: number
-    } | null
-}>()
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    } | null;
+}>();
 </script>
 
 <template>

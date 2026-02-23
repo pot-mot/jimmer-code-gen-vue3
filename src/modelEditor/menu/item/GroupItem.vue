@@ -1,37 +1,32 @@
 <script setup lang="ts">
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {computed} from "vue";
-import ColorInput from "@/components/color/ColorInput.vue";
-import {presetColor} from "@/modelEditor/default/modelDefaults.ts";
-import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
-import DiagnoseCount from "@/modelEditor/diagnostic/DiagnoseCount.vue";
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import {computed} from 'vue';
+import ColorInput from '@/components/color/ColorInput.vue';
+import {presetColor} from '@/modelEditor/default/modelDefaults.ts';
+import NameCommentEditor from '@/modelEditor/nameComment/NameCommentEditor.vue';
+import type {DiagnoseMessage} from '@/modelEditor/diagnostic/ModelDiagnoseInfo.ts';
+import DiagnoseCount from '@/modelEditor/diagnostic/DiagnoseCount.vue';
 
-const group = defineModel<Group>({required: true})
+const group = defineModel<Group>({required: true});
 
-const {
-    modelDiagnoseInfo,
-    selectedIdSets,
-    currentGroupId,
-    toggleCurrentGroup,
-} = useModelEditor()
+const {modelDiagnoseInfo, selectedIdSets, currentGroupId, toggleCurrentGroup} = useModelEditor();
 
 const isSelected = computed(() => {
-    return selectedIdSets.value.groupIdSet.has(group.value.id)
-})
+    return selectedIdSets.value.groupIdSet.has(group.value.id);
+});
 
 const setToCurrentGroup = () => {
-    toggleCurrentGroup({id: group.value.id})
-}
+    toggleCurrentGroup({id: group.value.id});
+};
 
 const allDiagnoseMessages = computed(() => {
-    const messages: DiagnoseMessage[] = []
-    const diagnoseInfo = modelDiagnoseInfo.groupMap.get(group.value.id)
+    const messages: DiagnoseMessage[] = [];
+    const diagnoseInfo = modelDiagnoseInfo.groupMap.get(group.value.id);
     if (diagnoseInfo !== undefined) {
-        messages.push(...diagnoseInfo.group)
+        messages.push(...diagnoseInfo.group);
     }
-    return messages
-})
+    return messages;
+});
 </script>
 
 <template>
@@ -39,7 +34,7 @@ const allDiagnoseMessages = computed(() => {
         class="group-item"
         :class="{
             selected: isSelected,
-            current: currentGroupId === group.id
+            current: currentGroupId === group.id,
         }"
         @click="setToCurrentGroup"
     >
@@ -55,9 +50,7 @@ const allDiagnoseMessages = computed(() => {
             />
         </div>
 
-        <DiagnoseCount
-            :messages="allDiagnoseMessages"
-        />
+        <DiagnoseCount :messages="allDiagnoseMessages" />
     </div>
 </template>
 
@@ -67,7 +60,7 @@ const allDiagnoseMessages = computed(() => {
 }
 
 .group-item.selected .name-comment-editor :deep(.name) > input,
-.selected .group-item .name-comment-editor :deep(.name) > input{
+.selected .group-item .name-comment-editor :deep(.name) > input {
     color: inherit;
 }
 </style>

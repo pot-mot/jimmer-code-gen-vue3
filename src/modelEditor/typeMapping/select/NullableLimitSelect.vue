@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {translate} from "@/store/i18nStore.ts";
-import FilterableSelect from "@/components/select/FilterableSelect.vue";
+import {translate} from '@/store/i18nStore.ts';
+import FilterableSelect from '@/components/select/FilterableSelect.vue';
 
 const nullableLimit = defineModel<boolean | undefined>({
     required: true,
-})
+});
 </script>
 
 <template>
@@ -14,14 +14,44 @@ const nullableLimit = defineModel<boolean | undefined>({
         :get-id="(it) => `${it}`"
     >
         <template #selected="{option}">
-            <div class="nullable-limit-selected-option" v-if="option === true">{{ translate('nullableLimit_true') }}</div>
-            <div class="nullable-limit-selected-option" v-else-if="option === false">{{ translate('nullableLimit_false') }}</div>
-            <div class="nullable-limit-selected-option" v-else-if="option === undefined">{{ translate('nullableLimit_undefined') }}</div>
+            <div
+                class="nullable-limit-selected-option"
+                v-if="option === true"
+            >
+                {{ translate('nullableLimit_true') }}
+            </div>
+            <div
+                class="nullable-limit-selected-option"
+                v-else-if="option === false"
+            >
+                {{ translate('nullableLimit_false') }}
+            </div>
+            <div
+                class="nullable-limit-selected-option"
+                v-else-if="option === undefined"
+            >
+                {{ translate('nullableLimit_undefined') }}
+            </div>
         </template>
         <template #option="{option}">
-            <div class="nullable-limit-option" v-if="option === true">{{ translate('nullableLimit_true') }}</div>
-            <div class="nullable-limit-option" v-else-if="option === false">{{ translate('nullableLimit_false') }}</div>
-            <div class="nullable-limit-option" v-else-if="option === undefined">{{ translate('nullableLimit_undefined') }}</div>
+            <div
+                class="nullable-limit-option"
+                v-if="option === true"
+            >
+                {{ translate('nullableLimit_true') }}
+            </div>
+            <div
+                class="nullable-limit-option"
+                v-else-if="option === false"
+            >
+                {{ translate('nullableLimit_false') }}
+            </div>
+            <div
+                class="nullable-limit-option"
+                v-else-if="option === undefined"
+            >
+                {{ translate('nullableLimit_undefined') }}
+            </div>
         </template>
     </FilterableSelect>
 </template>

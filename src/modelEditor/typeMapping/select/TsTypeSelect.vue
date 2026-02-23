@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import FilterableSelect from "@/components/select/FilterableSelect.vue";
-import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
-import {computed} from "vue";
+import FilterableSelect from '@/components/select/FilterableSelect.vue';
+import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
+import {computed} from 'vue';
 
-const {tsTypes} = useTypeMapping()
+const {tsTypes} = useTypeMapping();
 
 const id = defineModel<string | undefined>({
-    required: true
-})
+    required: true,
+});
 
 const selectedJvmType = computed({
     get() {
-        return tsTypes.value.find(it => it.id === id.value)
+        return tsTypes.value.find((it) => it.id === id.value);
     },
     set(value) {
         if (value === undefined) {
-            id.value = undefined
+            id.value = undefined;
         } else {
-            id.value = value.id
+            id.value = value.id;
         }
-    }
-})
+    },
+});
 </script>
 
 <template>

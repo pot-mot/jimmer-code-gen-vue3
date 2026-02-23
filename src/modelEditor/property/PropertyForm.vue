@@ -1,136 +1,152 @@
 <script setup lang="ts">
-import type {PropertyWithSource} from "@/modelEditor/property/usePropertyEditDialog.ts";
-import {translate} from "@/store/i18nStore.ts";
-import IconCheck from "@/components/icons/IconCheck.vue";
-import IconClose from "@/components/icons/IconClose.vue";
-import {ref, watch} from "vue";
-import JsonEditor from "@/components/code/jsonEditor/JsonEditor.vue";
-import DiffJsonEditor from "@/components/code/jsonEditor/DiffJsonEditor.vue";
-import {usePropertyJsonType} from "@/modelEditor/property/PropertyJsonType.ts";
-import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
-import type {ErrorObject} from "ajv";
-import {formatErrorMessage} from "@/utils/type/typeGuard.ts";
-import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/EntityProperty.ts";
-import {validateMappedSuperClassProperty} from "@/type/__generated/jsonSchema/items/MappedSuperClassProperty.ts";
-import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
+import type {PropertyWithSource} from '@/modelEditor/property/usePropertyEditDialog.ts';
+import {translate} from '@/store/i18nStore.ts';
+import IconCheck from '@/components/icons/IconCheck.vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import {ref, watch} from 'vue';
+import JsonEditor from '@/components/code/jsonEditor/JsonEditor.vue';
+import DiffJsonEditor from '@/components/code/jsonEditor/DiffJsonEditor.vue';
+import {usePropertyJsonType} from '@/modelEditor/property/PropertyJsonType.ts';
+import {jsonPrettyFormat} from '@/utils/json/jsonStringify.ts';
+import type {ErrorObject} from 'ajv';
+import {formatErrorMessage} from '@/utils/type/typeGuard.ts';
+import {validateEntityProperty} from '@/type/__generated/jsonSchema/items/EntityProperty.ts';
+import {validateMappedSuperClassProperty} from '@/type/__generated/jsonSchema/items/MappedSuperClassProperty.ts';
+import {validateEmbeddableTypeProperty} from '@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts';
 
 const props = defineProps<{
-    propertyWithSource: PropertyWithSource
-}>()
+    propertyWithSource: PropertyWithSource;
+}>();
 
 const emits = defineEmits<{
-    (name: 'submit', propertyWithProperty: PropertyWithSource): void
-    (name: 'cancel'): void
-}>()
+    (name: 'submit', propertyWithProperty: PropertyWithSource): void;
+    (name: 'cancel'): void;
+}>();
 
-const useDiff = ref(false)
+const useDiff = ref(false);
 
-const jsonType = usePropertyJsonType(() => props.propertyWithSource.property)
+const jsonType = usePropertyJsonType(() => props.propertyWithSource.property);
 
-const originValue = ref<string>("")
-const currentValue = ref<string>("")
-watch(() => props.propertyWithSource, () => {
-    const jsonStr = jsonPrettyFormat(props.propertyWithSource.property)
-    originValue.value = jsonStr
-    currentValue.value = jsonStr
-}, {immediate: true})
+const originValue = ref<string>('');
+const currentValue = ref<string>('');
+watch(
+    () => props.propertyWithSource,
+    () => {
+        const jsonStr = jsonPrettyFormat(props.propertyWithSource.property);
+        originValue.value = jsonStr;
+        currentValue.value = jsonStr;
+    },
+    {immediate: true},
+);
 
 // 表单验证错误
-const errors = ref<Record<string, string>>({})
+const errors = ref<Record<string, string>>({});
 
 // 验证表单
-const validateForm = (): {
-    valid: true,
-    propertyWithProperty: PropertyWithSource
-} | {
-    valid: false
-} => {
-    errors.value = {}
+const validateForm = ():
+    | {
+          valid: true;
+          propertyWithProperty: PropertyWithSource;
+      }
+    | {
+          valid: false;
+      } => {
+    errors.value = {};
 
     try {
-        const parsedProperty = JSON.parse(currentValue.value)
-        let validateError: ErrorObject[] | null | undefined
+        const parsedProperty = JSON.parse(currentValue.value);
+        let validateError: ErrorObject[] | null | undefined;
 
-        let parsedPropertyWithProperty: PropertyWithSource | undefined
+        let parsedPropertyWithProperty: PropertyWithSource | undefined;
 
-        if ("entityId" in props.propertyWithSource) {
-            if (!validateEntityProperty(parsedProperty, e => validateError = e)) {
-                errors.value.jsonData = translate('json_validate_error')
-                console.warn(formatErrorMessage(validateError))
+        if ('entityId' in props.propertyWithSource) {
+            if (!validateEntityProperty(parsedProperty, (e) => (validateError = e))) {
+                errors.value.jsonData = translate('json_validate_error');
+                console.warn(formatErrorMessage(validateError));
             } else {
                 parsedPropertyWithProperty = {
                     entityId: props.propertyWithSource.entityId,
-                    property: parsedProperty
-                }
+                    property: parsedProperty,
+                };
             }
-        } else if ("mappedSuperClassId" in props.propertyWithSource) {
-            if (!validateMappedSuperClassProperty(parsedProperty, e => validateError = e)) {
-                errors.value.jsonData = translate('json_validate_error')
-                console.warn(formatErrorMessage(validateError))
+        } else if ('mappedSuperClassId' in props.propertyWithSource) {
+            if (!validateMappedSuperClassProperty(parsedProperty, (e) => (validateError = e))) {
+                errors.value.jsonData = translate('json_validate_error');
+                console.warn(formatErrorMessage(validateError));
             } else {
                 parsedPropertyWithProperty = {
                     mappedSuperClassId: props.propertyWithSource.mappedSuperClassId,
-                    property: parsedProperty
-                }
+                    property: parsedProperty,
+                };
             }
-        } else if ("embeddableTypeId" in props.propertyWithSource) {
-            if (!validateEmbeddableTypeProperty(parsedProperty, e => validateError = e)) {
-                errors.value.jsonData = translate('json_validate_error')
-                console.warn(formatErrorMessage(validateError))
+        } else if ('embeddableTypeId' in props.propertyWithSource) {
+            if (!validateEmbeddableTypeProperty(parsedProperty, (e) => (validateError = e))) {
+                errors.value.jsonData = translate('json_validate_error');
+                console.warn(formatErrorMessage(validateError));
             } else {
                 parsedPropertyWithProperty = {
                     embeddableTypeId: props.propertyWithSource.embeddableTypeId,
-                    property: parsedProperty
-                }
+                    property: parsedProperty,
+                };
             }
         }
 
         if (parsedPropertyWithProperty === undefined) {
-            errors.value.jsonData = translate('json_validate_error')
-            console.error("unsupported property type")
+            errors.value.jsonData = translate('json_validate_error');
+            console.error('unsupported property type');
             return {
-                valid: false
-            }
+                valid: false,
+            };
         }
 
         return {
             valid: Object.keys(errors.value).length === 0,
-            propertyWithProperty: parsedPropertyWithProperty
-        }
+            propertyWithProperty: parsedPropertyWithProperty,
+        };
     } catch (e) {
-        errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
-        console.error(e)
+        errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`;
+        console.error(e);
 
         return {
-            valid: false
-        }
+            valid: false,
+        };
     }
-}
+};
 
 // 提交表单
 const handleSubmit = () => {
-    const validateResult = validateForm()
+    const validateResult = validateForm();
     if (validateResult.valid) {
-        emits('submit', validateResult.propertyWithProperty)
+        emits('submit', validateResult.propertyWithProperty);
     }
-}
+};
 
 // 监听模型变化并清除对应错误
-watch(() => [props.propertyWithSource, originValue.value, currentValue.value], () => {
-    errors.value = {}
-}, {deep: true})
+watch(
+    () => [props.propertyWithSource, originValue.value, currentValue.value],
+    () => {
+        errors.value = {};
+    },
+    {deep: true},
+);
 
 // 取消操作
 const handleCancel = () => {
-    emits('cancel')
-}
+    emits('cancel');
+};
 </script>
 
 <template>
-    <form @submit.prevent class="property-form">
+    <form
+        @submit.prevent
+        class="property-form"
+    >
         <div>
             Use Diff
-            <input type="checkbox" v-model="useDiff">
+            <input
+                type="checkbox"
+                v-model="useDiff"
+            />
         </div>
 
         <DiffJsonEditor
@@ -146,15 +162,26 @@ const handleCancel = () => {
             :json-type="jsonType"
             v-model="currentValue"
         />
-        <div v-if="errors.jsonData" class="error-message">{{ errors.jsonData }}</div>
+        <div
+            v-if="errors.jsonData"
+            class="error-message"
+        >
+            {{ errors.jsonData }}
+        </div>
 
         <div class="form-actions">
-            <button @click="handleCancel" class="cancel-button">
-                <IconClose/>
+            <button
+                @click="handleCancel"
+                class="cancel-button"
+            >
+                <IconClose />
                 {{ translate('cancel') }}
             </button>
-            <button @click="handleSubmit" class="submit-button">
-                <IconCheck/>
+            <button
+                @click="handleSubmit"
+                class="submit-button"
+            >
+                <IconCheck />
                 {{ translate('save') }}
             </button>
         </div>
@@ -180,7 +207,9 @@ textarea {
     font-size: 1rem;
 }
 
-input.error, select.error, textarea.error {
+input.error,
+select.error,
+textarea.error {
     border-color: var(--danger-color);
 }
 

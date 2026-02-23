@@ -1,22 +1,23 @@
 <script setup lang="ts" generic="T">
-import ObjectDiffView from "@/components/diff/ObjectDiffView.vue";
-import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
-import type {ArrayDiff} from "@potmot/diff/dist/type/DiffItem.d.ts";
+import ObjectDiffView from '@/components/diff/ObjectDiffView.vue';
+import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
+import type {ArrayDiff} from '@potmot/diff/dist/type/DiffItem.d.ts';
 
 defineProps<{
-    diff: ArrayDiff<T>,
-    showEquals?: boolean
-}>()
+    diff: ArrayDiff<T>;
+    showEquals?: boolean;
+}>();
 
-defineSlots<{
-
-}>()
+defineSlots<{}>();
 </script>
 
 <template>
     <div class="array-diff-view">
         <!-- 数组元素添加 -->
-        <div v-if="diff.added && diff.added.length > 0" class="diff-section">
+        <div
+            v-if="diff.added && diff.added.length > 0"
+            class="diff-section"
+        >
             <div
                 v-for="(item, index) in diff.added"
                 :key="'added-' + index"
@@ -29,12 +30,19 @@ defineSlots<{
         </div>
 
         <!-- 数组元素更新 -->
-        <div v-if="diff.updated && diff.updated.length > 0" class="diff-section">
+        <div
+            v-if="diff.updated && diff.updated.length > 0"
+            class="diff-section"
+        >
             <div
                 v-for="(item, index) in diff.updated"
                 :key="'updated-' + index"
             >
-                <CollapseDetail trigger-position="left" :disabled="item.diff === undefined" :model-value="true">
+                <CollapseDetail
+                    trigger-position="left"
+                    :disabled="item.diff === undefined"
+                    :model-value="true"
+                >
                     <template #head>
                         <div
                             v-if="item.diff === undefined"
@@ -56,7 +64,10 @@ defineSlots<{
                         </div>
                     </template>
 
-                    <template #body v-if="item.diff !== undefined">
+                    <template
+                        #body
+                        v-if="item.diff !== undefined"
+                    >
                         <div class="nested-diff">
                             <ObjectDiffView
                                 v-if="item.diff.type === 'object'"
@@ -66,9 +77,7 @@ defineSlots<{
                                 v-else-if="item.diff.type === 'array'"
                                 :diff="item.diff as ArrayDiff<any>"
                             />
-                            <div
-                                v-else-if="item.diff.type === 'circular reference'"
-                            >
+                            <div v-else-if="item.diff.type === 'circular reference'">
                                 [Circular]
                             </div>
                         </div>
@@ -78,7 +87,10 @@ defineSlots<{
         </div>
 
         <!-- 数组元素删除 -->
-        <div v-if="diff.deleted && diff.deleted.length > 0" class="diff-section">
+        <div
+            v-if="diff.deleted && diff.deleted.length > 0"
+            class="diff-section"
+        >
             <div
                 v-for="(item, index) in diff.deleted"
                 :key="'deleted-' + index"
@@ -91,7 +103,10 @@ defineSlots<{
         </div>
 
         <!-- 数组元素移动 -->
-        <div v-if="diff.moved && diff.moved.length > 0" class="diff-section">
+        <div
+            v-if="diff.moved && diff.moved.length > 0"
+            class="diff-section"
+        >
             <div
                 v-for="(item, index) in diff.moved"
                 :key="'moved-' + index"
@@ -103,7 +118,10 @@ defineSlots<{
         </div>
 
         <!-- 相同元素（仅用于参考，通常不需要显示） -->
-        <div v-if="diff.equals && diff.equals.length > 0 && showEquals" class="diff-section">
+        <div
+            v-if="diff.equals && diff.equals.length > 0 && showEquals"
+            class="diff-section"
+        >
             <div
                 v-for="(item, index) in diff.equals"
                 :key="'equals-' + index"

@@ -1,50 +1,55 @@
-import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
-import Ajv, {type ErrorObject} from "ajv";
+import type {JSONSchemaType} from 'ajv/lib/types/json-schema.ts';
+import Ajv, {type ErrorObject} from 'ajv';
 
 export const isSymbol = (arg: any): arg is symbol => {
     return typeof arg === 'symbol';
-}
+};
 
 export const isString = (arg: any): arg is string => {
     return typeof arg === 'string';
-}
+};
 
 export const isFunction = (arg: any): arg is Function => {
     return typeof arg === 'function';
-}
+};
 
 export const getKeys = <T extends object>(data: T): (keyof T)[] => {
-    return Object.keys(data) as (keyof T)[]
-}
+    return Object.keys(data) as (keyof T)[];
+};
 
-const ajv = new Ajv({ allErrors: true }); // 启用所有错误信息
+const ajv = new Ajv({allErrors: true}); // 启用所有错误信息
 
-export type SchemaValidatorErrorHandler = (errors: ErrorObject[] | null | undefined) => void
+export type SchemaValidatorErrorHandler = (errors: ErrorObject[] | null | undefined) => void;
 
-export const createSchemaValidator = <T>(schema: JSONSchemaType<T>, baseErrorHandler?: SchemaValidatorErrorHandler) => {
-    const validate = ajv.compile(schema)
+export const createSchemaValidator = <T>(
+    schema: JSONSchemaType<T>,
+    baseErrorHandler?: SchemaValidatorErrorHandler,
+) => {
+    const validate = ajv.compile(schema);
 
     return (data: unknown, errorHandler?: SchemaValidatorErrorHandler): data is T => {
-        const valid = validate(data)
+        const valid = validate(data);
 
         if (!valid) {
             if (errorHandler !== undefined) {
-                errorHandler(validate.errors)
+                errorHandler(validate.errors);
             } else if (baseErrorHandler !== undefined) {
-                baseErrorHandler(validate.errors)
+                baseErrorHandler(validate.errors);
             }
-            return false
+            return false;
         }
 
-        return true
-    }
-}
-
-export const formatErrorMessage = (error: ErrorObject | ErrorObject[] | null | undefined): string => {
-    if (error === null || error === undefined) return "Invalid data"
-    if (Array.isArray(error)) return error.map(formatErrorMessage).join("\n")
-    const { instancePath, message } = error
-    return `${instancePath}: ${message}`
+        return true;
+    };
 };
 
-export type SchemaValidator<T> = ReturnType<typeof createSchemaValidator<T>>
+export const formatErrorMessage = (
+    error: ErrorObject | ErrorObject[] | null | undefined,
+): string => {
+    if (error === null || error === undefined) return 'Invalid data';
+    if (Array.isArray(error)) return error.map(formatErrorMessage).join('\n');
+    const {instancePath, message} = error;
+    return `${instancePath}: ${message}`;
+};
+
+export type SchemaValidator<T> = ReturnType<typeof createSchemaValidator<T>>;

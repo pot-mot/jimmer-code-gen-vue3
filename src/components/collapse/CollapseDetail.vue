@@ -1,57 +1,63 @@
 <script setup lang="ts">
-import {onMounted, useTemplateRef, watch} from 'vue'
-import IconCaretDown from "@/components/icons/IconCaretDown.vue";
+import {onMounted, useTemplateRef, watch} from 'vue';
+import IconCaretDown from '@/components/icons/IconCaretDown.vue';
 
-const isOpen = defineModel<boolean>({required: false, default: false})
+const isOpen = defineModel<boolean>({required: false, default: false});
 
-const props = withDefaults(defineProps<{
-    openTrigger?: 'head' | 'caret' | undefined,
-    triggerPosition?: 'left' | 'right' | undefined,
-    transitionDuration?: number | undefined,
-    disabled?: boolean | undefined,
-}>(), {
-    openTrigger: 'caret',
-    triggerPosition: 'right',
-    transitionDuration: 300,
-    disabled: false
-})
+const props = withDefaults(
+    defineProps<{
+        openTrigger?: 'head' | 'caret' | undefined;
+        triggerPosition?: 'left' | 'right' | undefined;
+        transitionDuration?: number | undefined;
+        disabled?: boolean | undefined;
+    }>(),
+    {
+        openTrigger: 'caret',
+        triggerPosition: 'right',
+        transitionDuration: 300,
+        disabled: false,
+    },
+);
 
 const emits = defineEmits<{
-    (event: 'header-click', e: MouseEvent): void
-}>()
+    (event: 'header-click', e: MouseEvent): void;
+}>();
 
-const bodyRef = useTemplateRef("bodyRef")
+const bodyRef = useTemplateRef('bodyRef');
 
 onMounted(() => {
     if (bodyRef.value) {
-        bodyRef.value.style.transition = `max-height ${props.transitionDuration}ms ease-out`
-        bodyRef.value.style.overflow = 'hidden'
+        bodyRef.value.style.transition = `max-height ${props.transitionDuration}ms ease-out`;
+        bodyRef.value.style.overflow = 'hidden';
         if (isOpen.value) {
-            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
+            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`;
             window.setTimeout(() => {
-                if (bodyRef.value) bodyRef.value.style.maxHeight = ''
-            }, props.transitionDuration)
+                if (bodyRef.value) bodyRef.value.style.maxHeight = '';
+            }, props.transitionDuration);
         } else {
-            bodyRef.value.style.maxHeight = '0'
+            bodyRef.value.style.maxHeight = '0';
         }
     }
-})
+});
 
-watch(() => isOpen.value, () => {
-    if (bodyRef.value) {
-        if (isOpen.value) {
-            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
-            window.setTimeout(() => {
-                if (bodyRef.value) bodyRef.value.style.maxHeight = ''
-            }, props.transitionDuration)
-        } else {
-            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
-            window.setTimeout(() => {
-                if (bodyRef.value) bodyRef.value.style.maxHeight = '0'
-            })
+watch(
+    () => isOpen.value,
+    () => {
+        if (bodyRef.value) {
+            if (isOpen.value) {
+                bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`;
+                window.setTimeout(() => {
+                    if (bodyRef.value) bodyRef.value.style.maxHeight = '';
+                }, props.transitionDuration);
+            } else {
+                bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`;
+                window.setTimeout(() => {
+                    if (bodyRef.value) bodyRef.value.style.maxHeight = '0';
+                });
+            }
         }
-    }
-})
+    },
+);
 </script>
 
 <template>
@@ -59,46 +65,52 @@ watch(() => isOpen.value, () => {
         <div
             class="collapse-detail-head"
             :class="`caret-${triggerPosition} open-by-${openTrigger} ${disabled ? 'disabled' : ''}`"
-            @click="(e: MouseEvent) => {
-                if (!disabled && openTrigger === 'head') {
-                    e.stopPropagation()
-                    isOpen = !isOpen
-                } else {
-                    emits('header-click', e)
+            @click="
+                (e: MouseEvent) => {
+                    if (!disabled && openTrigger === 'head') {
+                        e.stopPropagation();
+                        isOpen = !isOpen;
+                    } else {
+                        emits('header-click', e);
+                    }
                 }
-            }"
+            "
         >
             <button
                 class="caret-wrapper"
                 v-if="triggerPosition === 'left'"
-                @click="(e: MouseEvent) => {
-                    if (openTrigger === 'caret') {
-                        e.stopPropagation()
-                        isOpen = !isOpen
+                @click="
+                    (e: MouseEvent) => {
+                        if (openTrigger === 'caret') {
+                            e.stopPropagation();
+                            isOpen = !isOpen;
+                        }
                     }
-                }"
+                "
             >
                 <IconCaretDown
                     class="caret left"
-                    :class="{ open: isOpen }"
+                    :class="{open: isOpen}"
                 />
             </button>
             <div>
-                <slot name="head"/>
+                <slot name="head" />
             </div>
             <button
                 class="caret-wrapper"
                 v-if="triggerPosition === 'right'"
-                @click="(e: MouseEvent) => {
-                    if (openTrigger === 'caret') {
-                        e.stopPropagation()
-                        isOpen = !isOpen
+                @click="
+                    (e: MouseEvent) => {
+                        if (openTrigger === 'caret') {
+                            e.stopPropagation();
+                            isOpen = !isOpen;
+                        }
                     }
-                }"
+                "
             >
                 <IconCaretDown
                     class="caret right"
-                    :class="{ open: isOpen }"
+                    :class="{open: isOpen}"
                 />
             </button>
         </div>
@@ -107,7 +119,7 @@ watch(() => isOpen.value, () => {
             class="collapse-detail-body"
             ref="bodyRef"
         >
-            <slot name="body"/>
+            <slot name="body" />
         </div>
     </div>
 </template>
@@ -157,7 +169,7 @@ watch(() => isOpen.value, () => {
 }
 
 .collapse-detail-head > .caret-wrapper > .caret {
-    transition: transform v-bind(transitionDuration+ 'ms') ease;
+    transition: transform v-bind(transitionDuration + 'ms') ease;
 }
 
 .collapse-detail-head > .caret-wrapper > .caret.left {

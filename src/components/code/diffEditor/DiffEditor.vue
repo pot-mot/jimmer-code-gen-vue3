@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {editor, type Uri} from 'monaco-editor'
-import {onMounted, onUnmounted, ref, shallowRef, watch} from "vue";
-import {type CodeEditorLanguage} from "@/components/code/worker/CodeEditorWorkers.ts";
-import {defaultOptions} from "@/components/code/defaultOptions.ts";
+import {editor, type Uri} from 'monaco-editor';
+import {onMounted, onUnmounted, ref, shallowRef, watch} from 'vue';
+import {type CodeEditorLanguage} from '@/components/code/worker/CodeEditorWorkers.ts';
+import {defaultOptions} from '@/components/code/defaultOptions.ts';
 type IDiffEditor = editor.IDiffEditor;
 type ITextModel = editor.ITextModel;
 type IStandaloneDiffEditorConstructionOptions = editor.IStandaloneDiffEditorConstructionOptions;
@@ -10,100 +10,123 @@ type IStandaloneDiffEditorConstructionOptions = editor.IStandaloneDiffEditorCons
 const originValue = defineModel<string>('originValue', {
     required: false,
     default: '',
-})
+});
 
 const modifiedValue = defineModel<string>('modifiedValue', {
     required: false,
     default: '',
-})
+});
 
-const props = withDefaults(defineProps<{
-    language?: CodeEditorLanguage | string,
-    originalEditable?: boolean,
-    options?: Omit<Partial<IStandaloneDiffEditorConstructionOptions>, 'language' | 'originalEditable'>,
-    originModelUri?: Uri,
-    modifiedModelUri?: Uri,
-}>(), {
-    originalEditable: true
-})
+const props = withDefaults(
+    defineProps<{
+        language?: CodeEditorLanguage | string;
+        originalEditable?: boolean;
+        options?: Omit<
+            Partial<IStandaloneDiffEditorConstructionOptions>,
+            'language' | 'originalEditable'
+        >;
+        originModelUri?: Uri;
+        modifiedModelUri?: Uri;
+    }>(),
+    {
+        originalEditable: true,
+    },
+);
 
-const editorContainer = ref<HTMLElement>()
+const editorContainer = ref<HTMLElement>();
 
 const options: IStandaloneDiffEditorConstructionOptions = {
     ...defaultOptions,
     ...props.options,
     originalEditable: props.originalEditable,
-}
+};
 
-const editorInstance = shallowRef<IDiffEditor>()
-const originModel = shallowRef<ITextModel>()
-const modifiedModel = shallowRef<ITextModel>()
+const editorInstance = shallowRef<IDiffEditor>();
+const originModel = shallowRef<ITextModel>();
+const modifiedModel = shallowRef<ITextModel>();
 
 onMounted(() => {
     if (!editorContainer.value) {
-        throw new Error('editorContainer is null')
+        throw new Error('editorContainer is null');
     }
 
-    editorInstance.value = editor.createDiffEditor(editorContainer.value, options)
+    editorInstance.value = editor.createDiffEditor(editorContainer.value, options);
 
     // 设置左右两侧的模型
-    const unwrapOriginModel = editor.createModel(originValue.value, props.language, props.originModelUri)
-    const unwrapModifiedModel = editor.createModel(modifiedValue.value, props.language, props.modifiedModelUri)
+    const unwrapOriginModel = editor.createModel(
+        originValue.value,
+        props.language,
+        props.originModelUri,
+    );
+    const unwrapModifiedModel = editor.createModel(
+        modifiedValue.value,
+        props.language,
+        props.modifiedModelUri,
+    );
 
     editorInstance.value.setModel({
         original: unwrapOriginModel,
-        modified: unwrapModifiedModel
-    })
+        modified: unwrapModifiedModel,
+    });
 
     unwrapOriginModel.onDidChangeContent(() => {
         if (editorInstance.value) {
-            originValue.value = unwrapOriginModel.getValue()
+            originValue.value = unwrapOriginModel.getValue();
         }
-    })
+    });
 
     unwrapModifiedModel.onDidChangeContent(() => {
         if (editorInstance.value) {
-            modifiedValue.value = unwrapModifiedModel.getValue()
+            modifiedValue.value = unwrapModifiedModel.getValue();
         }
-    })
+    });
 
-    originModel.value = unwrapOriginModel
-    modifiedModel.value = unwrapModifiedModel
-})
+    originModel.value = unwrapOriginModel;
+    modifiedModel.value = unwrapModifiedModel;
+});
 
-watch(() => originValue.value, (newValue) => {
-    if (originModel.value && originModel.value.getValue() !== newValue) {
-        originModel.value.setValue(newValue)
-    }
-})
+watch(
+    () => originValue.value,
+    (newValue) => {
+        if (originModel.value && originModel.value.getValue() !== newValue) {
+            originModel.value.setValue(newValue);
+        }
+    },
+);
 
-watch(() => modifiedValue.value, (newValue) => {
-    if (modifiedModel.value && modifiedModel.value.getValue() !== newValue) {
-        modifiedModel.value.setValue(newValue)
-    }
-})
+watch(
+    () => modifiedValue.value,
+    (newValue) => {
+        if (modifiedModel.value && modifiedModel.value.getValue() !== newValue) {
+            modifiedModel.value.setValue(newValue);
+        }
+    },
+);
 
 onUnmounted(() => {
     if (originModel.value) {
-        originModel.value.dispose()
+        originModel.value.dispose();
     }
     if (modifiedModel.value) {
-        modifiedModel.value.dispose()
+        modifiedModel.value.dispose();
     }
     if (editorInstance.value) {
         editorInstance.value.dispose();
     }
-})
+});
 
 defineExpose({
     editorInstance,
     originModel,
-    modifiedModel
-})
+    modifiedModel,
+});
 </script>
 
 <template>
-    <div ref="editorContainer" class="code-editor"/>
+    <div
+        ref="editorContainer"
+        class="code-editor"
+    />
 </template>
 
 <style scoped>

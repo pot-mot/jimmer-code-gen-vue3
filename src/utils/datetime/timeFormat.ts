@@ -1,10 +1,10 @@
 const handleDateTimeParse = (_date: string | Date | null | undefined): Date | undefined => {
     if (typeof _date === 'string') {
-        return new Date(_date)
+        return new Date(_date);
     } else if (_date) {
-        return _date
+        return _date;
     }
-}
+};
 
 /**
  * 格式化日期时间
@@ -12,9 +12,12 @@ const handleDateTimeParse = (_date: string | Date | null | undefined): Date | un
  * @param format 格式化模板字符串
  * @returns 格式化后的日期时间字符串
  */
-export const formatDateTime = (_date: string | Date | null | undefined, format: string = 'YYYY-MM-DD HH:mm:ss'): string => {
-    const date = handleDateTimeParse(_date)
-    if (!date) return ""
+export const formatDateTime = (
+    _date: string | Date | null | undefined,
+    format: string = 'YYYY-MM-DD HH:mm:ss',
+): string => {
+    const date = handleDateTimeParse(_date);
+    if (!date) return '';
 
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -32,23 +35,38 @@ export const formatDateTime = (_date: string | Date | null | undefined, format: 
         .replace('mm', minute)
         .replace('ss', second)
         .replace('SSS', millisecond);
-}
+};
 
-export const formatDate = (date: string | Date | undefined) => formatDateTime(date, "YYYY-MM-DD")
+export const formatDate = (date: string | Date | undefined) => formatDateTime(date, 'YYYY-MM-DD');
 
-export const formatTime = (date: string | Date | undefined) => formatDateTime(date, "HH:mm:ss")
+export const formatTime = (date: string | Date | undefined) => formatDateTime(date, 'HH:mm:ss');
 
-export const formatTableColumnDate = (_row: any, _column: any, date: string | Date | undefined, _index: number) => {
-    return formatDateTime(date, "YYYY-MM-DD")
-}
+export const formatTableColumnDate = (
+    _row: any,
+    _column: any,
+    date: string | Date | undefined,
+    _index: number,
+) => {
+    return formatDateTime(date, 'YYYY-MM-DD');
+};
 
-export const formatTableColumnTime = (_row: any, _column: any, date: string | Date | undefined, _index: number) => {
-    return formatDateTime(date, "HH:mm:ss")
-}
+export const formatTableColumnTime = (
+    _row: any,
+    _column: any,
+    date: string | Date | undefined,
+    _index: number,
+) => {
+    return formatDateTime(date, 'HH:mm:ss');
+};
 
-export const formatTableColumnDateTime = (_row: any, _column: any, date: string | Date | undefined, _index: number) => {
-    return formatDateTime(date, "YYYY-MM-DD HH:mm:ss")
-}
+export const formatTableColumnDateTime = (
+    _row: any,
+    _column: any,
+    date: string | Date | undefined,
+    _index: number,
+) => {
+    return formatDateTime(date, 'YYYY-MM-DD HH:mm:ss');
+};
 
 /**
  * 格式化时间差
@@ -56,8 +74,8 @@ export const formatTableColumnDateTime = (_row: any, _column: any, date: string 
  * @returns 格式化后的时间差字符串
  */
 export const formatDateTimeDiff = (_date: string | Date | undefined): string => {
-    const date = handleDateTimeParse(_date)
-    if (!date) return ""
+    const date = handleDateTimeParse(_date);
+    if (!date) return '';
 
     const currentDate = new Date();
     const diffMs = currentDate.getTime() - date.getTime();
@@ -81,4 +99,4 @@ export const formatDateTimeDiff = (_date: string | Date | undefined): string => 
     } else {
         return '刚刚';
     }
-}
+};

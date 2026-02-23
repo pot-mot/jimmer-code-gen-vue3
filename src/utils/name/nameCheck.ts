@@ -5,25 +5,29 @@
  */
 export const checkUpperCamelName = (name: string) => {
     // 检查基本有效性
-    if (!name || typeof name !== 'string') return false
+    if (!name || typeof name !== 'string') return false;
 
     // 必须以大写字母开头
-    const firstChar = name.charAt(0)
-    if (firstChar < 'A' || firstChar > 'Z') return false
+    const firstChar = name.charAt(0);
+    if (firstChar < 'A' || firstChar > 'Z') return false;
 
     // 检查字符是否合法（字母、数字、下划线）
     for (let i = 0; i < name.length; i++) {
-        const char = name.charAt(i)
-        if (!((char >= 'A' && char <= 'Z') ||
-            (char >= 'a' && char <= 'z') ||
-            (char >= '0' && char <= '9') ||
-            char === '_')) {
-            return false
+        const char = name.charAt(i);
+        if (
+            !(
+                (char >= 'A' && char <= 'Z') ||
+                (char >= 'a' && char <= 'z') ||
+                (char >= '0' && char <= '9') ||
+                char === '_'
+            )
+        ) {
+            return false;
         }
     }
 
-    return true
-}
+    return true;
+};
 
 /**
  * 检查字符串是否符合小驼峰命名法(LOWER_CAMEL)
@@ -32,25 +36,29 @@ export const checkUpperCamelName = (name: string) => {
  */
 export const checkLowerCamelName = (name: string) => {
     // 检查基本有效性
-    if (!name || typeof name !== 'string') return false
+    if (!name || typeof name !== 'string') return false;
 
     // 必须以小写字母开头
-    const firstChar = name.charAt(0)
-    if (firstChar < 'a' || firstChar > 'z') return false
+    const firstChar = name.charAt(0);
+    if (firstChar < 'a' || firstChar > 'z') return false;
 
     // 检查字符是否合法（字母、数字、下划线）
     for (let i = 0; i < name.length; i++) {
-        const char = name.charAt(i)
-        if (!((char >= 'A' && char <= 'Z') ||
-            (char >= 'a' && char <= 'z') ||
-            (char >= '0' && char <= '9') ||
-            char === '_')) {
-            return false
+        const char = name.charAt(i);
+        if (
+            !(
+                (char >= 'A' && char <= 'Z') ||
+                (char >= 'a' && char <= 'z') ||
+                (char >= '0' && char <= '9') ||
+                char === '_'
+            )
+        ) {
+            return false;
         }
     }
 
-    return true
-}
+    return true;
+};
 
 /**
  * 检查字符串是否不包含空白字符
@@ -59,16 +67,15 @@ export const checkLowerCamelName = (name: string) => {
  */
 export const checkNoBlank = (name: string) => {
     // 检查基本有效性
-    if (!name || typeof name !== 'string') return false
+    if (!name || typeof name !== 'string') return false;
 
     // 检查是否包含空白字符（空格、制表符、换行符等）
     for (let i = 0; i < name.length; i++) {
-        const char = name.charAt(i)
+        const char = name.charAt(i);
         if (char === ' ' || char === '\t' || char === '\n' || char === '\r') {
-            return false
+            return false;
         }
     }
 
-    return true
-}
-
+    return true;
+};

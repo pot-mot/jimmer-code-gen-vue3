@@ -17,67 +17,93 @@ type Property =
     | ManyToManyViewProperty
     | GetterFormulaProperty
     | SqlFormulaProperty
-    | TransientProperty
+    | TransientProperty;
 
 type EntityWithProperties = Entity & {
-    properties: EntityProperty[]
-}
+    properties: EntityProperty[];
+};
 
 type EntityCategorizedProperties = {
-    idProperty: IdCommonProperty | IdEmbeddableProperty
-    keyPropertyMap: Map<string, Property & KeyProperty>
-    logicalDeleteProperty?: Property & LogicalDeleteProperty
-    versionProperty?: VersionProperty
-    defaultOrderPropertyMap: Map<string, Property & { defaultOrderDirection?: OrderDirection }>
+    idProperty: IdCommonProperty | IdEmbeddableProperty;
+    keyPropertyMap: Map<string, Property & KeyProperty>;
+    logicalDeleteProperty?: Property & LogicalDeleteProperty;
+    versionProperty?: VersionProperty;
+    defaultOrderPropertyMap: Map<string, Property & {defaultOrderDirection?: OrderDirection}>;
 
-    scalarCommonPropertyMap: Map<string, ScalarCommonProperty>
-    scalarEnumPropertyMap: Map<string, ScalarEnumProperty>
-    scalarEmbeddablePropertyMap: Map<string, ScalarEmbeddableProperty>
+    scalarCommonPropertyMap: Map<string, ScalarCommonProperty>;
+    scalarEnumPropertyMap: Map<string, ScalarEnumProperty>;
+    scalarEmbeddablePropertyMap: Map<string, ScalarEmbeddableProperty>;
 
-    oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAssociationIdOnly}>
-    oneToOneMappedPropertyMap: Map<string, OneToOneMappedProperty & {association: OneToOneAssociationIdOnly}>
-    manyToOnePropertyMap: Map<string, ManyToOneProperty & {association: ManyToOneAssociationIdOnly}>
-    oneToManyPropertyMap: Map<string, OneToManyProperty & {association: ManyToOneAssociationIdOnly}>
-    manyToManySourcePropertyMap: Map<string, ManyToManySourceProperty & {association: ManyToManyAssociationIdOnly}>
-    manyToManyMappedPropertyMap: Map<string, ManyToManyMappedProperty & {association: ManyToManyAssociationIdOnly}>
+    oneToOneSourcePropertyMap: Map<
+        string,
+        OneToOneSourceProperty & {association: OneToOneAssociationIdOnly}
+    >;
+    oneToOneMappedPropertyMap: Map<
+        string,
+        OneToOneMappedProperty & {association: OneToOneAssociationIdOnly}
+    >;
+    manyToOnePropertyMap: Map<
+        string,
+        ManyToOneProperty & {association: ManyToOneAssociationIdOnly}
+    >;
+    oneToManyPropertyMap: Map<
+        string,
+        OneToManyProperty & {association: ManyToOneAssociationIdOnly}
+    >;
+    manyToManySourcePropertyMap: Map<
+        string,
+        ManyToManySourceProperty & {association: ManyToManyAssociationIdOnly}
+    >;
+    manyToManyMappedPropertyMap: Map<
+        string,
+        ManyToManyMappedProperty & {association: ManyToManyAssociationIdOnly}
+    >;
 
-    manyToManyViewPropertyMap: Map<string, ManyToManyViewProperty>
+    manyToManyViewPropertyMap: Map<string, ManyToManyViewProperty>;
 
-    getterFormulaPropertyMap: Map<string, GetterFormulaProperty>
-    sqlFormulaPropertyMap: Map<string, SqlFormulaProperty>
-    transientPropertyMap: Map<string, TransientProperty>
-}
+    getterFormulaPropertyMap: Map<string, GetterFormulaProperty>;
+    sqlFormulaPropertyMap: Map<string, SqlFormulaProperty>;
+    transientPropertyMap: Map<string, TransientProperty>;
+};
 
-type EntityWithCategorizedProperties = EntityWithProperties & EntityCategorizedProperties
+type EntityWithCategorizedProperties = EntityWithProperties & EntityCategorizedProperties;
 
 type MappedSuperClassWithProperties = MappedSuperClass & {
-    properties: MappedSuperClassProperty[]
-}
+    properties: MappedSuperClassProperty[];
+};
 
-type AbstractCategorizedProperties = Omit<EntityCategorizedProperties,
-    | "idProperty"
-    | "oneToOneSourcePropertyMap"
-    | "oneToOneMappedPropertyMap"
-    | "manyToOnePropertyMap"
-    | "oneToManyPropertyMap"
-    | "manyToManySourcePropertyMap"
-    | "manyToManyMappedPropertyMap"
+type AbstractCategorizedProperties = Omit<
+    EntityCategorizedProperties,
+    | 'idProperty'
+    | 'oneToOneSourcePropertyMap'
+    | 'oneToOneMappedPropertyMap'
+    | 'manyToOnePropertyMap'
+    | 'oneToManyPropertyMap'
+    | 'manyToManySourcePropertyMap'
+    | 'manyToManyMappedPropertyMap'
 > & {
-    idProperty?: IdCommonProperty | IdEmbeddableProperty
-    oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAbstractAssociationIdOnly}>
-    manyToOnePropertyMap: Map<string, ManyToOneProperty & {association: ManyToOneAbstractAssociationIdOnly}>
-}
+    idProperty?: IdCommonProperty | IdEmbeddableProperty;
+    oneToOneSourcePropertyMap: Map<
+        string,
+        OneToOneSourceProperty & {association: OneToOneAbstractAssociationIdOnly}
+    >;
+    manyToOnePropertyMap: Map<
+        string,
+        ManyToOneProperty & {association: ManyToOneAbstractAssociationIdOnly}
+    >;
+};
 
-type MappedSuperClassWithCategorizedProperties = MappedSuperClassWithProperties & AbstractCategorizedProperties
+type MappedSuperClassWithCategorizedProperties = MappedSuperClassWithProperties &
+    AbstractCategorizedProperties;
 
 type EmbeddableTypeWithProperties = EmbeddableType & {
-    properties: EmbeddableTypeProperty[]
-}
+    properties: EmbeddableTypeProperty[];
+};
 
-type CategorizedEmbeddableTypeProperties = Pick<EntityCategorizedProperties,
-    | "scalarCommonPropertyMap"
-    | "scalarEnumPropertyMap"
-    | "scalarEmbeddablePropertyMap"
->
+type CategorizedEmbeddableTypeProperties = Pick<
+    EntityCategorizedProperties,
+    'scalarCommonPropertyMap' | 'scalarEnumPropertyMap' | 'scalarEmbeddablePropertyMap'
+>;
 
-type EmbeddableTypeWithCategorizedProperties = EmbeddableTypeWithProperties & CategorizedEmbeddableTypeProperties
+type EmbeddableTypeWithCategorizedProperties = EmbeddableTypeWithProperties &
+    CategorizedEmbeddableTypeProperties;

@@ -1,4 +1,4 @@
-import {v7} from "uuid";
+import {v7} from 'uuid';
 
 export const testIds = {
     MODEL: v7(),
@@ -118,4 +118,4 @@ export const testIds = {
 
     // manyToManyView
     ENTITY_ManyToManyView: v7(),
-}
+};

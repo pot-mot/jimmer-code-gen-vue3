@@ -1,35 +1,37 @@
 <script setup lang="ts">
-import FilterableSelect from "@/components/select/FilterableSelect.vue";
-import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
-import {computed} from "vue";
+import FilterableSelect from '@/components/select/FilterableSelect.vue';
+import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
+import {computed} from 'vue';
 
-const {sqlTypes} = useTypeMapping()
+const {sqlTypes} = useTypeMapping();
 
 const id = defineModel<string | undefined>({
-    required: true
-})
+    required: true,
+});
 
 const props = defineProps<{
-    databaseSource?: DatabaseSource
-}>()
+    databaseSource?: DatabaseSource;
+}>();
 
 const selectedJvmType = computed({
     get() {
-        return sqlTypes.value.find(it => it.id === id.value)
+        return sqlTypes.value.find((it) => it.id === id.value);
     },
     set(value) {
         if (value === undefined) {
-            id.value = undefined
+            id.value = undefined;
         } else {
-            id.value = value.id
+            id.value = value.id;
         }
-    }
-})
+    },
+});
 
 const options = computed(() => {
-    if (props.databaseSource === undefined || props.databaseSource === 'ANY') return sqlTypes.value
-    return sqlTypes.value.filter(it => it.databaseSource === props.databaseSource || it.databaseSource === 'ANY')
-})
+    if (props.databaseSource === undefined || props.databaseSource === 'ANY') return sqlTypes.value;
+    return sqlTypes.value.filter(
+        (it) => it.databaseSource === props.databaseSource || it.databaseSource === 'ANY',
+    );
+});
 </script>
 
 <template>

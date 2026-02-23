@@ -1,116 +1,135 @@
 <script setup lang="ts">
-import {Handle, type NodeProps, Position} from "@vue-flow/core";
-import {type EntityNode, NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
-import EntityPropertyTypeEditor from "@/modelEditor/node/property/EntityPropertyTypeEditor.vue";
-import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorIsDark, getColorVar, useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue";
-import {defaultScalarProperty} from "@/modelEditor/default/modelDefaults.ts";
-import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from "vue";
-import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/EntityProperty.ts";
-import IconAim from "@/components/icons/IconAim.vue";
-import {NodeToolbar} from "@vue-flow/node-toolbar";
-import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
-import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
-import EntityPropertyCategoryEditor from "@/modelEditor/node/property/EntityPropertyCategoryEditor.vue";
-import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
+import {Handle, type NodeProps, Position} from '@vue-flow/core';
+import {type EntityNode, NOT_EXIST_ASSOCIATION_ID} from '@/modelEditor/node/EntityNode.ts';
+import EntityPropertyTypeEditor from '@/modelEditor/node/property/EntityPropertyTypeEditor.vue';
+import EditList from '@/components/list/selectableList/EditList.vue';
+import {
+    createId,
+    getColorIsDark,
+    getColorVar,
+    useModelEditor,
+} from '@/modelEditor/useModelEditor.ts';
+import ExtendsIdMultiSelect from '@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue';
+import {defaultScalarProperty} from '@/modelEditor/default/modelDefaults.ts';
+import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from 'vue';
+import NameCommentEditor from '@/modelEditor/nameComment/NameCommentEditor.vue';
+import {validateEntityProperty} from '@/type/__generated/jsonSchema/items/EntityProperty.ts';
+import IconAim from '@/components/icons/IconAim.vue';
+import {NodeToolbar} from '@vue-flow/node-toolbar';
+import IconDelete from '@/components/icons/IconDelete.vue';
+import {modelSubSelectEventBus} from '@/modelEditor/diagnostic/focusDiagnoseSource.ts';
+import DiagnoseViewer from '@/modelEditor/diagnostic/DiagnoseViewer.vue';
+import IconEntity from '@/components/icons/modelEditor/IconEntity.vue';
+import EntityPropertyCategoryEditor from '@/modelEditor/node/property/EntityPropertyCategoryEditor.vue';
+import {nodeSubElementId} from '@/modelEditor/node/nodeElementId.ts';
 
-const props = defineProps<NodeProps<EntityNode["data"]>>()
+const props = defineProps<NodeProps<EntityNode['data']>>();
 
 const groupColor = computed(() => {
-    return getColorVar(props.data.entity.groupId)
-})
+    return getColorVar(props.data.entity.groupId);
+});
 const groupTheme = computed(() => {
-    return getColorIsDark(props.data.entity.groupId) ? 'dark' : 'light'
-})
+    return getColorIsDark(props.data.entity.groupId) ? 'dark' : 'light';
+});
 
-const propertyEditListRef = useTemplateRef("propertyEditListRef")
+const propertyEditListRef = useTemplateRef('propertyEditListRef');
 const unselectAllProperty = () => {
-    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection()
-}
-const selectProperty = ({entityId, propertyId}: {entityId: string, propertyId: string}) => {
+    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection();
+};
+const selectProperty = ({entityId, propertyId}: {entityId: string; propertyId: string}) => {
     if (entityId === props.data.entity.id && propertyEditListRef.value) {
-        const index = props.data.entity.properties.findIndex(property => property.id === propertyId)
-        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index])
+        const index = props.data.entity.properties.findIndex(
+            (property) => property.id === propertyId,
+        );
+        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index]);
     }
-}
+};
 onMounted(() => {
-    modelSubSelectEventBus.on("unselectAll", unselectAllProperty)
-    modelSubSelectEventBus.on("selectEntityProperty", selectProperty)
-})
+    modelSubSelectEventBus.on('unselectAll', unselectAllProperty);
+    modelSubSelectEventBus.on('selectEntityProperty', selectProperty);
+});
 onBeforeUnmount(() => {
-    modelSubSelectEventBus.off("unselectAll", unselectAllProperty)
-    modelSubSelectEventBus.off("selectEntityProperty", selectProperty)
-})
+    modelSubSelectEventBus.off('unselectAll', unselectAllProperty);
+    modelSubSelectEventBus.off('selectEntityProperty', selectProperty);
+});
 
-const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor()
+const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor();
 
 const beforeCopy = (properties: EntityProperty[]) => {
     for (const property of properties) {
-        if ("associationId" in property) {
-            property.associationId = NOT_EXIST_ASSOCIATION_ID
+        if ('associationId' in property) {
+            property.associationId = NOT_EXIST_ASSOCIATION_ID;
         }
     }
-}
+};
 
 const beforePaste = (properties: EntityProperty[]) => {
     for (const property of properties) {
-        property.id = createId("Property")
-        if ("associationId" in property) {
-            property.associationId = createId("Association")
+        property.id = createId('Property');
+        if ('associationId' in property) {
+            property.associationId = createId('Association');
         }
     }
-}
+};
 
-const nodeElRef = useTemplateRef("nodeElRef")
-const handleIndexMap = ref(new Map<number, string>())
+const nodeElRef = useTemplateRef('nodeElRef');
+const handleIndexMap = ref(new Map<number, string>());
 const onHandleUpdate = (id: string, index: number) => {
-    handleIndexMap.value.set(index, id)
-}
+    handleIndexMap.value.set(index, id);
+};
 const forceResize = (element: HTMLElement) => {
-    const oldStyleWidth = element.style.width
-    const currentWidth = element.offsetWidth
-    element.style.width = currentWidth + 'px'
+    const oldStyleWidth = element.style.width;
+    const currentWidth = element.offsetWidth;
+    element.style.width = currentWidth + 'px';
     window.setTimeout(() => {
-        element.style.width = oldStyleWidth
-    })
-}
-watch(() => handleIndexMap.value, () => {
-    if (nodeElRef.value && nodeElRef.value.parentElement) {
-        const parent = nodeElRef.value.parentElement
-        forceResize(parent)
-    }
-}, {deep: true})
+        element.style.width = oldStyleWidth;
+    });
+};
+watch(
+    () => handleIndexMap.value,
+    () => {
+        if (nodeElRef.value && nodeElRef.value.parentElement) {
+            const parent = nodeElRef.value.parentElement;
+            forceResize(parent);
+        }
+    },
+    {deep: true},
+);
 </script>
 
 <template>
-    <div class="entity-node" ref="nodeElRef" :class="{selected}">
-        <Handle :id="data.entity.id" type="target" :position="Position.Bottom"/>
+    <div
+        class="entity-node"
+        ref="nodeElRef"
+        :class="{selected}"
+    >
+        <Handle
+            :id="data.entity.id"
+            type="target"
+            :position="Position.Bottom"
+        />
 
         <div class="entity-header">
             <div class="header-label">
-                <IconEntity
-                    class="header-label-icon"
-                />
+                <IconEntity class="header-label-icon" />
                 <NameCommentEditor
                     v-model="data.entity"
                     :class="groupTheme"
                 />
-                <span :class="groupTheme" style="color: var(--text-color);">:</span>
+                <span
+                    :class="groupTheme"
+                    style="color: var(--text-color)"
+                    >:</span
+                >
                 <ExtendsIdMultiSelect
-                    style="font-size: 16px; line-height: 32px;"
+                    style="font-size: 16px; line-height: 32px"
                     v-model="data.entity.extendsIds"
                     type="Concrete"
                     :id="data.entity.id"
                 />
             </div>
 
-            <DiagnoseViewer
-                :messages="modelDiagnoseInfo.entityMap.get(id)?.entity"
-            />
+            <DiagnoseViewer :messages="modelDiagnoseInfo.entityMap.get(id)?.entity" />
         </div>
 
         <EditList
@@ -126,7 +145,8 @@ watch(() => handleIndexMap.value, () => {
                 <div class="entity-property">
                     <Handle
                         :ref="() => onHandleUpdate(item.id, index)"
-                        :id="item.id" type="source"
+                        :id="item.id"
+                        type="source"
                         :position="Position.Left"
                     />
 
@@ -135,10 +155,8 @@ watch(() => handleIndexMap.value, () => {
                         v-if="data.entity.properties[index]"
                         :id="nodeSubElementId(data.entity.id, item.id)"
                     >
-                        <div style="display: flex; gap: 0.5rem;">
-                            <EntityPropertyCategoryEditor
-                                v-model="data.entity.properties[index]"
-                            />
+                        <div style="display: flex; gap: 0.5rem">
+                            <EntityPropertyCategoryEditor v-model="data.entity.properties[index]" />
                             <div>
                                 <div>
                                     <NameCommentEditor
@@ -171,12 +189,22 @@ watch(() => handleIndexMap.value, () => {
         </EditList>
 
         <NodeToolbar class="node-toolbar">
-            <button @click="focusNode(id); focus()">
-                <IconAim/>
+            <button
+                @click="
+                    focusNode(id);
+                    focus();
+                "
+            >
+                <IconAim />
             </button>
 
-            <button @click="remove({entityIds: [id]}); focus()">
-                <IconDelete/>
+            <button
+                @click="
+                    remove({entityIds: [id]});
+                    focus();
+                "
+            >
+                <IconDelete />
             </button>
         </NodeToolbar>
     </div>
@@ -261,4 +289,3 @@ watch(() => handleIndexMap.value, () => {
     overflow: visible;
 }
 </style>
-

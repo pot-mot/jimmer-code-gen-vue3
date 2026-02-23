@@ -1,55 +1,59 @@
 <script setup lang="ts">
 import {useTemplateRef, computed, onUnmounted, watch} from 'vue';
-import CodeEditor from "@/components/code/CodeEditor.vue";
-import {editor, Uri} from "monaco-editor";
-import {v7} from "uuid"
+import CodeEditor from '@/components/code/CodeEditor.vue';
+import {editor, Uri} from 'monaco-editor';
+import {v7} from 'uuid';
 import {
     addJsonSchemaFile,
     removeJsonSchemaFile,
-    validateJsonSchemaString
-} from "@/components/code/jsonEditor/JsonSchemaStore.ts";
-import type {JsonSchemaKey} from "@/type/__generated/jsonSchema";
+    validateJsonSchemaString,
+} from '@/components/code/jsonEditor/JsonSchemaStore.ts';
+import type {JsonSchemaKey} from '@/type/__generated/jsonSchema';
 type IStandaloneEditorConstructionOptions = editor.IStandaloneEditorConstructionOptions;
 
-const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")
+const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>('editorRef');
 const editorInstance = computed(() => {
-    return editorRef.value?.editorInstance
-})
+    return editorRef.value?.editorInstance;
+});
 
 const textValue = defineModel<string>({
     required: false,
-    default: ""
-})
+    default: '',
+});
 
 const props = defineProps<{
-    jsonType: JsonSchemaKey,
-    options?: Omit<Partial<IStandaloneEditorConstructionOptions>, 'language' | 'value' | 'model'>,
-}>()
+    jsonType: JsonSchemaKey;
+    options?: Omit<Partial<IStandaloneEditorConstructionOptions>, 'language' | 'value' | 'model'>;
+}>();
 
-const filePath = `${v7()}.json`
-const fileUri = Uri.parse(filePath)
+const filePath = `${v7()}.json`;
+const fileUri = Uri.parse(filePath);
 
-watch(() => props.jsonType, (value, oldValue) => {
-    if (oldValue) {
-        removeJsonSchemaFile(oldValue, filePath)
-    }
-    addJsonSchemaFile(value, filePath)
-}, {immediate: true})
+watch(
+    () => props.jsonType,
+    (value, oldValue) => {
+        if (oldValue) {
+            removeJsonSchemaFile(oldValue, filePath);
+        }
+        addJsonSchemaFile(value, filePath);
+    },
+    {immediate: true},
+);
 
-const model = editor.createModel(textValue.value, 'json', fileUri)
+const model = editor.createModel(textValue.value, 'json', fileUri);
 
 onUnmounted(() => {
-    removeJsonSchemaFile(props.jsonType, filePath)
-})
+    removeJsonSchemaFile(props.jsonType, filePath);
+});
 
 const validate = () => {
-    return validateJsonSchemaString(props.jsonType, textValue.value)
-}
+    return validateJsonSchemaString(props.jsonType, textValue.value);
+};
 
 defineExpose({
     editorInstance,
     validate,
-})
+});
 </script>
 
 <template>

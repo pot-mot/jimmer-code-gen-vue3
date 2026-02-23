@@ -1,31 +1,31 @@
-import type { VNode, DefineComponent } from 'vue'
+import type {VNode, DefineComponent} from 'vue';
 
-export type MessageContent = string | (() => VNode) | DefineComponent
+export type MessageContent = string | (() => VNode) | DefineComponent;
 
-export type MessageType = "primary" | "success" | "error" | "warning" | "info"
+export type MessageType = 'primary' | 'success' | 'error' | 'warning' | 'info';
 
 export type MessageItem = {
-    id: number,
+    id: number;
     // 消息内容
-    content: MessageContent,
+    content: MessageContent;
     // 消息类型
-    type: MessageType,
+    type: MessageType;
     // 移除计时器
-    timeout?: number | undefined,
+    timeout?: number | undefined;
     // 是否可关闭
-    canClose: boolean,
+    canClose: boolean;
     // 重复次数
-    repeatCount: number,
-}
+    repeatCount: number;
+};
 
 export type MessageOpenOptions = {
-    type: MessageType,
-    canClose: boolean,
-    grouping: boolean,
-}
+    type: MessageType;
+    canClose: boolean;
+    grouping: boolean;
+};
 
 export const messageOpenDefaultOptions: MessageOpenOptions = {
-    type: "info",
+    type: 'info',
     canClose: true,
     grouping: true,
-}
+};

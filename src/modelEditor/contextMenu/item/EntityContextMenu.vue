@@ -1,110 +1,115 @@
 <script setup lang="ts">
-import IconCopy from "@/components/icons/IconCopy.vue";
-import IconCut from "@/components/icons/IconCut.vue";
-import IconDelete from "@/components/icons/IconDelete.vue";
-import {translate} from "@/store/i18nStore.ts";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
-import {computed, watch} from "vue";
-import IconAim from "@/components/icons/IconAim.vue";
-import {overrideGroupProducer, useModelEditorPaste} from "@/modelEditor/contextMenu/item/useModelEditorPaste.ts";
-import IconPaste from "@/components/icons/IconPaste.vue";
+import IconCopy from '@/components/icons/IconCopy.vue';
+import IconCut from '@/components/icons/IconCut.vue';
+import IconDelete from '@/components/icons/IconDelete.vue';
+import {translate} from '@/store/i18nStore.ts';
+import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
+import {useModelContextMenu} from '@/modelEditor/contextMenu/useModelContextMenu.ts';
+import {computed, watch} from 'vue';
+import IconAim from '@/components/icons/IconAim.vue';
+import {
+    overrideGroupProducer,
+    useModelEditorPaste,
+} from '@/modelEditor/contextMenu/item/useModelEditorPaste.ts';
+import IconPaste from '@/components/icons/IconPaste.vue';
 
 const props = defineProps<{
-    id: string
-}>()
+    id: string;
+}>();
 
-const {
-    contextData,
-    getNode,
-    copy,
-    cut,
-    remove,
-    focusNode,
-} = useModelEditor()
+const {contextData, getNode, copy, cut, remove, focusNode} = useModelEditor();
 
-const {
-    close
-} = useModelContextMenu()
+const {close} = useModelContextMenu();
 
 const entity = computed(() => {
-    return contextData.entityMap.get(props.id)
-})
+    return contextData.entityMap.get(props.id);
+});
 
 const node = computed(() => {
-    return getNode(props.id)
-})
+    return getNode(props.id);
+});
 
-const entityAndNodeExisted = computed(() => entity.value && node.value)
+const entityAndNodeExisted = computed(() => entity.value && node.value);
 
-watch(() => entityAndNodeExisted.value, (value) => {
-    if (!value) {
-        close()
-    }
-}, {immediate: true})
+watch(
+    () => entityAndNodeExisted.value,
+    (value) => {
+        if (!value) {
+            close();
+        }
+    },
+    {immediate: true},
+);
 
 const {canPaste, handlePaste} = useModelEditorPaste(
-    overrideGroupProducer(() => entity.value?.groupId)
-)
+    overrideGroupProducer(() => entity.value?.groupId),
+);
 
 const handleFocus = () => {
-    focusNode(props.id)
-    close()
-}
+    focusNode(props.id);
+    close();
+};
 
 const handleCopyClick = async () => {
     if (entity.value && node.value) {
         await copy({
-            entities: [{
-                data: entity.value,
-                position: node.value.position
-            }]
-        })
-        close()
+            entities: [
+                {
+                    data: entity.value,
+                    position: node.value.position,
+                },
+            ],
+        });
+        close();
     }
-}
+};
 
 const handleCutClick = async () => {
     if (entity.value && node.value) {
         await cut({
-            entities: [{
-                data: entity.value,
-                position: node.value.position
-            }]
-        })
-        close()
+            entities: [
+                {
+                    data: entity.value,
+                    position: node.value.position,
+                },
+            ],
+        });
+        close();
     }
-}
+};
 
 const handleDeleteClick = () => {
-    remove({entityIds: [props.id]})
-    close()
-}
+    remove({entityIds: [props.id]});
+    close();
+};
 </script>
 
 <template>
     <ul class="context-menu-item-list">
-        <li @click="handlePaste" v-if="canPaste">
-            <IconPaste class="icon"/>
+        <li
+            @click="handlePaste"
+            v-if="canPaste"
+        >
+            <IconPaste class="icon" />
             <span class="label">{{ translate('paste') }}</span>
             <span class="shortcut">[Ctrl + V]</span>
         </li>
         <li @click="handleFocus">
-            <IconAim class="icon"/>
+            <IconAim class="icon" />
             <span class="label">{{ translate('focus') }}</span>
         </li>
         <li @click="handleCopyClick">
-            <IconCopy class="icon"/>
+            <IconCopy class="icon" />
             <span class="label">{{ translate('copy') }}</span>
             <span class="shortcut">[Ctrl + C]</span>
         </li>
         <li @click="handleCutClick">
-            <IconCut class="icon"/>
+            <IconCut class="icon" />
             <span class="label">{{ translate('cut') }}</span>
             <span class="shortcut">[Ctrl + X]</span>
         </li>
         <li @click="handleDeleteClick">
-            <IconDelete class="icon"/>
+            <IconDelete class="icon" />
             <span class="label">{{ translate('delete') }}</span>
             <span class="shortcut">[Delete]</span>
         </li>

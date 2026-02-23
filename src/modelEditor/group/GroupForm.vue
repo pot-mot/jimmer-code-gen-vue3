@@ -1,66 +1,80 @@
 <script setup lang="ts" generic="T extends Group">
-import ColorInput from "@/components/color/ColorInput.vue";
-import {translate} from "@/store/i18nStore.ts";
-import IconCheck from "@/components/icons/IconCheck.vue";
-import IconClose from "@/components/icons/IconClose.vue";
-import {ref, watch} from "vue";
-import {presetColor} from "@/modelEditor/default/modelDefaults.ts";
+import ColorInput from '@/components/color/ColorInput.vue';
+import {translate} from '@/store/i18nStore.ts';
+import IconCheck from '@/components/icons/IconCheck.vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import {ref, watch} from 'vue';
+import {presetColor} from '@/modelEditor/default/modelDefaults.ts';
 
 const group = defineModel<T>({
-    required: true
-})
+    required: true,
+});
 
 const emits = defineEmits<{
-    (name: 'submit', value: T): void
-    (name: 'cancel'): void
-}>()
+    (name: 'submit', value: T): void;
+    (name: 'cancel'): void;
+}>();
 
 // 表单验证错误
-const errors = ref<Record<string, string>>({})
+const errors = ref<Record<string, string>>({});
 
 // 验证表单
 const validateForm = (): boolean => {
-    errors.value = {}
+    errors.value = {};
 
     if (!group.value.name || group.value.name.trim() === '') {
-        errors.value.name = translate({key: 'not_blank_warning', args: [translate('name')]})
+        errors.value.name = translate({key: 'not_blank_warning', args: [translate('name')]});
     }
 
-    return Object.keys(errors.value).length === 0
-}
+    return Object.keys(errors.value).length === 0;
+};
 
 // 提交表单
 const handleSubmit = () => {
     if (validateForm()) {
-        emits('submit', group.value)
+        emits('submit', group.value);
     }
-}
+};
 
 // 监听模型变化并清除对应错误
-watch(() => group.value, () => {
-    errors.value = {}
-}, { deep: true })
+watch(
+    () => group.value,
+    () => {
+        errors.value = {};
+    },
+    {deep: true},
+);
 
 // 取消操作
 const handleCancel = () => {
-    emits('cancel')
-}
+    emits('cancel');
+};
 </script>
 
 <template>
-    <form @submit.prevent class="group-form">
-
+    <form
+        @submit.prevent
+        class="group-form"
+    >
         <div class="form-item">
-            <div style="display: flex; flex-wrap: nowrap; align-items: center; gap: 0.5rem;">
-                <ColorInput v-model="group.color" :preset-colors="presetColor"/>
+            <div style="display: flex; flex-wrap: nowrap; align-items: center; gap: 0.5rem">
+                <ColorInput
+                    v-model="group.color"
+                    :preset-colors="presetColor"
+                />
                 <input
                     v-model="group.name"
                     type="text"
-                    :class="{ 'error': errors.name }"
+                    :class="{error: errors.name}"
                     :placeholder="translate({key: 'input_placeholder', args: [translate('name')]})"
                 />
             </div>
-            <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
+            <div
+                v-if="errors.name"
+                class="error-message"
+            >
+                {{ errors.name }}
+            </div>
         </div>
 
         <div class="form-item">
@@ -75,7 +89,9 @@ const handleCancel = () => {
             <input
                 v-model="group.basePackagePath"
                 type="text"
-                :placeholder="translate({key: 'input_placeholder', args: [translate('basePackagePath')]})"
+                :placeholder="
+                    translate({key: 'input_placeholder', args: [translate('basePackagePath')]})
+                "
             />
         </div>
 
@@ -83,17 +99,25 @@ const handleCancel = () => {
             <input
                 v-model="group.baseTableSchema"
                 type="text"
-                :placeholder="translate({key: 'input_placeholder', args: [translate('baseTableSchema')]})"
+                :placeholder="
+                    translate({key: 'input_placeholder', args: [translate('baseTableSchema')]})
+                "
             />
         </div>
 
         <div class="form-actions">
-            <button @click="handleCancel" class="cancel-button">
-                <IconClose/>
+            <button
+                @click="handleCancel"
+                class="cancel-button"
+            >
+                <IconClose />
                 {{ translate('cancel') }}
             </button>
-            <button @click="handleSubmit" class="submit-button">
-                <IconCheck/>
+            <button
+                @click="handleSubmit"
+                class="submit-button"
+            >
+                <IconCheck />
                 {{ translate('save') }}
             </button>
         </div>
@@ -119,7 +143,9 @@ input {
     font-size: 0.9rem;
 }
 
-input.error, select.error, textarea.error {
+input.error,
+select.error,
+textarea.error {
     border-color: var(--danger-color);
 }
 

@@ -1,18 +1,23 @@
-import {testIds} from "@/modelEditor/__tests__/case/testIds.ts";
+import {testIds} from '@/modelEditor/__tests__/case/testIds.ts';
 import {
     FK_COMMENT_TEMPLATE,
     FK_NAME_TEMPLATE,
-    ID_VIEW_TEMPLATE, LIST_ID_VIEW_TEMPLATE,
-    MAPPED_PROPERTY_COMMENT_TEMPLATE, MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE, MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
-    MAPPED_PROPERTY_NAME_TEMPLATE, MID_TABLE_COMMENT_TEMPLATE, MID_TABLE_NAME_TEMPLATE
-} from "@/modelEditor/utils/AssociationTemplate.ts";
+    ID_VIEW_TEMPLATE,
+    LIST_ID_VIEW_TEMPLATE,
+    MAPPED_PROPERTY_COMMENT_TEMPLATE,
+    MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+    MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+    MAPPED_PROPERTY_NAME_TEMPLATE,
+    MID_TABLE_COMMENT_TEMPLATE,
+    MID_TABLE_NAME_TEMPLATE,
+} from '@/modelEditor/utils/AssociationTemplate.ts';
 
 export const ASSOCIATION_ManyToOne: ManyToOneAssociationIdOnly = {
     id: testIds.ASSOCIATION_ManyToOne,
-    name: "fk_many_to_one",
+    name: 'fk_many_to_one',
     nameTemplate: FK_NAME_TEMPLATE,
     useNameTemplate: false,
-    comment: "ManyToOne Association",
+    comment: 'ManyToOne Association',
     commentTemplate: FK_COMMENT_TEMPLATE,
     useCommentTemplate: false,
     type: 'ManyToOne',
@@ -24,86 +29,86 @@ export const ASSOCIATION_ManyToOne: ManyToOneAssociationIdOnly = {
         id: testIds.ASSOCIATION_ManyToOne,
         associationId: testIds.ASSOCIATION_ManyToOne,
         referencedEntityId: testIds.ENTITY_ManyToOne_source,
-        category: "OneToMany",
+        category: 'OneToMany',
         typeIsList: true,
         mappedById: testIds.PROPERTY_ManyToOne_source,
         nullable: false,
-        name: "sourceList",
+        name: 'sourceList',
         nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
         useNameTemplate: false,
-        comment: "Mapped",
+        comment: 'Mapped',
         commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
         useCommentTemplate: false,
-        idViewName: "sourceIds",
+        idViewName: 'sourceIds',
         idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
         useIdViewNameTemplate: false,
         extraImports: [],
         extraAnnotations: [],
     },
-    foreignKeyType: "REAL"
-}
+    foreignKeyType: 'REAL',
+};
 
 export const PROPERTY_ManyToOne_source: ManyToOneProperty = {
     id: testIds.PROPERTY_ManyToOne_source,
-    name: "target",
-    comment: "ManyToOne Source",
+    name: 'target',
+    comment: 'ManyToOne Source',
     extraImports: [],
     extraAnnotations: [],
-    category: "ManyToOne",
+    category: 'ManyToOne',
     typeIsList: false,
     joinInfo: {
-        type: "Unknown",
-        foreignKeyType: "REAL",
+        type: 'Unknown',
+        foreignKeyType: 'REAL',
     },
     autoGenerateJoinInfo: true,
-    onDissociateAction: "NONE",
+    onDissociateAction: 'NONE',
     associationId: testIds.ASSOCIATION_ManyToOne,
     referencedEntityId: testIds.ENTITY_target,
-    idViewName: "targetId",
+    idViewName: 'targetId',
     idViewNameTemplate: ID_VIEW_TEMPLATE,
     useIdViewNameTemplate: false,
-    nullable: true
-}
+    nullable: true,
+};
 
 export const ENTITY_ManyToOne_source: EntityWithProperties = {
     id: testIds.ENTITY_ManyToOne_source,
     groupId: testIds.GROUP_ASSOCIATION,
-    name: "ManyToOneSource",
-    comment: "ManyToOne Source",
-    tableName: "many_to_one_source",
+    name: 'ManyToOneSource',
+    comment: 'ManyToOne Source',
+    tableName: 'many_to_one_source',
     autoSyncTableName: false,
     extendsIds: [],
     extraAnnotations: [],
     extraImports: [],
-    subPackagePath: "",
+    subPackagePath: '',
     properties: [
         {
             id: testIds.ENTITY_ManyToOne_source,
-            name: "id",
-            comment: "id comment",
+            name: 'id',
+            comment: 'id comment',
             extraImports: [],
             extraAnnotations: [],
-            category: "ID_COMMON",
+            category: 'ID_COMMON',
             nullable: false,
-            rawType: "Int",
+            rawType: 'Int',
             columnInfo: {
-                name: "id",
-                comment: "id comment",
+                name: 'id',
+                comment: 'id comment',
                 nullable: false,
-                type: "int"
+                type: 'int',
             },
             autoSyncColumnName: false,
-            defaultOrderDirection: "ASC"
+            defaultOrderDirection: 'ASC',
         },
         PROPERTY_ManyToOne_source,
-    ]
-}
+    ],
+};
 
 export const ASSOCIATION_ManyToOne_midTable: ManyToOneAssociationIdOnly = {
     ...ASSOCIATION_ManyToOne,
     id: testIds.ASSOCIATION_ManyToOne_midTable,
-    name: "many_to_one_mapping",
-    comment: "ManyToOne MidTable",
+    name: 'many_to_one_mapping',
+    comment: 'ManyToOne MidTable',
     sourceEntityId: testIds.ENTITY_ManyToOne_source_midTable,
     sourcePropertyId: testIds.PROPERTY_ManyToOne_source_midTable,
     referencedEntityId: testIds.ENTITY_target,
@@ -111,33 +116,33 @@ export const ASSOCIATION_ManyToOne_midTable: ManyToOneAssociationIdOnly = {
         ...ASSOCIATION_ManyToOne.mappedProperty,
         id: testIds.PROPERTY_ManyToOne_source_midTable,
         associationId: testIds.ASSOCIATION_ManyToOne_midTable,
-    }
-}
+    },
+};
 
 export const PROPERTY_ManyToOne_source_midTable: ManyToOneProperty = {
     ...PROPERTY_ManyToOne_source,
     id: testIds.PROPERTY_ManyToOne_source_midTable,
     associationId: testIds.ASSOCIATION_ManyToOne_midTable,
     joinInfo: {
-        type: "MidTable",
+        type: 'MidTable',
         sourceJoinInfo: {
-            type: "Unknown",
-            foreignKeyType: "REAL",
+            type: 'Unknown',
+            foreignKeyType: 'REAL',
         },
         targetJoinInfo: {
-            type: "Unknown",
-            foreignKeyType: "REAL",
+            type: 'Unknown',
+            foreignKeyType: 'REAL',
         },
-        midTableExtraInfo: {}
+        midTableExtraInfo: {},
     },
     nullable: true,
-}
+};
 
 export const ENTITY_ManyToOne_source_midTable: EntityWithProperties = {
     ...ENTITY_ManyToOne_source,
     id: testIds.ENTITY_ManyToOne_source_midTable,
-    name: "ManyToOneSource_midTable",
-    tableName: "many_to_one_source__mid_table",
+    name: 'ManyToOneSource_midTable',
+    tableName: 'many_to_one_source__mid_table',
     autoSyncTableName: false,
     properties: [
         {
@@ -145,5 +150,5 @@ export const ENTITY_ManyToOne_source_midTable: EntityWithProperties = {
             id: testIds.ENTITY_ManyToOne_source_midTable,
         },
         PROPERTY_ManyToOne_source_midTable,
-    ]
-}
+    ],
+};

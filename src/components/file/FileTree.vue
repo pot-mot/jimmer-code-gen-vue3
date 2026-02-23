@@ -1,135 +1,140 @@
 <script setup lang="ts">
-import {reactive, ref, watch} from 'vue'
-import SelectableTree from "@/components/tree/SelectableTree.vue";
-import type {TreeNode} from "@/components/tree/TreeNode.ts";
+import {reactive, ref, watch} from 'vue';
+import SelectableTree from '@/components/tree/SelectableTree.vue';
+import type {TreeNode} from '@/components/tree/TreeNode.ts';
 
 const props = defineProps<{
-    paths: Iterable<string>,
-}>()
+    paths: Iterable<string>;
+}>();
 
 const currentPath = defineModel<string>('currentPath', {
-    required: false
-})
+    required: false,
+});
 const currentFilePath = defineModel<string>('currentFilePath', {
-    required: false
-})
+    required: false,
+});
 
 const emit = defineEmits<{
-    (event: "dir-click", path: string): void
-    (event: "file-click", path: string): void
-}>()
+    (event: 'dir-click', path: string): void;
+    (event: 'file-click', path: string): void;
+}>();
 
 type FileTreeNode = TreeNode<{
-    path: string,
-    name: string,
-}>
+    path: string;
+    name: string;
+}>;
 
-const treeData = ref<FileTreeNode[]>([])
+const treeData = ref<FileTreeNode[]>([]);
 const selectedPathSet = defineModel<Set<string>>('selectedPathSet', {
     required: false,
-    default: () => reactive(new Set<string>())
-})
+    default: () => reactive(new Set<string>()),
+});
 
 const buildTree = (paths: Iterable<string>): FileTreeNode[] => {
-    const trees: FileTreeNode[] = []
+    const trees: FileTreeNode[] = [];
 
     for (const path of paths) {
-        const pathParts = path.split('/').filter(it => it.length > 0)
+        const pathParts = path.split('/').filter((it) => it.length > 0);
 
-        let currentPath: string = ''
-        let currentLevel: FileTreeNode[] = trees
+        let currentPath: string = '';
+        let currentLevel: FileTreeNode[] = trees;
 
         for (let i = 0; i < pathParts.length; i++) {
-            const part = pathParts[i]
-            if (part === undefined) continue
+            const part = pathParts[i];
+            if (part === undefined) continue;
             if (i === pathParts.length - 1) {
-                currentPath = path
+                currentPath = path;
             } else {
-                currentPath += '/' + part
+                currentPath += '/' + part;
             }
 
             // 查找当前层级是否已经存在该部分
-            const findNode = currentLevel.find(item => item.data.name === part)
+            const findNode = currentLevel.find((item) => item.data.name === part);
 
             if (findNode === undefined) {
                 // 如果不存在，则创建一个新的节点
-                const currentChildren: FileTreeNode[] = []
+                const currentChildren: FileTreeNode[] = [];
                 const newNode: FileTreeNode = {
                     id: currentPath,
                     data: {name: part, path: currentPath},
-                    children: currentChildren
-                }
-                currentLevel.push(newNode)
-                currentLevel = currentChildren
+                    children: currentChildren,
+                };
+                currentLevel.push(newNode);
+                currentLevel = currentChildren;
             } else {
                 // 更新当前层级为新节点的子节点
                 if (findNode.children === undefined) {
-                    findNode.children = []
+                    findNode.children = [];
                 }
-                currentLevel = findNode.children
+                currentLevel = findNode.children;
             }
         }
     }
 
-    const sortedTree = sortFilePathTree(trees)
+    const sortedTree = sortFilePathTree(trees);
 
-    const firstFileNode = findFirstFileNode(sortedTree)
+    const firstFileNode = findFirstFileNode(sortedTree);
     if (firstFileNode) {
-        currentPath.value = firstFileNode.data.path
-        currentFilePath.value = firstFileNode.data.path
-        selectedPathSet.value = new Set([currentPath.value])
+        currentPath.value = firstFileNode.data.path;
+        currentFilePath.value = firstFileNode.data.path;
+        selectedPathSet.value = new Set([currentPath.value]);
     }
 
-    return sortedTree
-}
+    return sortedTree;
+};
 
 const sortFilePathTree = (files: Array<FileTreeNode>): Array<FileTreeNode> => {
-    const withChildren: Array<FileTreeNode> = []
-    const noChildren: Array<FileTreeNode> = []
+    const withChildren: Array<FileTreeNode> = [];
+    const noChildren: Array<FileTreeNode> = [];
     for (const file of files.sort((a, b) => a.data.name.localeCompare(b.data.name))) {
         if (file.children && file.children.length > 0) {
-            const sortedChildren = sortFilePathTree(file.children)
-            withChildren.push({...file, children: sortedChildren})
+            const sortedChildren = sortFilePathTree(file.children);
+            withChildren.push({...file, children: sortedChildren});
         } else {
-            noChildren.push(file)
+            noChildren.push(file);
         }
     }
-    return [...withChildren, ...noChildren]
-}
+    return [...withChildren, ...noChildren];
+};
 
 const findFirstFileNode = (nodes: FileTreeNode[]): FileTreeNode | undefined => {
-    for (const node of nodes) {        // 如果节点没有子节点，则为文件节点
+    for (const node of nodes) {
+        // 如果节点没有子节点，则为文件节点
         if (!node.children || node.children.length === 0) {
-            return node
+            return node;
         }
         // 否则递归查找子节点
-        const childResult = findFirstFileNode(node.children)
+        const childResult = findFirstFileNode(node.children);
         if (childResult) {
-            return childResult
+            return childResult;
         }
     }
-}
+};
 
 const handleFileClick = (node: FileTreeNode) => {
-    currentPath.value = node.data.path
+    currentPath.value = node.data.path;
     if (node.children === undefined || node.children.length === 0) {
-        currentFilePath.value = node.data.path
-        emit('file-click', node.data.path)
+        currentFilePath.value = node.data.path;
+        emit('file-click', node.data.path);
     } else {
-        emit('dir-click', node.data.path)
+        emit('dir-click', node.data.path);
     }
-}
+};
 
-watch(() => props.paths, async () => {
-    treeData.value = buildTree(props.paths)
-}, {immediate: true})
+watch(
+    () => props.paths,
+    async () => {
+        treeData.value = buildTree(props.paths);
+    },
+    {immediate: true},
+);
 </script>
 
 <template>
     <SelectableTree
         :data="treeData"
         v-model:selected-id-set="selectedPathSet"
-        @item-click="node => handleFileClick(node)"
+        @item-click="(node) => handleFileClick(node)"
     >
         <template #default="{data}">
             <div v-if="data.name">{{ data.name }}</div>

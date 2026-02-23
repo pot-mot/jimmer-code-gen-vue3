@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
+import type {DiagnoseMessage} from '@/modelEditor/diagnostic/ModelDiagnoseInfo.ts';
 
 defineProps<{
-    messages?: DeepReadonly<DiagnoseMessage[]>
-}>()
+    messages?: DeepReadonly<DiagnoseMessage[]>;
+}>();
 </script>
 
 <template>
-    <div tabindex="-1" class="diagnose-viewer" v-if="messages && messages.length > 0">
+    <div
+        tabindex="-1"
+        class="diagnose-viewer"
+        v-if="messages && messages.length > 0"
+    >
         <div v-for="message in messages">
             <span
                 class="diagnose-info no-drag"

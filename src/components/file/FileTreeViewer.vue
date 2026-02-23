@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import Splitpanes from "@/components/splitpanes/Splitpanes.vue";
-import Pane from "@/components/splitpanes/Pane.vue";
-import CodePreview from "@/components/code/CodePreview.vue";
-import FileTree from "@/components/file/FileTree.vue";
-import {computed, ref} from "vue";
+import Splitpanes from '@/components/splitpanes/Splitpanes.vue';
+import Pane from '@/components/splitpanes/Pane.vue';
+import CodePreview from '@/components/code/CodePreview.vue';
+import FileTree from '@/components/file/FileTree.vue';
+import {computed, ref} from 'vue';
 
 const props = defineProps<{
-    files: Record<string, string>
-}>()
+    files: Record<string, string>;
+}>();
 
-const paths = computed(() => Object.keys(props.files))
-const selectedPathSet = ref<Set<string>>(new Set())
+const paths = computed(() => Object.keys(props.files));
+const selectedPathSet = ref<Set<string>>(new Set());
 
-const currentFilePath = ref<string>()
+const currentFilePath = ref<string>();
 
 const currentFileContent = computed(() => {
     if (currentFilePath.value !== undefined) {
-        return props.files[currentFilePath.value]
+        return props.files[currentFilePath.value];
     }
-})
+});
 
 const currentLanguage = computed(() => {
-    const splitParts = currentFilePath.value?.split(".")
+    const splitParts = currentFilePath.value?.split('.');
     if (splitParts && splitParts.length > 0) {
-        return splitParts[splitParts.length - 1]
+        return splitParts[splitParts.length - 1];
     }
-})
+});
 </script>
 
 <template>
@@ -53,7 +53,7 @@ const currentLanguage = computed(() => {
                     v-if="currentFileContent !== undefined && currentLanguage !== undefined"
                     :code="currentFileContent"
                     :language="currentLanguage"
-                    style="padding-left: 0.5rem;"
+                    style="padding-left: 0.5rem"
                 />
             </div>
         </Pane>

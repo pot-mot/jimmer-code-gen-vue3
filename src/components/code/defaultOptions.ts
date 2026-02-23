@@ -1,4 +1,4 @@
-import {editor} from "monaco-editor";
+import {editor} from 'monaco-editor';
 type IStandaloneEditorConstructionOptions = editor.IStandaloneEditorConstructionOptions;
 
 export const defaultOptions: IStandaloneEditorConstructionOptions = {
@@ -13,4 +13,4 @@ export const defaultOptions: IStandaloneEditorConstructionOptions = {
     scrollBeyondLastLine: true, // 代码后面的空白
     overviewRulerBorder: false, // 不要滚动条的边框
     tabSize: 4,
-}
+};

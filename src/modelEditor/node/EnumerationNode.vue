@@ -1,82 +1,88 @@
 <script setup lang="ts">
-import {type NodeProps} from "@vue-flow/core";
-import type {EnumerationNode} from "@/modelEditor/node/EnumerationNode.ts";
-import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {defaultEnumerationItem} from "@/modelEditor/default/modelDefaults.ts";
-import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
-import {computed, onBeforeUnmount, onMounted, useTemplateRef} from "vue";
-import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import IconAim from "@/components/icons/IconAim.vue";
-import {NodeToolbar} from "@vue-flow/node-toolbar";
-import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
-import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
-import FilterableSelect from "@/components/select/FilterableSelect.vue";
-import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
+import {type NodeProps} from '@vue-flow/core';
+import type {EnumerationNode} from '@/modelEditor/node/EnumerationNode.ts';
+import EditList from '@/components/list/selectableList/EditList.vue';
+import {
+    createId,
+    getColorVar,
+    getColorIsDark,
+    useModelEditor,
+} from '@/modelEditor/useModelEditor.ts';
+import {defaultEnumerationItem} from '@/modelEditor/default/modelDefaults.ts';
+import {validateEnumerationItem} from '@/type/__generated/jsonSchema/items/EnumerationItem.ts';
+import {computed, onBeforeUnmount, onMounted, useTemplateRef} from 'vue';
+import NameCommentEditor from '@/modelEditor/nameComment/NameCommentEditor.vue';
+import IconAim from '@/components/icons/IconAim.vue';
+import {NodeToolbar} from '@vue-flow/node-toolbar';
+import IconDelete from '@/components/icons/IconDelete.vue';
+import {modelSubSelectEventBus} from '@/modelEditor/diagnostic/focusDiagnoseSource.ts';
+import DiagnoseViewer from '@/modelEditor/diagnostic/DiagnoseViewer.vue';
+import IconEnumeration from '@/components/icons/modelEditor/IconEnumeration.vue';
+import FilterableSelect from '@/components/select/FilterableSelect.vue';
+import {nodeSubElementId} from '@/modelEditor/node/nodeElementId.ts';
 
-const props = defineProps<NodeProps<EnumerationNode["data"]>>()
+const props = defineProps<NodeProps<EnumerationNode['data']>>();
 
 const groupColor = computed(() => {
-    return getColorVar(props.data.enumeration.groupId)
-})
+    return getColorVar(props.data.enumeration.groupId);
+});
 const groupTheme = computed(() => {
-    return getColorIsDark(props.data.enumeration.groupId) ? 'dark' : 'light'
-})
+    return getColorIsDark(props.data.enumeration.groupId) ? 'dark' : 'light';
+});
 
 const createEnumItem = () => {
-    const item = defaultEnumerationItem()
-    item.ordinal = props.data.enumeration.items.length + 1
-    while (props.data.enumeration.items.some(it => it.ordinal === item.ordinal)) {
-        item.ordinal++
+    const item = defaultEnumerationItem();
+    item.ordinal = props.data.enumeration.items.length + 1;
+    while (props.data.enumeration.items.some((it) => it.ordinal === item.ordinal)) {
+        item.ordinal++;
     }
-    return item
-}
+    return item;
+};
 
-const itemEditListRef = useTemplateRef("itemEditListRef")
+const itemEditListRef = useTemplateRef('itemEditListRef');
 const unselectAllItem = () => {
-    if (itemEditListRef.value) itemEditListRef.value.selection.cleanSelection()
-}
-const selectItem = ({enumerationId, itemId}: {enumerationId: string, itemId: string}) => {
+    if (itemEditListRef.value) itemEditListRef.value.selection.cleanSelection();
+};
+const selectItem = ({enumerationId, itemId}: {enumerationId: string; itemId: string}) => {
     if (enumerationId === props.data.enumeration.id && itemEditListRef.value) {
-        const index = props.data.enumeration.items.findIndex(item => item.id === itemId)
-        if (index !== -1) itemEditListRef.value.selection.resetSelection([index])
+        const index = props.data.enumeration.items.findIndex((item) => item.id === itemId);
+        if (index !== -1) itemEditListRef.value.selection.resetSelection([index]);
     }
-}
+};
 onMounted(() => {
-    modelSubSelectEventBus.on("unselectAll", unselectAllItem)
-    modelSubSelectEventBus.on("selectEnumerationItem", selectItem)
-})
+    modelSubSelectEventBus.on('unselectAll', unselectAllItem);
+    modelSubSelectEventBus.on('selectEnumerationItem', selectItem);
+});
 onBeforeUnmount(() => {
-    modelSubSelectEventBus.off("unselectAll", unselectAllItem)
-    modelSubSelectEventBus.off("selectEnumerationItem", selectItem)
-})
+    modelSubSelectEventBus.off('unselectAll', unselectAllItem);
+    modelSubSelectEventBus.off('selectEnumerationItem', selectItem);
+});
 
-const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor()
+const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor();
 
 const beforePaste = (items: EnumerationItem[]) => {
-    const ordinalSet = new Set<number>(props.data.enumeration.items.map(it => it.ordinal))
+    const ordinalSet = new Set<number>(props.data.enumeration.items.map((it) => it.ordinal));
     for (const item of items) {
-        item.id = createId("EnumerationItem")
+        item.id = createId('EnumerationItem');
         if (ordinalSet.has(item.ordinal)) {
-            item.ordinal = props.data.enumeration.items.length + 1
+            item.ordinal = props.data.enumeration.items.length + 1;
             while (ordinalSet.has(item.ordinal)) {
-                item.ordinal++
+                item.ordinal++;
             }
-            ordinalSet.add(item.ordinal)
+            ordinalSet.add(item.ordinal);
         }
     }
-}
+};
 </script>
 
 <template>
-    <div class="enumeration-node" :class="{selected}">
+    <div
+        class="enumeration-node"
+        :class="{selected}"
+    >
         <div class="enumeration-header">
             <div class="header-label">
-                <IconEnumeration
-                    class="header-label-icon"
-                />
+                <IconEnumeration class="header-label-icon" />
                 <NameCommentEditor
                     v-model="data.enumeration"
                     :class="groupTheme"
@@ -89,9 +95,7 @@ const beforePaste = (items: EnumerationItem[]) => {
                 />
             </div>
 
-            <DiagnoseViewer
-                :messages="modelDiagnoseInfo.enumerationMap.get(id)?.enumeration"
-            />
+            <DiagnoseViewer :messages="modelDiagnoseInfo.enumerationMap.get(id)?.enumeration" />
         </div>
 
         <EditList
@@ -115,9 +119,9 @@ const beforePaste = (items: EnumerationItem[]) => {
                         />
 
                         <input
-                            style="padding: 0.25rem; border-radius: 0.25rem; width: 3rem;"
+                            style="padding: 0.25rem; border-radius: 0.25rem; width: 3rem"
                             v-model.number="data.enumeration.items[index].ordinal"
-                        >
+                        />
                     </div>
                     <DiagnoseViewer
                         :messages="modelDiagnoseInfo.enumerationMap.get(id)?.items.get(item.id)"
@@ -127,12 +131,22 @@ const beforePaste = (items: EnumerationItem[]) => {
         </EditList>
 
         <NodeToolbar class="node-toolbar">
-            <button @click="focusNode(id); focus()">
-                <IconAim/>
+            <button
+                @click="
+                    focusNode(id);
+                    focus();
+                "
+            >
+                <IconAim />
             </button>
 
-            <button @click="remove({enumerationIds: [id]}); focus()">
-                <IconDelete/>
+            <button
+                @click="
+                    remove({enumerationIds: [id]});
+                    focus();
+                "
+            >
+                <IconDelete />
             </button>
         </NodeToolbar>
     </div>

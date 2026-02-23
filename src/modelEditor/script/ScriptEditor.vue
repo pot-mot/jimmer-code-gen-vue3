@@ -1,108 +1,119 @@
 <script setup lang="ts" generic="Name extends ScriptTypeName">
-import {type ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
-import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
-import TsScriptEditor from "@/components/code/scriptEditor/TsScriptEditor.vue";
-import {createTsScript, TsScriptExecutor} from "@/utils/tsExecutor/TsScriptExecutor.ts";
-import {computed, ref, watch} from "vue";
-import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
-import IconCheck from "@/components/icons/IconCheck.vue";
-import {translate} from "@/store/i18nStore.ts";
-import JvmLanguageOrAnySelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue";
-import DatabaseTypeOrAnySelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeOrAnySelect.vue";
-import {sendConfirm} from "@/components/confirm/confirmApi.ts";
-import IconClose from "@/components/icons/IconClose.vue";
+import {type ScriptInfo} from '@/modelEditor/script/ScriptsStore.ts';
+import type {ScriptTypeName} from '@/type/__generated/scriptTypeDeclare';
+import TsScriptEditor from '@/components/code/scriptEditor/TsScriptEditor.vue';
+import {createTsScript, TsScriptExecutor} from '@/utils/tsExecutor/TsScriptExecutor.ts';
+import {computed, ref, watch} from 'vue';
+import {jsonPrettyFormat} from '@/utils/json/jsonStringify.ts';
+import IconCheck from '@/components/icons/IconCheck.vue';
+import {translate} from '@/store/i18nStore.ts';
+import JvmLanguageOrAnySelect from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue';
+import DatabaseTypeOrAnySelect from '@/modelEditor/modelForm/databaseType/DatabaseTypeOrAnySelect.vue';
+import {sendConfirm} from '@/components/confirm/confirmApi.ts';
+import IconClose from '@/components/icons/IconClose.vue';
 
 const scriptInfo = defineModel<Omit<ScriptInfo<Name>, 'id'>>({
-    required: true
-})
+    required: true,
+});
 
 const emits = defineEmits<{
-    (e: 'submit', result: Omit<ScriptInfo<Name>, 'id'>): void
-    (e: 'cancel'): void
-}>()
+    (e: 'submit', result: Omit<ScriptInfo<Name>, 'id'>): void;
+    (e: 'cancel'): void;
+}>();
 
-const code = ref(scriptInfo.value.script.code)
-watch(() => scriptInfo.value.script.code, () => {
-    code.value = scriptInfo.value.script.code
-})
-const errorMessage = ref<string>()
+const code = ref(scriptInfo.value.script.code);
+watch(
+    () => scriptInfo.value.script.code,
+    () => {
+        code.value = scriptInfo.value.script.code;
+    },
+);
+const errorMessage = ref<string>();
 
-const executor = computed(() => new TsScriptExecutor(scriptInfo.value.type))
+const executor = computed(() => new TsScriptExecutor(scriptInfo.value.type));
 
 const receiveError = (error: any) => {
     if (typeof error === 'string') {
-        errorMessage.value = error
+        errorMessage.value = error;
     } else if (error instanceof Error) {
-        console.error(error)
-        errorMessage.value = error.message
+        console.error(error);
+        errorMessage.value = error.message;
     } else if (Array.isArray(error)) {
-        console.error(error)
-        errorMessage.value = error.join('\n')
+        console.error(error);
+        errorMessage.value = error.join('\n');
     } else if (typeof error === 'object') {
-        console.error(error)
-        errorMessage.value = jsonPrettyFormat(error)
+        console.error(error);
+        errorMessage.value = jsonPrettyFormat(error);
     } else {
-        errorMessage.value = String(error)
+        errorMessage.value = String(error);
     }
     sendConfirm({
-        title: translate("script_error"),
+        title: translate('script_error'),
         content: errorMessage.value,
-    })
-}
+    });
+};
 
 const handleCancel = () => {
-    emits('cancel')
-}
+    emits('cancel');
+};
 
 const handleSubmit = async () => {
     try {
-        const scriptResult = await createTsScript(scriptInfo.value.type, code.value, executor.value)
+        const scriptResult = await createTsScript(
+            scriptInfo.value.type,
+            code.value,
+            executor.value,
+        );
         if (scriptResult.valid) {
             emits('submit', {
                 ...scriptInfo.value,
-                script: scriptResult.script
-            })
+                script: scriptResult.script,
+            });
         } else {
-            receiveError(scriptResult.errorMessages)
+            receiveError(scriptResult.errorMessages);
         }
     } catch (e) {
-        receiveError(e)
+        receiveError(e);
     }
-}
+};
 
 const handleKeyDown = (e: KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey) {
         if (e.key === 's' || e.key === 'S') {
-            e.preventDefault()
-            handleSubmit()
+            e.preventDefault();
+            handleSubmit();
         }
     }
-}
+};
 </script>
 
 <template>
-    <div class="generate-script-editor" tabindex="-1" @keydown="handleKeyDown">
+    <div
+        class="generate-script-editor"
+        tabindex="-1"
+        @keydown="handleKeyDown"
+    >
         <div class="script-editor-header">
             <input
                 v-model="scriptInfo.name"
                 :placeholder="translate({key: 'input_placeholder', args: [translate('name')]})"
-                style="border-radius: 0.5rem; padding: 0 0.5rem; line-height: 1.75rem;"
-            >
-            <div style="display: flex; align-items: center; gap: 0.25rem;">
+                style="border-radius: 0.5rem; padding: 0 0.5rem; line-height: 1.75rem"
+            />
+            <div style="display: flex; align-items: center; gap: 0.25rem">
                 {{ scriptInfo.enabled ? translate('enabled') : translate('disabled') }}
                 <input
                     type="checkbox"
                     v-model="scriptInfo.enabled"
-                >
+                />
             </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem">
                 <JvmLanguageOrAnySelect
                     v-model="scriptInfo.jvmLanguage"
-                    style="width: 10rem;"
+                    style="width: 10rem"
                 />
                 <DatabaseTypeOrAnySelect
                     v-model="scriptInfo.databaseType"
-                    style="width: 12rem;"
+                    style="width: 12rem"
                 />
             </div>
         </div>
@@ -114,12 +125,18 @@ const handleKeyDown = (e: KeyboardEvent) => {
         />
 
         <div class="tail-toolbar">
-            <button @click="handleCancel" class="cancel-button">
-                <IconClose/>
+            <button
+                @click="handleCancel"
+                class="cancel-button"
+            >
+                <IconClose />
                 {{ translate('cancel') }}
             </button>
-            <button @click="handleSubmit" class="submit-button">
-                <IconCheck/>
+            <button
+                @click="handleSubmit"
+                class="submit-button"
+            >
+                <IconCheck />
                 {{ translate('save') }}
             </button>
         </div>

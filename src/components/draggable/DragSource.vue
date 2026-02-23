@@ -1,41 +1,41 @@
 <script setup lang="ts">
-import {inject} from 'vue'
-import {DragContainerKey} from "./DragContainerInjectKey";
+import {inject} from 'vue';
+import {DragContainerKey} from './DragContainerInjectKey';
 
 const props = defineProps<{
-    id: string
-}>()
+    id: string;
+}>();
 
-const dragContext = inject(DragContainerKey)!
+const dragContext = inject(DragContainerKey)!;
 
-let longPressTimer: number | null = null
+let longPressTimer: number | null = null;
 
 const handlePointerDown = (event: PointerEvent) => {
     if (longPressTimer) {
-        clearTimeout(longPressTimer)
+        clearTimeout(longPressTimer);
     }
 
     // 设置长按定时器（500ms）
     longPressTimer = window.setTimeout(() => {
-        dragContext.onDragStart(props.id, event)
-    }, dragContext.dragStartTimeout)
-}
+        dragContext.onDragStart(props.id, event);
+    }, dragContext.dragStartTimeout);
+};
 
 const handlePointerUp = () => {
     // 清除长按定时器
     if (longPressTimer) {
-        clearTimeout(longPressTimer)
-        longPressTimer = null
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
     }
-}
+};
 
 const handlePointerLeave = () => {
     // 清除长按定时器
     if (longPressTimer) {
-        clearTimeout(longPressTimer)
-        longPressTimer = null
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
     }
-}
+};
 </script>
 
 <template>
@@ -46,7 +46,7 @@ const handlePointerLeave = () => {
         @pointerup="handlePointerUp"
         @pointerleave="handlePointerLeave"
     >
-        <slot/>
+        <slot />
     </div>
 </template>
 

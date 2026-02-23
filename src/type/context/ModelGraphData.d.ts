@@ -1,34 +1,32 @@
 type ConcreteAssociationIdOnly =
     | OneToOneAssociationIdOnly
     | ManyToOneAssociationIdOnly
-    | ManyToManyAssociationIdOnly
+    | ManyToManyAssociationIdOnly;
 
 type AbstractAssociationIdOnly =
     | OneToOneAbstractAssociationIdOnly
     | ManyToOneAbstractAssociationIdOnly
-    | ManyToManyAbstractAssociationIdOnly
+    | ManyToManyAbstractAssociationIdOnly;
 
-type AssociationIdOnly =
-    | ConcreteAssociationIdOnly
-    | AbstractAssociationIdOnly
+type AssociationIdOnly = ConcreteAssociationIdOnly | AbstractAssociationIdOnly;
 
 type ModelGraphSubData = {
-    groups: Group[]
-    entities: {data: EntityWithProperties, position: Position}[]
-    mappedSuperClasses: {data: MappedSuperClassWithProperties, position: Position}[]
-    embeddableTypes: {data: EmbeddableTypeWithProperties, position: Position}[]
-    enumerations: {data: Enumeration, position: Position}[]
-    associations: {data: AssociationIdOnly, labelPosition: LabelPosition}[]
-}
+    groups: Group[];
+    entities: {data: EntityWithProperties; position: Position}[];
+    mappedSuperClasses: {data: MappedSuperClassWithProperties; position: Position}[];
+    embeddableTypes: {data: EmbeddableTypeWithProperties; position: Position}[];
+    enumerations: {data: Enumeration; position: Position}[];
+    associations: {data: AssociationIdOnly; labelPosition: LabelPosition}[];
+};
 
 type ModelGraphData = {
-    model: Model
-    viewport: ModelViewport
-    subData: ModelGraphSubData
-}
+    model: Model;
+    viewport: ModelViewport;
+    subData: ModelGraphSubData;
+};
 
 type PartialModelGraphData = {
-    model: Model
-    viewport: ModelViewport
-    subData: Partial<ModelGraphSubData>
-}
+    model: Model;
+    viewport: ModelViewport;
+    subData: Partial<ModelGraphSubData>;
+};

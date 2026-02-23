@@ -1,83 +1,89 @@
 export const entityToTable = (
     entities: DeepReadonly<EntityWithInheritInfo[]>,
     allEntities: DeepReadonly<EntityWithInheritInfo[]>,
-    context: DeepReadonly<ModelContext>
+    context: DeepReadonly<ModelContext>,
 ): {
-    tables: Table[],
-    midTables: Table[]
+    tables: Table[];
+    midTables: Table[];
 } => {
     const scalarPropertyToColumn = (
-        property: DeepReadonly<IdCommonProperty | ScalarCommonProperty | ScalarEnumProperty>
+        property: DeepReadonly<IdCommonProperty | ScalarCommonProperty | ScalarEnumProperty>,
     ): Column => {
         return {
             ...property.columnInfo,
-        }
-    }
+        };
+    };
 
     // TODO add enumeration checks
 
-    const flatEmbeddableTypeColumns = (
-        embeddableTypeId: string,
-    ): Column[] => {
-        const embeddableType = context.embeddableTypeMap.get(embeddableTypeId)
-        if (!embeddableType) throw new Error(`[${embeddableTypeId}] not found`)
+    const flatEmbeddableTypeColumns = (embeddableTypeId: string): Column[] => {
+        const embeddableType = context.embeddableTypeMap.get(embeddableTypeId);
+        if (!embeddableType) throw new Error(`[${embeddableTypeId}] not found`);
 
-        const columns: Column[] = []
+        const columns: Column[] = [];
 
         for (const property of embeddableType.overrideColumnNameProperties) {
-            if (property.category === "SCALAR_COMMON" || property.category === "SCALAR_ENUM") {
-                columns.push(scalarPropertyToColumn(property))
-            } else (
-                columns.push(...flatEmbeddableTypeColumns(property.embeddableTypeId))
-            )
+            if (property.category === 'SCALAR_COMMON' || property.category === 'SCALAR_ENUM') {
+                columns.push(scalarPropertyToColumn(property));
+            } else columns.push(...flatEmbeddableTypeColumns(property.embeddableTypeId));
         }
 
-        return columns
-    }
+        return columns;
+    };
 
     const getEntityIdColumns = (entityId: string): Column[] => {
-        const entity = context.entityMap.get(entityId)
-        if (!entity) throw new Error(`[${entityId}] not found`)
+        const entity = context.entityMap.get(entityId);
+        if (!entity) throw new Error(`[${entityId}] not found`);
 
         for (const property of entity.allProperties) {
-            if (property.category === "ID_COMMON") {
-                const idColumn = scalarPropertyToColumn(property)
-                idColumn.partOfPrimaryKey = true
-                if (property.generatedValue?.type === "IDENTITY") {
-                    idColumn.autoIncrement = true
+            if (property.category === 'ID_COMMON') {
+                const idColumn = scalarPropertyToColumn(property);
+                idColumn.partOfPrimaryKey = true;
+                if (property.generatedValue?.type === 'IDENTITY') {
+                    idColumn.autoIncrement = true;
                 }
-                return [idColumn]
-            } else if (property.category === "ID_EMBEDDABLE") {
-                const idColumns = flatEmbeddableTypeColumns(property.embeddableTypeId)
+                return [idColumn];
+            } else if (property.category === 'ID_EMBEDDABLE') {
+                const idColumns = flatEmbeddableTypeColumns(property.embeddableTypeId);
                 for (const idColumn of idColumns) {
-                    idColumn.partOfPrimaryKey = true
+                    idColumn.partOfPrimaryKey = true;
                 }
-                return idColumns
+                return idColumns;
             }
         }
 
-        throw new Error(`[${entity.name}] has no ID`)
-    }
+        throw new Error(`[${entity.name}] has no ID`);
+    };
 
     type JoinColumnInfo = {
-        columnRef: ColumnRef,
-        columnInfo: Omit<ColumnInfo, 'name' | 'nullable' | 'otherConstraints'>,
-    }
+        columnRef: ColumnRef;
+        columnInfo: Omit<ColumnInfo, 'name' | 'nullable' | 'otherConstraints'>;
+    };
 
     const bindJoinColumnInfo = (
         columnRefs: DeepReadonly<ColumnRef[]>,
         refColumns: DeepReadonly<Column[]>,
     ): JoinColumnInfo[] => {
         if (refColumns.length !== columnRefs.length) {
-            throw new Error(`columns [${refColumns.map(it => it.name).join(", ")}] length is not match [${columnRefs}]`)
+            throw new Error(
+                `columns [${refColumns.map((it) => it.name).join(', ')}] length is not match [${columnRefs}]`,
+            );
         }
 
-        const joinColumnInfos: JoinColumnInfo[] = []
+        const joinColumnInfos: JoinColumnInfo[] = [];
         for (const columnRef of columnRefs) {
-            const nameMatchedColumn = refColumns.find(column => column.name === columnRef.referencedColumnName)
-            if (nameMatchedColumn === undefined) throw new Error(`columnRef [${columnRef.referencedColumnName}] not found in columns [${refColumns.map(it => it.name).join(", ")}]`)
+            const nameMatchedColumn = refColumns.find(
+                (column) => column.name === columnRef.referencedColumnName,
+            );
+            if (nameMatchedColumn === undefined)
+                throw new Error(
+                    `columnRef [${columnRef.referencedColumnName}] not found in columns [${refColumns.map((it) => it.name).join(', ')}]`,
+                );
             joinColumnInfos.push({
-                columnRef: {columnName: columnRef.columnName, referencedColumnName: columnRef.referencedColumnName},
+                columnRef: {
+                    columnName: columnRef.columnName,
+                    referencedColumnName: columnRef.referencedColumnName,
+                },
                 columnInfo: {
                     comment: nameMatchedColumn.comment,
                     type: nameMatchedColumn.type,
@@ -85,22 +91,22 @@ export const entityToTable = (
                     numericPrecision: nameMatchedColumn.numericPrecision,
                     defaultValue: nameMatchedColumn.defaultValue,
                 },
-            })
+            });
         }
-        return joinColumnInfos
-    }
+        return joinColumnInfos;
+    };
 
     const buildMidTable = (
         options: DeepReadonly<{
-            midTable: {schema: string, name: string, comment: string},
-            sourceTable: {name: string, schema: string},
-            targetTable: {name: string, schema: string},
-            sourceJoinColumnInfos: JoinColumnInfo[],
-            sourceForeignKeyType: ForeignKeyType,
-            targetJoinColumnInfos: JoinColumnInfo[],
-            targetForeignKeyType: ForeignKeyType,
-            associationType: "OneToOne_Source" | "ManyToOne" | "ManyToMany_Source"
-        }>
+            midTable: {schema: string; name: string; comment: string};
+            sourceTable: {name: string; schema: string};
+            targetTable: {name: string; schema: string};
+            sourceJoinColumnInfos: JoinColumnInfo[];
+            sourceForeignKeyType: ForeignKeyType;
+            targetJoinColumnInfos: JoinColumnInfo[];
+            targetForeignKeyType: ForeignKeyType;
+            associationType: 'OneToOne_Source' | 'ManyToOne' | 'ManyToMany_Source';
+        }>,
     ): Table => {
         const {
             sourceTable,
@@ -109,8 +115,8 @@ export const entityToTable = (
             sourceForeignKeyType,
             targetJoinColumnInfos,
             targetForeignKeyType,
-            associationType
-        } = options
+            associationType,
+        } = options;
 
         const midTable: Table = {
             schema: options.midTable.schema,
@@ -120,81 +126,81 @@ export const entityToTable = (
             indexes: [],
             foreignKeys: [],
             checks: [],
-        }
+        };
         for (const {columnRef, columnInfo} of sourceJoinColumnInfos) {
             midTable.columns.push({
                 ...columnInfo,
                 name: columnRef.columnName,
-                comment: "",
+                comment: '',
                 nullable: false,
                 partOfPrimaryKey: true,
                 autoIncrement: false,
-            })
+            });
         }
         for (const {columnRef, columnInfo} of targetJoinColumnInfos) {
             midTable.columns.push({
                 ...columnInfo,
                 name: columnRef.columnName,
-                comment: "",
+                comment: '',
                 nullable: false,
                 partOfPrimaryKey: true,
                 autoIncrement: false,
-            })
+            });
         }
-        if (sourceForeignKeyType === "REAL") {
+        if (sourceForeignKeyType === 'REAL') {
             midTable.foreignKeys.push({
-                name: midTable.name + "_S",
-                comment: midTable.comment + " Source Foreign Key",
+                name: midTable.name + '_S',
+                comment: midTable.comment + ' Source Foreign Key',
                 referencedTableSchema: sourceTable.schema,
                 referencedTableName: sourceTable.name,
-                columnRefs: sourceJoinColumnInfos.map(it => it.columnRef),
-                onDelete: "",
-                onUpdate: "",
-            })
+                columnRefs: sourceJoinColumnInfos.map((it) => it.columnRef),
+                onDelete: '',
+                onUpdate: '',
+            });
         }
-        if (targetForeignKeyType === "REAL") {
+        if (targetForeignKeyType === 'REAL') {
             midTable.foreignKeys.push({
-                name: midTable.name + "_T",
-                comment: midTable.comment + " Target Foreign Key",
+                name: midTable.name + '_T',
+                comment: midTable.comment + ' Target Foreign Key',
                 referencedTableSchema: targetTable.schema,
                 referencedTableName: targetTable.name,
-                columnRefs: targetJoinColumnInfos.map(it => it.columnRef),
-                onDelete: "",
-                onUpdate: "",
-            })
+                columnRefs: targetJoinColumnInfos.map((it) => it.columnRef),
+                onDelete: '',
+                onUpdate: '',
+            });
         }
 
-        if (associationType === "OneToOne_Source") {
+        if (associationType === 'OneToOne_Source') {
             midTable.indexes.push({
-                name: midTable.name + "_S_U",
-                columnNames: sourceJoinColumnInfos.map(it => it.columnRef.columnName),
+                name: midTable.name + '_S_U',
+                columnNames: sourceJoinColumnInfos.map((it) => it.columnRef.columnName),
                 uniqueIndex: true,
-            })
+            });
             midTable.indexes.push({
-                name: midTable.name + "_T_U",
-                columnNames: targetJoinColumnInfos.map(it => it.columnRef.columnName),
+                name: midTable.name + '_T_U',
+                columnNames: targetJoinColumnInfos.map((it) => it.columnRef.columnName),
                 uniqueIndex: true,
-            })
-        } else if (associationType === "ManyToOne") {
+            });
+        } else if (associationType === 'ManyToOne') {
             midTable.indexes.push({
-                name: midTable.name + "_T_U",
-                columnNames:  targetJoinColumnInfos.map(it => it.columnRef.columnName),
+                name: midTable.name + '_T_U',
+                columnNames: targetJoinColumnInfos.map((it) => it.columnRef.columnName),
                 uniqueIndex: true,
-            })
+            });
         }
 
-        return midTable
-    }
+        return midTable;
+    };
 
-    const entityIdTableMap = new Map<string, Table>()
-    const entityIdTableIdColumnsMap = new Map<string, Column[]>()
+    const entityIdTableMap = new Map<string, Table>();
+    const entityIdTableIdColumnsMap = new Map<string, Column[]>();
 
-    const tables: Table[] = []
-    const midTables: Table[] = []
+    const tables: Table[] = [];
+    const midTables: Table[] = [];
 
     for (const entity of allEntities) {
-        const group = context.groupMap.get(entity.groupId)
-        if (!group) throw new Error(`[${entity.groupId}] not found`)
+        const group = context.groupMap.get(entity.groupId);
+        if (!group) throw new Error(`[${entity.groupId}] not found`);
 
         const table: Table = {
             schema: group.baseTableSchema,
@@ -204,114 +210,126 @@ export const entityToTable = (
             indexes: [],
             foreignKeys: [],
             checks: [],
-        }
-        const idColumns = getEntityIdColumns(entity.id)
-        table.columns.push(...idColumns)
-        entityIdTableMap.set(entity.id, table)
-        entityIdTableIdColumnsMap.set(entity.id, idColumns)
+        };
+        const idColumns = getEntityIdColumns(entity.id);
+        table.columns.push(...idColumns);
+        entityIdTableMap.set(entity.id, table);
+        entityIdTableIdColumnsMap.set(entity.id, idColumns);
     }
 
-    const lowerCase = context.model.databaseNameStrategy === "LOWER_SNAKE"
-    const INDEX_PREFIX = lowerCase ? "idx_" : "IDX_"
-    const DEFAULT_KEY_GROUP = lowerCase ? "_default_key" : "_DEFAULT_KEY"
-
+    const lowerCase = context.model.databaseNameStrategy === 'LOWER_SNAKE';
+    const INDEX_PREFIX = lowerCase ? 'idx_' : 'IDX_';
+    const DEFAULT_KEY_GROUP = lowerCase ? '_default_key' : '_DEFAULT_KEY';
 
     for (const entity of entities) {
-        const table = entityIdTableMap.get(entity.id)
-        if (!table) throw new Error(`[${entity.id}] not found`)
-        const idColumns = entityIdTableIdColumnsMap.get(entity.id)
-        if (!idColumns) throw new Error(`[${entity.id}] not found idColumns`)
+        const table = entityIdTableMap.get(entity.id);
+        if (!table) throw new Error(`[${entity.id}] not found`);
+        const idColumns = entityIdTableIdColumnsMap.get(entity.id);
+        if (!idColumns) throw new Error(`[${entity.id}] not found idColumns`);
 
-        tables.push(table)
+        tables.push(table);
 
-        const keyColumnNamesMap = new Map<string, string[]>()
+        const keyColumnNamesMap = new Map<string, string[]>();
         const putKeyProperty = (
-            property: DeepReadonly<{id: string, name: string} & KeyProperty & { inheritSource?: MappedSuperClass }>,
+            property: DeepReadonly<
+                {id: string; name: string} & KeyProperty & {inheritSource?: MappedSuperClass}
+            >,
             columnName: string,
         ) => {
-            let keyIndexPrefix = ""
-            if ("inheritSource" in property && property.inheritSource !== undefined) {
-                keyIndexPrefix = property.inheritSource.name + "_"
+            let keyIndexPrefix = '';
+            if ('inheritSource' in property && property.inheritSource !== undefined) {
+                keyIndexPrefix = property.inheritSource.name + '_';
             }
 
             if (property.keyGroups.length === 0) {
-                const keyGroup = keyIndexPrefix + DEFAULT_KEY_GROUP
+                const keyGroup = keyIndexPrefix + DEFAULT_KEY_GROUP;
 
-                const keyColumns = keyColumnNamesMap.get(keyGroup)
+                const keyColumns = keyColumnNamesMap.get(keyGroup);
                 if (keyColumns === undefined) {
-                    keyColumnNamesMap.set(keyGroup, [columnName])
+                    keyColumnNamesMap.set(keyGroup, [columnName]);
                 } else {
-                    keyColumns.push(columnName)
+                    keyColumns.push(columnName);
                 }
             } else {
                 for (let keyGroup of property.keyGroups) {
-                    if (keyGroup.length === 0) keyGroup = DEFAULT_KEY_GROUP
-                    keyGroup = keyIndexPrefix + keyGroup
+                    if (keyGroup.length === 0) keyGroup = DEFAULT_KEY_GROUP;
+                    keyGroup = keyIndexPrefix + keyGroup;
 
-                    const keyColumns = keyColumnNamesMap.get(keyGroup)
+                    const keyColumns = keyColumnNamesMap.get(keyGroup);
                     if (keyColumns === undefined) {
-                        keyColumnNamesMap.set(keyGroup, [columnName])
+                        keyColumnNamesMap.set(keyGroup, [columnName]);
                     } else {
-                        keyColumns.push(columnName)
+                        keyColumns.push(columnName);
                     }
                 }
             }
-        }
+        };
 
         for (const property of entity.allProperties) {
             // 标量属性
-            if (property.category === "SCALAR_COMMON" || property.category === "SCALAR_ENUM") {
-                const column = scalarPropertyToColumn(property)
-                table.columns.push(column)
-                if ("key" in property) {
-                    putKeyProperty(property, column.name)
+            if (property.category === 'SCALAR_COMMON' || property.category === 'SCALAR_ENUM') {
+                const column = scalarPropertyToColumn(property);
+                table.columns.push(column);
+                if ('key' in property) {
+                    putKeyProperty(property, column.name);
                 }
-            } else if (property.category === "SCALAR_EMBEDDABLE") {
-                table.columns.push(...flatEmbeddableTypeColumns(property.embeddableTypeId))
+            } else if (property.category === 'SCALAR_EMBEDDABLE') {
+                table.columns.push(...flatEmbeddableTypeColumns(property.embeddableTypeId));
             }
 
             // 关联属性
-            else if (property.category === "OneToOne_Source" || property.category === "ManyToOne" || property.category === "ManyToMany_Source") {
-                const association = context.associationMap.get(property.associationId)
-                if (!association) throw new Error(`[${property.associationId}] not found`)
-                if (association.type === "OneToOne_Abstract" || association.type === "ManyToOne_Abstract" || association.type === "ManyToMany_Abstract")
-                    throw new Error(`[${property.associationId}] cannot be abstract`)
+            else if (
+                property.category === 'OneToOne_Source' ||
+                property.category === 'ManyToOne' ||
+                property.category === 'ManyToMany_Source'
+            ) {
+                const association = context.associationMap.get(property.associationId);
+                if (!association) throw new Error(`[${property.associationId}] not found`);
+                if (
+                    association.type === 'OneToOne_Abstract' ||
+                    association.type === 'ManyToOne_Abstract' ||
+                    association.type === 'ManyToMany_Abstract'
+                )
+                    throw new Error(`[${property.associationId}] cannot be abstract`);
 
-                const refTable = entityIdTableMap.get(property.referencedEntityId)
-                if (!refTable) throw new Error(`[${property.referencedEntityId}] not found`)
-                const refColumns = entityIdTableIdColumnsMap.get(property.referencedEntityId)
-                if (!refColumns) throw new Error(`[${property.referencedEntityId}] not found idColumns`)
+                const refTable = entityIdTableMap.get(property.referencedEntityId);
+                if (!refTable) throw new Error(`[${property.referencedEntityId}] not found`);
+                const refColumns = entityIdTableIdColumnsMap.get(property.referencedEntityId);
+                if (!refColumns)
+                    throw new Error(`[${property.referencedEntityId}] not found idColumns`);
 
-                if (property.joinInfo.type === "SingleColumn") {
+                if (property.joinInfo.type === 'SingleColumn') {
                     if (refColumns.length !== 1 || !refColumns[0]) {
-                        throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
+                        throw new Error(
+                            `[${entity.name}.${property.name}] refColumns [${refColumns.map((it) => it.name).join(', ')}] length is not 1`,
+                        );
                     }
 
-                    if ("key" in property) {
-                        putKeyProperty(property, property.joinInfo.columnName)
+                    if ('key' in property) {
+                        putKeyProperty(property, property.joinInfo.columnName);
                     }
 
-                    if (property.category === "OneToOne_Source") {
+                    if (property.category === 'OneToOne_Source') {
                         table.indexes.push({
                             name: INDEX_PREFIX + association.name,
                             columnNames: [property.joinInfo.columnName],
                             uniqueIndex: true,
-                        })
+                        });
                     }
 
-                    if (property.joinInfo.foreignKeyType === "REAL") {
+                    if (property.joinInfo.foreignKeyType === 'REAL') {
                         const columnRef = {
                             columnName: property.joinInfo.columnName,
-                            referencedColumnName: refColumns[0].name
-                        }
-                        const joinColumnInfos = bindJoinColumnInfo([columnRef], refColumns)
+                            referencedColumnName: refColumns[0].name,
+                        };
+                        const joinColumnInfos = bindJoinColumnInfo([columnRef], refColumns);
                         for (const {columnRef, columnInfo} of joinColumnInfos) {
                             table.columns.push({
                                 ...columnInfo,
                                 name: columnRef.columnName,
                                 comment: property.comment + columnInfo.comment,
                                 nullable: property.nullable,
-                            })
+                            });
                         }
 
                         table.foreignKeys.push({
@@ -320,190 +338,242 @@ export const entityToTable = (
                             referencedTableSchema: refTable.schema,
                             referencedTableName: refTable.name,
                             columnRefs: [columnRef],
-                            onDelete: "",
-                            onUpdate: "",
-                        })
+                            onDelete: '',
+                            onUpdate: '',
+                        });
                     }
-                } else if (property.joinInfo.type === "MultiColumn") {
+                } else if (property.joinInfo.type === 'MultiColumn') {
                     if (refColumns.length !== property.joinInfo.columnRefs.length) {
-                        throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.columnRefs.length}`)
+                        throw new Error(
+                            `[${entity.name}.${property.name}] refColumns [${refColumns.map((it) => it.name).join(', ')}] length is not ${property.joinInfo.columnRefs.length}`,
+                        );
                     }
-                    const joinColumnInfos = bindJoinColumnInfo(property.joinInfo.columnRefs, refColumns)
+                    const joinColumnInfos = bindJoinColumnInfo(
+                        property.joinInfo.columnRefs,
+                        refColumns,
+                    );
                     for (const {columnRef, columnInfo} of joinColumnInfos) {
                         table.columns.push({
                             ...columnInfo,
                             name: columnRef.columnName,
                             comment: property.comment + columnInfo.comment,
                             nullable: property.nullable,
-                        })
+                        });
                     }
 
-                    if ("key" in property) {
+                    if ('key' in property) {
                         for (const columnRef of property.joinInfo.columnRefs) {
-                            putKeyProperty(property, columnRef.columnName)
+                            putKeyProperty(property, columnRef.columnName);
                         }
                     }
 
-                    if (property.category === "OneToOne_Source") {
+                    if (property.category === 'OneToOne_Source') {
                         table.indexes.push({
                             name: INDEX_PREFIX + association.name,
-                            columnNames: property.joinInfo.columnRefs.map(it => it.columnName),
+                            columnNames: property.joinInfo.columnRefs.map((it) => it.columnName),
                             uniqueIndex: true,
-                        })
+                        });
                     }
 
-                    if (property.joinInfo.foreignKeyType === "REAL") {
+                    if (property.joinInfo.foreignKeyType === 'REAL') {
                         table.foreignKeys.push({
                             name: association.name,
                             comment: association.comment,
                             referencedTableSchema: refTable.schema,
                             referencedTableName: refTable.name,
-                            columnRefs: joinColumnInfos.map(it => it.columnRef),
-                            onDelete: "",
-                            onUpdate: "",
-                        })
+                            columnRefs: joinColumnInfos.map((it) => it.columnRef),
+                            onDelete: '',
+                            onUpdate: '',
+                        });
                     }
-                } else if (property.joinInfo.type === "Unknown") {
-                    const referencedTable = entityIdTableMap.get(property.referencedEntityId)
-                    if (!referencedTable) throw new Error(`[${property.referencedEntityId}] not found`)
-                    const referencedTableIdColumns = entityIdTableIdColumnsMap.get(property.referencedEntityId)
-                    if (referencedTableIdColumns === undefined || referencedTableIdColumns.length === 0)
-                        throw new Error(`[${entity.name}.${property.name}] referencedTable [${referencedTable.name}] PK Columns is empty`)
+                } else if (property.joinInfo.type === 'Unknown') {
+                    const referencedTable = entityIdTableMap.get(property.referencedEntityId);
+                    if (!referencedTable)
+                        throw new Error(`[${property.referencedEntityId}] not found`);
+                    const referencedTableIdColumns = entityIdTableIdColumnsMap.get(
+                        property.referencedEntityId,
+                    );
+                    if (
+                        referencedTableIdColumns === undefined ||
+                        referencedTableIdColumns.length === 0
+                    )
+                        throw new Error(
+                            `[${entity.name}.${property.name}] referencedTable [${referencedTable.name}] PK Columns is empty`,
+                        );
                     if (referencedTableIdColumns.length > 1)
-                        throw new Error(`[${entity.name}.${property.name}] referencedTable [${referencedTable.name}] PK Columns is more than 1`)
+                        throw new Error(
+                            `[${entity.name}.${property.name}] referencedTable [${referencedTable.name}] PK Columns is more than 1`,
+                        );
 
-                    const columnRefs: ColumnRef[] = referencedTableIdColumns.map(col => ({
+                    const columnRefs: ColumnRef[] = referencedTableIdColumns.map((col) => ({
                         columnName: `${referencedTable.name}_id`,
-                        referencedColumnName: col.name
-                    }))
+                        referencedColumnName: col.name,
+                    }));
 
-                    if ("key" in property) {
+                    if ('key' in property) {
                         for (const columnRef of columnRefs) {
-                            putKeyProperty(property, columnRef.columnName)
+                            putKeyProperty(property, columnRef.columnName);
                         }
                     }
 
-                    const joinColumnInfos = bindJoinColumnInfo(columnRefs, referencedTableIdColumns)
+                    const joinColumnInfos = bindJoinColumnInfo(
+                        columnRefs,
+                        referencedTableIdColumns,
+                    );
 
-                    for (const { columnRef, columnInfo } of joinColumnInfos) {
+                    for (const {columnRef, columnInfo} of joinColumnInfos) {
                         table.columns.push({
                             ...columnInfo,
                             name: columnRef.columnName,
                             comment: property.comment + columnInfo.comment,
                             nullable: property.nullable,
-                        })
+                        });
                     }
 
-                    if (property.category === "OneToOne_Source") {
+                    if (property.category === 'OneToOne_Source') {
                         table.indexes.push({
                             name: INDEX_PREFIX + association.name,
-                            columnNames: columnRefs.map(it => it.columnName),
+                            columnNames: columnRefs.map((it) => it.columnName),
                             uniqueIndex: true,
-                        })
+                        });
                     }
 
-                    if (property.joinInfo.foreignKeyType === "REAL") {
+                    if (property.joinInfo.foreignKeyType === 'REAL') {
                         table.foreignKeys.push({
                             name: association.name,
                             comment: association.comment,
                             referencedTableSchema: refTable.schema,
                             referencedTableName: refTable.name,
-                            columnRefs: joinColumnInfos.map(it => it.columnRef),
-                            onDelete: "",
-                            onUpdate: "",
-                        })
+                            columnRefs: joinColumnInfos.map((it) => it.columnRef),
+                            onDelete: '',
+                            onUpdate: '',
+                        });
                     }
-                } else if (property.joinInfo.type === "MidTable") {
-                    if ("key" in property) {
-                        throw new Error(`[${entity.name}.${property.name}] cannot be key property`)
+                } else if (property.joinInfo.type === 'MidTable') {
+                    if ('key' in property) {
+                        throw new Error(`[${entity.name}.${property.name}] cannot be key property`);
                     }
 
-                    const sourceColumnRef: ColumnRef[] = []
-                    if (property.joinInfo.sourceJoinInfo.type === "SingleColumn") {
+                    const sourceColumnRef: ColumnRef[] = [];
+                    if (property.joinInfo.sourceJoinInfo.type === 'SingleColumn') {
                         if (idColumns.length !== 1 || !idColumns[0]) {
-                            throw new Error(`[${entity.name}.${property.name}] idColumns [${idColumns.map(it => it.name).join(", ")}] length is not 1`)
+                            throw new Error(
+                                `[${entity.name}.${property.name}] idColumns [${idColumns.map((it) => it.name).join(', ')}] length is not 1`,
+                            );
                         }
                         sourceColumnRef.push({
                             columnName: property.joinInfo.sourceJoinInfo.columnName,
-                            referencedColumnName: idColumns[0].name
-                        })
-                    } else if (property.joinInfo.sourceJoinInfo.type === "MultiColumn") {
-                        if (idColumns.length !== property.joinInfo.sourceJoinInfo.columnRefs.length) {
-                            throw new Error(`[${entity.name}.${property.name}] idColumns [${idColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.sourceJoinInfo.columnRefs.length}`)
+                            referencedColumnName: idColumns[0].name,
+                        });
+                    } else if (property.joinInfo.sourceJoinInfo.type === 'MultiColumn') {
+                        if (
+                            idColumns.length !== property.joinInfo.sourceJoinInfo.columnRefs.length
+                        ) {
+                            throw new Error(
+                                `[${entity.name}.${property.name}] idColumns [${idColumns.map((it) => it.name).join(', ')}] length is not ${property.joinInfo.sourceJoinInfo.columnRefs.length}`,
+                            );
                         }
-                        sourceColumnRef.push(...property.joinInfo.sourceJoinInfo.columnRefs)
-                    } else if (property.joinInfo.sourceJoinInfo.type === "Unknown") {
-                        const sourceTable = entityIdTableMap.get(entity.id)
-                        if (!sourceTable) throw new Error(`[${entity.name}.${property.name}] sourceTable [${entity.id}] not found`)
-                        const sourceTableIdColumns = entityIdTableIdColumnsMap.get(entity.id)
+                        sourceColumnRef.push(...property.joinInfo.sourceJoinInfo.columnRefs);
+                    } else if (property.joinInfo.sourceJoinInfo.type === 'Unknown') {
+                        const sourceTable = entityIdTableMap.get(entity.id);
+                        if (!sourceTable)
+                            throw new Error(
+                                `[${entity.name}.${property.name}] sourceTable [${entity.id}] not found`,
+                            );
+                        const sourceTableIdColumns = entityIdTableIdColumnsMap.get(entity.id);
                         if (sourceTableIdColumns === undefined || sourceTableIdColumns.length === 0)
-                            throw new Error(`[${entity.name}.${property.name}] sourceTable [${sourceTable.name}] PK Columns is empty`)
+                            throw new Error(
+                                `[${entity.name}.${property.name}] sourceTable [${sourceTable.name}] PK Columns is empty`,
+                            );
                         if (sourceTableIdColumns.length > 1)
-                            throw new Error(`[${entity.name}.${property.name}] sourceTable [${sourceTable.name}] PK Columns is more than 1`)
+                            throw new Error(
+                                `[${entity.name}.${property.name}] sourceTable [${sourceTable.name}] PK Columns is more than 1`,
+                            );
 
-                        const columnRefs: ColumnRef[] = sourceTableIdColumns.map(col => ({
+                        const columnRefs: ColumnRef[] = sourceTableIdColumns.map((col) => ({
                             columnName: `${sourceTable.name}_id`,
-                            referencedColumnName: col.name
-                        }))
-                        sourceColumnRef.push(...columnRefs)
+                            referencedColumnName: col.name,
+                        }));
+                        sourceColumnRef.push(...columnRefs);
                     }
 
-                    const targetColumnRef: ColumnRef[] = []
-                    if (property.joinInfo.targetJoinInfo.type === "SingleColumn") {
+                    const targetColumnRef: ColumnRef[] = [];
+                    if (property.joinInfo.targetJoinInfo.type === 'SingleColumn') {
                         if (refColumns.length !== 1 || !refColumns[0]) {
-                            throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
+                            throw new Error(
+                                `[${entity.name}.${property.name}] refColumns [${refColumns.map((it) => it.name).join(', ')}] length is not 1`,
+                            );
                         }
                         targetColumnRef.push({
                             columnName: property.joinInfo.targetJoinInfo.columnName,
-                            referencedColumnName: refColumns[0].name
-                        })
-                    } else if (property.joinInfo.targetJoinInfo.type === "MultiColumn") {
-                        if (refColumns.length !== property.joinInfo.targetJoinInfo.columnRefs.length) {
-                            throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.targetJoinInfo.columnRefs.length}`)
+                            referencedColumnName: refColumns[0].name,
+                        });
+                    } else if (property.joinInfo.targetJoinInfo.type === 'MultiColumn') {
+                        if (
+                            refColumns.length !== property.joinInfo.targetJoinInfo.columnRefs.length
+                        ) {
+                            throw new Error(
+                                `[${entity.name}.${property.name}] refColumns [${refColumns.map((it) => it.name).join(', ')}] length is not ${property.joinInfo.targetJoinInfo.columnRefs.length}`,
+                            );
                         }
-                        targetColumnRef.push(...property.joinInfo.targetJoinInfo.columnRefs)
-                    } else if (property.joinInfo.targetJoinInfo.type === "Unknown") {
-                        const refTable = entityIdTableMap.get(property.referencedEntityId)
-                        if (!refTable) throw new Error(`[${entity.name}.${property.name}] refTable [${property.referencedEntityId}] not found`)
-                        const refTableIdColumns = entityIdTableIdColumnsMap.get(property.referencedEntityId)
+                        targetColumnRef.push(...property.joinInfo.targetJoinInfo.columnRefs);
+                    } else if (property.joinInfo.targetJoinInfo.type === 'Unknown') {
+                        const refTable = entityIdTableMap.get(property.referencedEntityId);
+                        if (!refTable)
+                            throw new Error(
+                                `[${entity.name}.${property.name}] refTable [${property.referencedEntityId}] not found`,
+                            );
+                        const refTableIdColumns = entityIdTableIdColumnsMap.get(
+                            property.referencedEntityId,
+                        );
                         if (refTableIdColumns === undefined || refTableIdColumns.length === 0)
-                            throw new Error(`[${entity.name}.${property.name}] referencedTable [${refTable.name}] PK Columns is empty`)
+                            throw new Error(
+                                `[${entity.name}.${property.name}] referencedTable [${refTable.name}] PK Columns is empty`,
+                            );
                         if (refTableIdColumns.length > 1)
-                            throw new Error(`[${entity.name}.${property.name}] referencedTable [${refTable.name}] PK Columns is more than 1`)
+                            throw new Error(
+                                `[${entity.name}.${property.name}] referencedTable [${refTable.name}] PK Columns is more than 1`,
+                            );
 
-                        const columnRefs: ColumnRef[] = refTableIdColumns.map(col => ({
+                        const columnRefs: ColumnRef[] = refTableIdColumns.map((col) => ({
                             columnName: `${refTable.name}_id`,
-                            referencedColumnName: col.name
-                        }))
-                        targetColumnRef.push(...columnRefs)
+                            referencedColumnName: col.name,
+                        }));
+                        targetColumnRef.push(...columnRefs);
                     }
 
-                    midTables.push(buildMidTable({
-                        midTable: {name: association.name, comment: association.comment, schema: table.schema},
-                        sourceTable: {name: table.name, schema: table.schema},
-                        targetTable: {name: refTable.name, schema: refTable.schema},
-                        sourceJoinColumnInfos: bindJoinColumnInfo(sourceColumnRef, idColumns),
-                        sourceForeignKeyType: property.joinInfo.sourceJoinInfo.foreignKeyType,
-                        targetJoinColumnInfos: bindJoinColumnInfo(targetColumnRef, refColumns),
-                        targetForeignKeyType: property.joinInfo.targetJoinInfo.foreignKeyType,
-                        associationType: property.category,
-                    }))
+                    midTables.push(
+                        buildMidTable({
+                            midTable: {
+                                name: association.name,
+                                comment: association.comment,
+                                schema: table.schema,
+                            },
+                            sourceTable: {name: table.name, schema: table.schema},
+                            targetTable: {name: refTable.name, schema: refTable.schema},
+                            sourceJoinColumnInfos: bindJoinColumnInfo(sourceColumnRef, idColumns),
+                            sourceForeignKeyType: property.joinInfo.sourceJoinInfo.foreignKeyType,
+                            targetJoinColumnInfos: bindJoinColumnInfo(targetColumnRef, refColumns),
+                            targetForeignKeyType: property.joinInfo.targetJoinInfo.foreignKeyType,
+                            associationType: property.category,
+                        }),
+                    );
                 }
             }
         }
 
         for (const [key, columnNames] of keyColumnNamesMap.entries()) {
-            const idxName = INDEX_PREFIX + table.name + key
+            const idxName = INDEX_PREFIX + table.name + key;
             table.indexes.push({
                 name: idxName,
                 columnNames,
-                uniqueIndex: true
-            })
+                uniqueIndex: true,
+            });
         }
     }
 
     return {
         tables,
         midTables,
-    }
-}
+    };
+};

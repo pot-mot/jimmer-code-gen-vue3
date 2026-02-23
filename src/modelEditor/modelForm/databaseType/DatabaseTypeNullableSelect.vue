@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import FilterableSelect from "@/components/select/FilterableSelect.vue";
-import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
-import IconClose from "@/components/icons/IconClose.vue";
-import {ref} from "vue";
-import {translate} from "@/store/i18nStore.ts";
+import FilterableSelect from '@/components/select/FilterableSelect.vue';
+import DatabaseTypeView from '@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import {ref} from 'vue';
+import {translate} from '@/store/i18nStore.ts';
 
 const databaseType = defineModel<DatabaseType | undefined>({
-    required: true
-})
+    required: true,
+});
 
 const databaseTypes: DatabaseType[] = [
-    "POSTGRESQL",
-    "MYSQL",
-    "ORACLE",
-    "SQLSERVER",
-    "H2",
-    "SQLITE",
-]
+    'POSTGRESQL',
+    'MYSQL',
+    'ORACLE',
+    'SQLSERVER',
+    'H2',
+    'SQLITE',
+];
 
-const currentIndex = ref(-1)
+const currentIndex = ref(-1);
 </script>
 
 <template>
@@ -28,7 +28,10 @@ const currentIndex = ref(-1)
         :options="databaseTypes"
         :get-id="(it) => it ?? ''"
         can-filter
-        :filter="(option, filterText) => option?.toLowerCase().includes(filterText.toLowerCase()) ?? false"
+        :filter="
+            (option, filterText) =>
+                option?.toLowerCase().includes(filterText.toLowerCase()) ?? false
+        "
     >
         <template #selected="{option}">
             <DatabaseTypeView
@@ -36,21 +39,30 @@ const currentIndex = ref(-1)
                 :database-type="option"
                 class="database-type-selected-option"
             />
-            <div v-else class="database-type-selected-option placeholder">
+            <div
+                v-else
+                class="database-type-selected-option placeholder"
+            >
                 {{ translate({key: 'select_placeholder', args: [translate('database_type')]}) }}
             </div>
         </template>
         <template #afterInput>
             <button
                 v-if="databaseType !== undefined"
-                @click="databaseType = undefined; currentIndex = -1;"
-                style="border: none;"
+                @click="
+                    databaseType = undefined;
+                    currentIndex = -1;
+                "
+                style="border: none"
             >
-                <IconClose/>
+                <IconClose />
             </button>
         </template>
         <template #option="{option}">
-            <DatabaseTypeView :database-type="option" class="database-type-option"/>
+            <DatabaseTypeView
+                :database-type="option"
+                class="database-type-option"
+            />
         </template>
     </FilterableSelect>
 </template>

@@ -1,12 +1,12 @@
 export const getArrayFromMap = <K, T>(map: ReadonlyMap<K, T>, keys: Readonly<Iterable<K>>) => {
-    const result: T[] = []
+    const result: T[] = [];
 
     for (const key of keys) {
-        const value = map.get(key)
+        const value = map.get(key);
         if (value !== undefined) {
-            result.push(value)
+            result.push(value);
         }
     }
 
-    return result
-}
+    return result;
+};

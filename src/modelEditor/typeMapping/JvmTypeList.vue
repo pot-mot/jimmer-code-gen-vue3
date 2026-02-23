@@ -1,153 +1,161 @@
 <script setup lang="ts">
-import EditList from "@/components/list/selectableList/EditList.vue";
-import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
-import type {JvmTypeInput} from "@/api/__generated/model/static";
-import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from "vue";
-import IconEdit from "@/components/icons/IconEdit.vue";
-import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
-import JvmTypeEditor from "@/modelEditor/typeMapping/item/JvmTypeEditor.vue";
-import JvmTypeViewer from "@/modelEditor/typeMapping/item/JvmTypeViewer.vue";
-import IconCheck from "@/components/icons/IconCheck.vue";
-import IconRefresh from "@/components/icons/IconRefresh.vue";
-import {validateJvmType} from "@/type/__generated/jsonSchema/items/JvmType.ts";
-import IconDelete from "@/components/icons/IconDelete.vue";
-import IconClose from "@/components/icons/IconClose.vue";
-import {translate} from "@/store/i18nStore.ts";
-import {type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
-import DeepReadonly from "@/type/__generated/typeDeclare/items/DeepReadonly.ts";
-import {debounce} from "lodash-es";
-import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
+import EditList from '@/components/list/selectableList/EditList.vue';
+import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
+import type {JvmTypeInput} from '@/api/__generated/model/static';
+import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from 'vue';
+import IconEdit from '@/components/icons/IconEdit.vue';
+import {cloneDeepReadonlyRaw} from '@/utils/type/cloneDeepReadonly.ts';
+import JvmTypeEditor from '@/modelEditor/typeMapping/item/JvmTypeEditor.vue';
+import JvmTypeViewer from '@/modelEditor/typeMapping/item/JvmTypeViewer.vue';
+import IconCheck from '@/components/icons/IconCheck.vue';
+import IconRefresh from '@/components/icons/IconRefresh.vue';
+import {validateJvmType} from '@/type/__generated/jsonSchema/items/JvmType.ts';
+import IconDelete from '@/components/icons/IconDelete.vue';
+import IconClose from '@/components/icons/IconClose.vue';
+import {translate} from '@/store/i18nStore.ts';
+import {type CommandDefinition, useCommandHistory} from '@/history/commandHistory.ts';
+import DeepReadonly from '@/type/__generated/typeDeclare/items/DeepReadonly.ts';
+import {debounce} from 'lodash-es';
+import {judgeTargetIsInteraction} from '@/utils/event/judgeEventTarget.ts';
 
-const {
-    jvmTypes,
-    saveJvmType,
-    refreshJvmTypes,
-} = useTypeMapping()
+const {jvmTypes, saveJvmType, refreshJvmTypes} = useTypeMapping();
 
-const isEdit = ref(false)
-const jvmTypeInputs = ref<JvmTypeInput[]>([])
+const isEdit = ref(false);
+const jvmTypeInputs = ref<JvmTypeInput[]>([]);
 
 const beforePaste = (jvmTypes: JvmTypeInput[]) => {
     for (const jvmType of jvmTypes) {
-        jvmType.id = undefined
+        jvmType.id = undefined;
     }
-}
-
+};
 
 const history = useCommandHistory<{
-    change: CommandDefinition<DeepReadonly<{
-        newValue: JvmTypeInput[],
-        oldValue: JvmTypeInput[],
-    }>>
-}>()
+    change: CommandDefinition<
+        DeepReadonly<{
+            newValue: JvmTypeInput[];
+            oldValue: JvmTypeInput[];
+        }>
+    >;
+}>();
 
-let oldJvmTypeInputs: DeepReadonly<JvmTypeInput[]> | undefined
+let oldJvmTypeInputs: DeepReadonly<JvmTypeInput[]> | undefined;
 const debounceSynUpdate = debounce(async (inputs: JvmTypeInput[]) => {
-    const clonedInputs = cloneDeepReadonlyRaw<JvmTypeInput[]>(inputs)
+    const clonedInputs = cloneDeepReadonlyRaw<JvmTypeInput[]>(inputs);
     if (oldJvmTypeInputs !== undefined) {
         history.executeCommand('change', {
             newValue: clonedInputs,
             oldValue: oldJvmTypeInputs,
-        })
+        });
     }
-    oldJvmTypeInputs = clonedInputs
-}, 500)
+    oldJvmTypeInputs = clonedInputs;
+}, 500);
 
-let stopWatch: WatchStopHandle | undefined
+let stopWatch: WatchStopHandle | undefined;
 const addWatcher = () => {
-    stopWatch = watch(() => jvmTypeInputs.value, (inputs) => {
-        debounceSynUpdate(inputs)
-    }, {deep: true})
-}
+    stopWatch = watch(
+        () => jvmTypeInputs.value,
+        (inputs) => {
+            debounceSynUpdate(inputs);
+        },
+        {deep: true},
+    );
+};
 history.registerCommand('change', {
     applyAction: (options) => {
-        stopWatch?.()
-        jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(options.newValue)
-        addWatcher()
-        return options
+        stopWatch?.();
+        jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(options.newValue);
+        addWatcher();
+        return options;
     },
     revertAction: (options) => {
-        stopWatch?.()
-        jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(options.oldValue)
-        addWatcher()
-        return options
-    }
-})
+        stopWatch?.();
+        jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(options.oldValue);
+        addWatcher();
+        return options;
+    },
+});
 
 const startEdit = () => {
-    jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value)
-    oldJvmTypeInputs = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value)
-    addWatcher()
-    isEdit.value = true
-}
+    jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value);
+    oldJvmTypeInputs = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value);
+    addWatcher();
+    isEdit.value = true;
+};
 
 const handleCancel = () => {
-    history.clean()
-    stopWatch?.()
-    isEdit.value = false
-}
+    history.clean();
+    stopWatch?.();
+    isEdit.value = false;
+};
 
-const jvmTypeEditorRefs = ref<(ComponentPublicInstance<typeof JvmTypeEditor> | null)[]>([])
-const setJvmTypeEditorRef = (index: number, ref: Element | ComponentPublicInstance<typeof JvmTypeEditor> | null) => {
+const jvmTypeEditorRefs = ref<(ComponentPublicInstance<typeof JvmTypeEditor> | null)[]>([]);
+const setJvmTypeEditorRef = (
+    index: number,
+    ref: Element | ComponentPublicInstance<typeof JvmTypeEditor> | null,
+) => {
     if (ref instanceof Element) {
-        jvmTypeEditorRefs.value[index] = null
+        jvmTypeEditorRefs.value[index] = null;
     } else {
-        jvmTypeEditorRefs.value[index] = ref
+        jvmTypeEditorRefs.value[index] = ref;
     }
-}
+};
 const handleSubmit = async () => {
     for (const editor of jvmTypeEditorRefs.value) {
-        if (editor !== null && !editor.validateForm()) return
+        if (editor !== null && !editor.validateForm()) return;
     }
-    await saveJvmType(jvmTypeInputs.value)
-    history.clean()
-    stopWatch?.()
-    isEdit.value = false
-}
+    await saveJvmType(jvmTypeInputs.value);
+    history.clean();
+    stopWatch?.();
+    isEdit.value = false;
+};
 
 const defaultJvmType = (): JvmTypeInput => {
     return {
-        jvmSource: "ANY",
-        typeExpression: "",
+        jvmSource: 'ANY',
+        typeExpression: '',
         serialized: false,
         extraImports: [],
         extraAnnotations: [],
         sqlMatchRules: [],
-        tsMatchRules: []
-    }
-}
+        tsMatchRules: [],
+    };
+};
 
 const removeItem = (index: number) => {
-    jvmTypeInputs.value.splice(index, 1)
-}
+    jvmTypeInputs.value.splice(index, 1);
+};
 
 const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
-        e.preventDefault()
-        handleCancel()
+        e.preventDefault();
+        handleCancel();
     } else if (e.ctrlKey || e.metaKey) {
         if (e.key === 's' || e.key === 'S') {
-            if (judgeTargetIsInteraction(e)) return
-            e.preventDefault()
-            handleSubmit()
+            if (judgeTargetIsInteraction(e)) return;
+            e.preventDefault();
+            handleSubmit();
         } else if (e.key === 'z' || e.key === 'Z') {
             if (e.shiftKey) {
-                e.preventDefault()
-                history.redo()
+                e.preventDefault();
+                history.redo();
             } else {
-                e.preventDefault()
-                history.undo()
+                e.preventDefault();
+                history.undo();
             }
         } else if (e.key === 'y' || e.key === 'Y') {
-            e.preventDefault()
-            history.redo()
+            e.preventDefault();
+            history.redo();
         }
     }
-}
+};
 </script>
 
 <template>
-    <div v-if="isEdit" tabindex="-1" @keydown="handleKeyDown">
+    <div
+        v-if="isEdit"
+        tabindex="-1"
+        @keydown="handleKeyDown"
+    >
         <EditList
             v-model:lines="jvmTypeInputs"
             :default-line="defaultJvmType"
@@ -156,21 +164,33 @@ const handleKeyDown = (e: KeyboardEvent) => {
         >
             <template #line="{index}">
                 <div class="edit-line">
-                    <JvmTypeEditor v-model="jvmTypeInputs[index]!!" :ref="(el) => setJvmTypeEditorRef(index, el)"/>
-                    <button @click="removeItem(index)" class="delete-button">
-                        <IconDelete/>
+                    <JvmTypeEditor
+                        v-model="jvmTypeInputs[index]!!"
+                        :ref="(el) => setJvmTypeEditorRef(index, el)"
+                    />
+                    <button
+                        @click="removeItem(index)"
+                        class="delete-button"
+                    >
+                        <IconDelete />
                     </button>
                 </div>
             </template>
         </EditList>
 
         <div class="edit-list-operation">
-            <button @click="handleCancel" class="cancel-button">
-                <IconClose/>
+            <button
+                @click="handleCancel"
+                class="cancel-button"
+            >
+                <IconClose />
                 {{ translate('cancel') }}
             </button>
-            <button @click="handleSubmit" class="submit-button">
-                <IconCheck/>
+            <button
+                @click="handleSubmit"
+                class="submit-button"
+            >
+                <IconCheck />
                 {{ translate('save') }}
             </button>
         </div>
@@ -178,19 +198,25 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
     <div v-else>
         <div class="view-list-operation">
-            <button @click="startEdit" class="edit-button">
-                <IconEdit/>
+            <button
+                @click="startEdit"
+                class="edit-button"
+            >
+                <IconEdit />
                 {{ translate('edit') }}
             </button>
-            <button @click="refreshJvmTypes" class="refresh-button">
-                <IconRefresh/>
+            <button
+                @click="refreshJvmTypes"
+                class="refresh-button"
+            >
+                <IconRefresh />
                 {{ translate('refresh') }}
             </button>
         </div>
 
         <ul>
             <li v-for="item of jvmTypes">
-                <JvmTypeViewer :jvm-type="item"/>
+                <JvmTypeViewer :jvm-type="item" />
             </li>
         </ul>
     </div>
