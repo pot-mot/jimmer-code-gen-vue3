@@ -23,7 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-pnpm-lock.yaml
 auto-imports.d.ts
 components.d.ts
 /package-lock.json
