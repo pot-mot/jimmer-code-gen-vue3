@@ -28,6 +28,7 @@ export const localeEn: MainLocale = {
     undo: 'Undo',
     undo_fail: 'Undo Fail',
     cannot_undo: 'Cannot Undo',
+    edit_all: 'Edit All',
 
     all: 'All',
     selected: 'Selected',
@@ -90,6 +91,9 @@ export const localeEn: MainLocale = {
     embeddableType: 'Embeddable Type',
     association: 'Association',
     history_version: 'History Version',
+
+    columnName: 'Column Name',
+    columnType: 'Column Type',
 
     model_list_title: 'Model List',
     model_create_button: 'Create Model',
@@ -156,6 +160,7 @@ export const localeEn: MainLocale = {
         `Return type mismatch, expected ${expected}, actual ${actual}`,
     target_is_forbidden: (target: string) => `\`${target}\` is forbidden`,
 
+    type_mapping: 'Type Mapping',
     type_mapping_dialog_button: 'Type Mapping',
     type_mapping_dialog_title: 'Type Mapping Manage',
     cross_type: 'Cross Type',

@@ -92,7 +92,6 @@ defineExpose({
     >
         <template #head>
             <div class="sql-type-editor-header">
-                <DatabaseTypeOrAnySelect v-model="sqlTypeInput.databaseSource" />
                 <div class="input-wrapper">
                     <input
                         v-model="sqlTypeInput.type"
@@ -121,6 +120,8 @@ defineExpose({
                         {{ translate('validate_fail') }}
                     </div>
                 </div>
+                <DatabaseTypeOrAnySelect v-model="sqlTypeInput.databaseSource" />
+                <slot name="header" />
             </div>
         </template>
 
@@ -259,7 +260,7 @@ defineExpose({
 
 .sql-type-editor-header {
     display: grid;
-    grid-template-columns: 6rem 1fr;
+    grid-template-columns: 1fr 6rem auto;
     grid-gap: 0.5rem;
 }
 

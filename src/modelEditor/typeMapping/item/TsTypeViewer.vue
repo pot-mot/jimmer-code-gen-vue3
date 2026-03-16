@@ -28,6 +28,7 @@ const collapseDisabled = computed(() => {
         <template #head>
             <div class="ts-type-viewer-header">
                 <span class="no-drag">{{ tsType.typeExpression }}</span>
+                <slot name="header" />
             </div>
         </template>
 

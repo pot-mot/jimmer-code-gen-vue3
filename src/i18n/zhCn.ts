@@ -28,6 +28,7 @@ export const localeZhCn: MainLocale = {
     undo: '撤回',
     undo_fail: '撤回失败',
     cannot_undo: '不可再次撤回',
+    edit_all: '编辑全部',
 
     all: '全部',
     selected: '选中部分',
@@ -90,6 +91,9 @@ export const localeZhCn: MainLocale = {
     embeddableType: '内嵌类型',
     association: '关联',
     history_version: '历史版本',
+
+    columnName: '列名称',
+    columnType: '列类型',
 
     model_list_title: '模型列表',
     model_create_button: '创建模型',
@@ -154,6 +158,7 @@ export const localeZhCn: MainLocale = {
         `返回类型不匹配，期望 ${expected}，实际 ${actual}`,
     target_is_forbidden: (target: string) => `\`${target}\`被禁止使用`,
 
+    type_mapping: '类型映射',
     type_mapping_dialog_button: '类型映射',
     type_mapping_dialog_title: '类型映射管理',
     cross_type: '交叉类型',

@@ -4,64 +4,146 @@ import {computed, readonly, ref} from 'vue';
 import type {
     CrossTypeInput,
     CrossTypeView,
+    CrossTypeUpdateInput,
+    CrossTypeOrderInput,
     JvmTypeInput,
     JvmTypeView,
+    JvmTypeUpdateInput,
+    JvmTypeOrderInput,
     SqlTypeInput,
     SqlTypeView,
+    SqlTypeUpdateInput,
+    SqlTypeOrderInput,
     TsTypeInput,
     TsTypeView,
+    TsTypeUpdateInput,
+    TsTypeOrderInput,
 } from '@/api/__generated/model/static';
 import {api} from '@/api';
 import {withLoading} from '@/components/loading/loadingApi.ts';
-import DeepReadonly from '@/type/__generated/typeDeclare/items/DeepReadonly.ts';
+import type {Ref} from '@vue/reactivity';
+import {cloneDeepReadonlyRaw} from '@/utils/type/cloneDeepReadonly.ts';
+import {initJvmTypes} from '@/modelEditor/typeMapping/default/JvmTypes.ts';
+import {initSqlTypes} from '@/modelEditor/typeMapping/default/SqlTypes.ts';
+import {initTsTypes} from '@/modelEditor/typeMapping/default/TsTypes.ts';
+import {initCrossTypes} from '@/modelEditor/typeMapping/default/CrossTypes.ts';
+import {sendConfirm} from '@/components/confirm/confirmApi.ts';
+import {translate} from '@/store/i18nStore.ts';
+
+// 泛型类型操作接口
+interface TypeOperations<TInput, TUpdate, TOrder> {
+    save: (inputs: TInput[]) => Promise<void>;
+    refresh: () => Promise<void>;
+    update: (inputs: TUpdate[]) => Promise<void>;
+    updateOrder: (inputs: TOrder[]) => Promise<void>;
+    delete: (ids: string[]) => Promise<void>;
+}
+
+// 创建泛型类型操作
+const createTypeOperations = <TView, TInput, TUpdate, TOrder>(
+    types: Ref<TView[]>,
+    loadingName: string,
+    saveMethod: (options: {body: TInput[]}) => Promise<TView[]>,
+    listMethod: () => Promise<TView[]>,
+    updateMethod: (options: {body: TUpdate[]}) => Promise<void>,
+    updateOrderMethod: (options: {body: TOrder[]}) => Promise<void>,
+    deleteMethod: (options: {body: string[]}) => Promise<void>,
+): TypeOperations<TInput, TUpdate, TOrder> => {
+    return {
+        save: async (inputs: TInput[]) => {
+            await withLoading(`save ${loadingName}`, async () => {
+                types.value = await saveMethod({body: inputs});
+            });
+        },
+        refresh: async () => {
+            await withLoading(`refresh ${loadingName}`, async () => {
+                types.value = await listMethod();
+            });
+        },
+        update: async (inputs: TUpdate[]) => {
+            await withLoading(`update ${loadingName}`, async () => {
+                await updateMethod({body: inputs});
+                types.value = await listMethod();
+            });
+        },
+        updateOrder: async (inputs: TOrder[]) => {
+            await withLoading(`update ${loadingName} order`, async () => {
+                await updateOrderMethod({body: inputs});
+                types.value = await listMethod();
+            });
+        },
+        delete: async (ids: string[]) => {
+            await withLoading(`delete ${loadingName}`, async () => {
+                await deleteMethod({body: ids});
+                types.value = await listMethod();
+            });
+        },
+    };
+};
 
 const jvmTypes = ref<JvmTypeView[]>([]);
-const saveJvmType = async (inputs: JvmTypeInput[]) => {
-    await withLoading('save jvm type', async () => {
-        jvmTypes.value = await api.typeMappingService.saveJvmType({body: inputs});
-    });
-};
-const refreshJvmTypes = async () => {
-    await withLoading('refresh jvm type', async () => {
-        jvmTypes.value = await api.typeMappingService.listJvmType();
-    });
-};
+const jvmTypeOps = createTypeOperations<
+    JvmTypeView,
+    JvmTypeInput,
+    JvmTypeUpdateInput,
+    JvmTypeOrderInput
+>(
+    jvmTypes,
+    'jvm type',
+    api.typeMappingService.saveJvmType.bind(api.typeMappingService),
+    api.typeMappingService.listJvmType.bind(api.typeMappingService),
+    api.typeMappingService.updateJvmType.bind(api.typeMappingService),
+    api.typeMappingService.updateJvmTypeOrder.bind(api.typeMappingService),
+    api.typeMappingService.deleteJvmType.bind(api.typeMappingService),
+);
 
 const sqlTypes = ref<SqlTypeView[]>([]);
-const saveSqlType = async (inputs: SqlTypeInput[]) => {
-    await withLoading('save sql type', async () => {
-        sqlTypes.value = await api.typeMappingService.saveSqlType({body: inputs});
-    });
-};
-const refreshSqlTypes = async () => {
-    await withLoading('refresh sql type', async () => {
-        sqlTypes.value = await api.typeMappingService.listSqlType();
-    });
-};
+const sqlTypeOps = createTypeOperations<
+    SqlTypeView,
+    SqlTypeInput,
+    SqlTypeUpdateInput,
+    SqlTypeOrderInput
+>(
+    sqlTypes,
+    'sql type',
+    api.typeMappingService.saveSqlType.bind(api.typeMappingService),
+    api.typeMappingService.listSqlType.bind(api.typeMappingService),
+    api.typeMappingService.updateSqlType.bind(api.typeMappingService),
+    api.typeMappingService.updateSqlTypeOrder.bind(api.typeMappingService),
+    api.typeMappingService.deleteSqlType.bind(api.typeMappingService),
+);
 
 const tsTypes = ref<TsTypeView[]>([]);
-const saveTsType = async (inputs: TsTypeInput[]) => {
-    await withLoading('save ts type', async () => {
-        tsTypes.value = await api.typeMappingService.saveTsType({body: inputs});
-    });
-};
-const refreshTsTypes = async () => {
-    await withLoading('refresh ts type', async () => {
-        tsTypes.value = await api.typeMappingService.listTsType();
-    });
-};
+const tsTypeOps = createTypeOperations<
+    TsTypeView,
+    TsTypeInput,
+    TsTypeUpdateInput,
+    TsTypeOrderInput
+>(
+    tsTypes,
+    'ts type',
+    api.typeMappingService.saveTsType.bind(api.typeMappingService),
+    api.typeMappingService.listTsType.bind(api.typeMappingService),
+    api.typeMappingService.updateTsType.bind(api.typeMappingService),
+    api.typeMappingService.updateTsTypeOrder.bind(api.typeMappingService),
+    api.typeMappingService.deleteTsType.bind(api.typeMappingService),
+);
 
 const crossTypes = ref<CrossTypeView[]>([]);
-const saveCrossType = async (inputs: CrossTypeInput[]) => {
-    await withLoading('save cross type', async () => {
-        crossTypes.value = await api.typeMappingService.saveCrossType({body: inputs});
-    });
-};
-const refreshCrossTypes = async () => {
-    await withLoading('refresh cross type', async () => {
-        crossTypes.value = await api.typeMappingService.listCrossType();
-    });
-};
+const crossTypeOps = createTypeOperations<
+    CrossTypeView,
+    CrossTypeInput,
+    CrossTypeUpdateInput,
+    CrossTypeOrderInput
+>(
+    crossTypes,
+    'cross type',
+    api.typeMappingService.saveCrossType.bind(api.typeMappingService),
+    api.typeMappingService.listCrossType.bind(api.typeMappingService),
+    api.typeMappingService.updateCrossType.bind(api.typeMappingService),
+    api.typeMappingService.updateCrossTypeOrder.bind(api.typeMappingService),
+    api.typeMappingService.deleteCrossType.bind(api.typeMappingService),
+);
 
 export const initTypeMapping = async () => {
     await withLoading('init typeMapping', async () => {
@@ -78,6 +160,36 @@ export const initTypeMapping = async () => {
         sqlTypes.value = sqlTypesResult;
         tsTypes.value = tsTypesResult;
         crossTypes.value = crossTypesResult;
+    });
+};
+
+export const resetTypeMapping = async () => {
+    await sendConfirm({
+        title: translate({key: 'reset_confirm_title', args: [translate('type_mapping')]}),
+        content: translate({key: 'reset_confirm_content', args: [translate('type_mapping')]}),
+        onConfirm: async () => {
+            await withLoading('reset typeMapping', async () => {
+                await api.typeMappingService.deleteCrossType({
+                    body: crossTypes.value.map((it) => it.id),
+                });
+                await Promise.all([
+                    api.typeMappingService.deleteJvmType({body: jvmTypes.value.map((it) => it.id)}),
+                    api.typeMappingService.deleteSqlType({body: sqlTypes.value.map((it) => it.id)}),
+                    api.typeMappingService.deleteTsType({body: tsTypes.value.map((it) => it.id)}),
+                ]);
+                await Promise.all([
+                    api.typeMappingService.saveJvmType({body: initJvmTypes}),
+                    api.typeMappingService.saveSqlType({body: initSqlTypes}),
+                    api.typeMappingService.saveTsType({body: initTsTypes}),
+                ]);
+                await api.typeMappingService.saveCrossType({body: initCrossTypes});
+
+                jvmTypes.value = cloneDeepReadonlyRaw(initJvmTypes);
+                sqlTypes.value = cloneDeepReadonlyRaw(initSqlTypes);
+                tsTypes.value = cloneDeepReadonlyRaw(initTsTypes);
+                crossTypes.value = cloneDeepReadonlyRaw(initCrossTypes);
+            });
+        },
     });
 };
 
@@ -195,18 +307,21 @@ export const useTypeMapping = createStore(() => {
     return {
         ...dialogOpenState,
 
+        // JVM 类型操作
         jvmTypes: readonly(jvmTypes),
-        saveJvmType,
-        refreshJvmTypes,
+        jvmTypeOps,
+
+        // SQL 类型操作
         sqlTypes: readonly(sqlTypes),
-        saveSqlType,
-        refreshSqlTypes,
+        sqlTypeOps,
+
+        // TypeScript 类型操作
         tsTypes: readonly(tsTypes),
-        saveTsType,
-        refreshTsTypes,
+        tsTypeOps,
+
+        // 交叉类型操作
         crossTypes: readonly(crossTypes),
-        saveCrossType,
-        refreshCrossTypes,
+        crossTypeOps,
 
         crossTypeOptions,
 

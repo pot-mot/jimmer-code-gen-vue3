@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import EditList from '@/components/list/selectableList/EditList.vue';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
-import type {JvmTypeInput} from '@/api/__generated/model/static';
+import type {JvmTypeInput, JvmTypeUpdateInput, JvmTypeView} from '@/api/__generated/model/static';
 import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from 'vue';
 import IconEdit from '@/components/icons/IconEdit.vue';
 import {cloneDeepReadonlyRaw} from '@/utils/type/cloneDeepReadonly.ts';
@@ -14,11 +14,13 @@ import IconDelete from '@/components/icons/IconDelete.vue';
 import IconClose from '@/components/icons/IconClose.vue';
 import {translate} from '@/store/i18nStore.ts';
 import {type CommandDefinition, useCommandHistory} from '@/history/commandHistory.ts';
-import DeepReadonly from '@/type/__generated/typeDeclare/items/DeepReadonly.ts';
 import {debounce} from 'lodash-es';
 import {judgeTargetIsInteraction} from '@/utils/event/judgeEventTarget.ts';
+import IconCaretUp from '@/components/icons/IconCaretUp.vue';
+import IconCaretDown from '@/components/icons/IconCaretDown.vue';
+import {sendConfirm} from '@/components/confirm/confirmApi.ts';
 
-const {jvmTypes, saveJvmType, refreshJvmTypes} = useTypeMapping();
+const {jvmTypes, jvmTypeOps} = useTypeMapping();
 
 const isEdit = ref(false);
 const jvmTypeInputs = ref<JvmTypeInput[]>([]);
@@ -76,6 +78,7 @@ history.registerCommand('change', {
 });
 
 const startEdit = () => {
+    viewEditMap.value.clear();
     jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value);
     oldJvmTypeInputs = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value);
     addWatcher();
@@ -103,7 +106,7 @@ const handleSubmit = async () => {
     for (const editor of jvmTypeEditorRefs.value) {
         if (editor !== null && !editor.validateForm()) return;
     }
-    await saveJvmType(jvmTypeInputs.value);
+    await jvmTypeOps.save(jvmTypeInputs.value);
     history.clean();
     stopWatch?.();
     isEdit.value = false;
@@ -125,7 +128,7 @@ const removeItem = (index: number) => {
     jvmTypeInputs.value.splice(index, 1);
 };
 
-const handleKeyDown = (e: KeyboardEvent) => {
+const handleEditKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
         e.preventDefault();
         handleCancel();
@@ -148,13 +151,74 @@ const handleKeyDown = (e: KeyboardEvent) => {
         }
     }
 };
+
+const viewEditMap = ref(new Map<string, JvmTypeUpdateInput>());
+
+const editViewItem = (item: DeepReadonly<JvmTypeView>) => {
+    viewEditMap.value.set(item.id, cloneDeepReadonlyRaw<JvmTypeUpdateInput>(item));
+};
+
+const confirmViewItem = async (id: string, index: number) => {
+    const item = viewEditMap.value.get(id);
+    if (!item) return;
+
+    const editor = jvmTypeEditorRefs.value[index];
+    if (!editor) return;
+    if (!editor.validateForm()) return;
+
+    await jvmTypeOps.update([item]);
+    viewEditMap.value.delete(item.id);
+};
+
+const cancelViewItem = (index: number) => {
+    const item = jvmTypes.value[index];
+    if (!item) return;
+    viewEditMap.value.delete(item.id);
+};
+
+const deleteViewItem = async (item: DeepReadonly<JvmTypeView>) => {
+    await sendConfirm({
+        title: translate({key: 'delete_confirm_title', args: [translate('jvm_type')]}),
+        content: translate({
+            key: 'delete_confirm_content',
+            args: [` ${translate('jvm_type')}[${item.typeExpression}] `],
+        }),
+        onConfirm: async () => {
+            await jvmTypeOps.delete([item.id]);
+        },
+    });
+};
+
+const moveUp = async (index: number) => {
+    if (index < 1) return;
+    const currentItem = jvmTypes.value[index];
+    const prevItem = jvmTypes.value[index - 1];
+    if (!currentItem || !prevItem) return;
+
+    await jvmTypeOps.updateOrder([
+        {id: currentItem.id, orderKey: index - 1},
+        {id: prevItem.id, orderKey: index},
+    ]);
+};
+
+const moveDown = async (index: number) => {
+    if (index >= jvmTypes.value.length - 1) return;
+    const currentItem = jvmTypes.value[index];
+    const nextItem = jvmTypes.value[index + 1];
+    if (!currentItem || !nextItem) return;
+
+    await jvmTypeOps.updateOrder([
+        {id: currentItem.id, orderKey: index + 1},
+        {id: nextItem.id, orderKey: index},
+    ]);
+};
 </script>
 
 <template>
     <div
         v-if="isEdit"
         tabindex="-1"
-        @keydown="handleKeyDown"
+        @keydown="handleEditKeyDown"
     >
         <EditList
             v-model:lines="jvmTypeInputs"
@@ -203,10 +267,10 @@ const handleKeyDown = (e: KeyboardEvent) => {
                 class="edit-button"
             >
                 <IconEdit />
-                {{ translate('edit') }}
+                {{ translate('edit_all') }}
             </button>
             <button
-                @click="refreshJvmTypes"
+                @click="jvmTypeOps.refresh()"
                 class="refresh-button"
             >
                 <IconRefresh />
@@ -215,62 +279,79 @@ const handleKeyDown = (e: KeyboardEvent) => {
         </div>
 
         <ul>
-            <li v-for="item of jvmTypes">
-                <JvmTypeViewer :jvm-type="item" />
+            <li
+                v-for="(item, index) of jvmTypes"
+                :key="item.id"
+            >
+                <template v-if="viewEditMap.has(item.id)">
+                    <JvmTypeEditor
+                        :model-value="viewEditMap.get(item.id)!!"
+                        @update:model-value="
+                            (value) => viewEditMap.set(item.id, value as JvmTypeUpdateInput)
+                        "
+                        :ref="(el) => setJvmTypeEditorRef(index, el)"
+                        class="view-edit-item"
+                    >
+                        <template #header>
+                            <div class="view-item-actions">
+                                <button
+                                    @click="confirmViewItem(item.id, index)"
+                                    class="confirm-button"
+                                >
+                                    <IconCheck />
+                                </button>
+                                <button
+                                    @click="cancelViewItem(index)"
+                                    class="cancel-button"
+                                >
+                                    <IconClose />
+                                </button>
+                            </div>
+                        </template>
+                    </JvmTypeEditor>
+                </template>
+                <template v-else>
+                    <JvmTypeViewer
+                        :jvm-type="item"
+                        class="view-item"
+                    >
+                        <template #header>
+                            <div class="view-item-actions">
+                                <button
+                                    @click="editViewItem(item)"
+                                    class="edit-button"
+                                >
+                                    <IconEdit />
+                                </button>
+                                <button
+                                    @click="moveUp(index)"
+                                    :disabled="index < 1"
+                                    class="move-button"
+                                >
+                                    <IconCaretUp />
+                                </button>
+                                <button
+                                    @click="moveDown(index)"
+                                    :disabled="index >= jvmTypes.length - 1"
+                                    class="move-button"
+                                >
+                                    <IconCaretDown />
+                                </button>
+                                <button
+                                    @click="deleteViewItem(item)"
+                                    class="delete-button"
+                                >
+                                    <IconDelete />
+                                </button>
+                            </div>
+                        </template>
+                    </JvmTypeViewer>
+                </template>
             </li>
         </ul>
     </div>
 </template>
 
 <style scoped>
-.view-list-operation {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.edit-list-operation {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: flex-end;
-}
-
-.edit-line {
-    display: grid;
-    grid-template-columns: 1fr auto;
-}
-
-.delete-button {
-    border: none;
-    outline: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-}
-
-.edit-button,
-.refresh-button,
-.cancel-button,
-.submit-button {
-    display: flex;
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    border: var(--border);
-    border-color: var(--border-color-light);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 0.8rem;
-}
-
-.edit-button,
-.cancel-button {
-    border-color: var(--warning-color);
-    --icon-color: var(--warning-color);
-}
-
-.submit-button {
-    border-color: var(--success-color);
-    --icon-color: var(--success-color);
-}
+@import 'TypeListStyles.css';
 </style>

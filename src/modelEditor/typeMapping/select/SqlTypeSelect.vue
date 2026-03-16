@@ -2,6 +2,7 @@
 import FilterableSelect from '@/components/select/FilterableSelect.vue';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import {computed} from 'vue';
+import DatabaseTypeView from '@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue';
 
 const {sqlTypes} = useTypeMapping();
 
@@ -43,27 +44,34 @@ const options = computed(() => {
         :filter="(option, filterText) => option?.type.includes(filterText) ?? false"
     >
         <template #selected="{option}">
-            <div class="sql-type-selected-option">{{ option?.type }}</div>
+            <div
+                v-if="option"
+                class="type-selected-option"
+            >
+                {{ option.type }}
+                <DatabaseTypeView
+                    v-if="option && option.databaseSource !== 'ANY'"
+                    :database-type="option.databaseSource"
+                    class="tag"
+                />
+            </div>
         </template>
         <template #option="{option}">
-            <div class="sql-type-option">{{ option?.type }}</div>
+            <div
+                v-if="option"
+                class="type-option"
+            >
+                {{ option?.type }}
+                <DatabaseTypeView
+                    v-if="option && option.databaseSource !== 'ANY'"
+                    :database-type="option.databaseSource"
+                    class="tag"
+                />
+            </div>
         </template>
     </FilterableSelect>
 </template>
 
 <style scoped>
-.sql-type-selected-option {
-    height: 1.5rem;
-    padding: 0.25rem;
-    line-height: 1rem;
-    font-size: 0.8rem;
-}
-
-.sql-type-option {
-    height: 1.2rem;
-    line-height: 0.8rem;
-    padding: 0.2rem 0;
-    font-size: 0.8rem;
-    min-width: 5rem;
-}
+@import 'TypeSelectStyles.css';
 </style>

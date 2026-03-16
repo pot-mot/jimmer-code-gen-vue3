@@ -26,6 +26,7 @@ export type MainLocale = {
     undo: string;
     undo_fail: string;
     cannot_undo: string;
+    edit_all: string;
 
     all: string;
     selected: string;
@@ -89,6 +90,9 @@ export type MainLocale = {
     association: string;
     history_version: string;
 
+    columnName: string;
+    columnType: string;
+
     model_list_title: string;
     model_create_button: string;
     model_create_title: string;
@@ -144,6 +148,7 @@ export type MainLocale = {
     return_type_mismatch: (expected: string, actual: string) => string;
     target_is_forbidden: (target: string) => string;
 
+    type_mapping: string;
     type_mapping_dialog_button: string;
     type_mapping_dialog_title: string;
     cross_type: string;

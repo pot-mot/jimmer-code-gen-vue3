@@ -109,7 +109,6 @@ defineExpose({
     >
         <template #head>
             <div class="jvm-type-editor-header">
-                <JvmLanguageOrAnySelect v-model="jvmTypeInput.jvmSource" />
                 <div class="input-wrapper">
                     <input
                         v-model="jvmTypeInput.typeExpression"
@@ -138,6 +137,8 @@ defineExpose({
                         {{ translate('validate_fail') }}
                     </div>
                 </div>
+                <JvmLanguageOrAnySelect v-model="jvmTypeInput.jvmSource" />
+                <slot name="header" />
             </div>
         </template>
 
@@ -320,7 +321,7 @@ defineExpose({
 
 .jvm-type-editor-header {
     display: grid;
-    grid-template-columns: 6rem 1fr;
+    grid-template-columns: 1fr 6rem auto;
     grid-gap: 0.5rem;
 }
 

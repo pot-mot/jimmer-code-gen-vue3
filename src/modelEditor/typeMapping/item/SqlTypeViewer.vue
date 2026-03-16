@@ -34,6 +34,7 @@ const collapseDisabled = computed(() => {
                     :database-type="sqlType.databaseSource"
                     class="tag"
                 />
+                <slot name="header" />
             </div>
         </template>
 

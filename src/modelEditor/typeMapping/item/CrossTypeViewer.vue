@@ -27,38 +27,43 @@ const tsType = computed(() => {
 
 <template>
     <div class="cross-type-viewer">
-        <span class="no-drag jvm-type">{{
-            jvmType?.typeExpression ?? translate('not_existed')
-        }}</span>
+        <span class="no-drag jvm-type">
+            {{ jvmType?.typeExpression ?? translate('not_existed') }}
+        </span>
         <JvmLanguageView
             v-if="jvmType?.jvmSource !== 'ANY'"
             :jvm-language="jvmType?.jvmSource"
             class="tag"
         />
-        <span class="no-drag sql-type">{{ sqlType?.type ?? translate('not_existed') }}</span>
+        <span class="no-drag sql-type">
+            {{ sqlType?.type ?? translate('not_existed') }}
+        </span>
         <DatabaseTypeView
             v-if="sqlType?.databaseSource !== 'ANY'"
             :database-type="sqlType?.databaseSource"
             class="tag"
         />
-        <span class="no-drag ts-type">{{
-            tsType?.typeExpression ?? translate('not_existed')
-        }}</span>
+        <span class="no-drag ts-type">
+            {{ tsType?.typeExpression ?? translate('not_existed') }}
+        </span>
         <span
             class="no-drag"
             v-if="crossType.nullable === true"
-            >{{ translate('nullableLimit_true') }}</span
         >
+            {{ translate('nullableLimit_true') }}
+        </span>
         <span
             class="no-drag"
             v-else-if="crossType.nullable === false"
-            >{{ translate('nullableLimit_false') }}</span
         >
+            {{ translate('nullableLimit_false') }}
+        </span>
         <span
             class="no-drag"
             v-else-if="crossType.nullable === undefined"
-            >{{ translate('nullableLimit_undefined') }}</span
         >
+            {{ translate('nullableLimit_undefined') }}
+        </span>
     </div>
 </template>
 

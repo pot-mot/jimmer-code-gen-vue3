@@ -146,6 +146,7 @@ defineExpose({
                         {{ translate('validate_fail') }}
                     </div>
                 </div>
+                <slot name="header" />
             </div>
         </template>
 
@@ -309,7 +310,7 @@ defineExpose({
 
 .ts-type-editor-header {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr auto;
     grid-gap: 0.5rem;
 }
 

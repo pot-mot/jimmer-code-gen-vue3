@@ -1,0 +1,121 @@
+.view-list-operation {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.edit-list-operation {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.edit-line {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+.delete-button {
+    border: none;
+    outline: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.view-item,
+.view-edit-item {
+    background-color: var(--background-color);
+    transition: background-color 0.2s ease;
+}
+
+.view-item:hover {
+    background-color: var(--background-color-hover);
+}
+
+.view-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.view-item:hover .view-item-actions,
+.view-edit-item .view-item-actions {
+    opacity: 1;
+}
+
+.view-item-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border: var(--border);
+    border-color: var(--border-color-light);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.view-item-actions button:hover:not(:disabled) {
+    background-color: var(--background-color-hover);
+}
+
+.view-item-actions button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.view-item-actions .edit-button,
+.edit-button {
+    border-color: var(--warning-color);
+    --icon-color: var(--warning-color);
+}
+
+.view-item-actions .confirm-button,
+.submit-button {
+    border-color: var(--success-color);
+    --icon-color: var(--success-color);
+}
+
+.view-item-actions .cancel-button {
+    border-color: var(--warning-color);
+    --icon-color: var(--warning-color);
+}
+
+.view-item-actions .delete-button {
+    border-color: var(--danger-color);
+    --icon-color: var(--danger-color);
+}
+
+.view-item-actions .move-button {
+    --icon-color: var(--text-color);
+}
+
+.edit-button,
+.refresh-button,
+.cancel-button,
+.submit-button {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border: var(--border);
+    border-color: var(--border-color-light);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.edit-button,
+.cancel-button {
+    border-color: var(--warning-color);
+    --icon-color: var(--warning-color);
+}
+
+.submit-button {
+    border-color: var(--success-color);
+    --icon-color: var(--success-color);
+}

@@ -35,6 +35,7 @@ const collapseDisabled = computed(() => {
                     :jvm-language="jvmType.jvmSource"
                     class="tag"
                 />
+                <slot name="header" />
             </div>
         </template>
 
@@ -76,18 +77,21 @@ const collapseDisabled = computed(() => {
                         <span
                             class="no-drag"
                             v-if="item.nullableLimit === true"
-                            >{{ translate('nullableLimit_true') }}</span
                         >
+                            {{ translate('nullableLimit_true') }}
+                        </span>
                         <span
                             class="no-drag"
                             v-else-if="item.nullableLimit === false"
-                            >{{ translate('nullableLimit_false') }}</span
                         >
+                            {{ translate('nullableLimit_false') }}
+                        </span>
                         <span
                             class="no-drag"
                             v-else-if="item.nullableLimit === undefined"
-                            >{{ translate('nullableLimit_undefined') }}</span
                         >
+                            {{ translate('nullableLimit_undefined') }}
+                        </span>
                         <DatabaseTypeView
                             v-if="item.databaseSource !== 'ANY'"
                             :database-type="item.databaseSource"
