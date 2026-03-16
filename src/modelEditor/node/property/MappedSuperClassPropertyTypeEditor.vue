@@ -41,7 +41,6 @@ import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import {translate} from '@/store/i18nStore.ts';
 import IconEdit from '@/components/icons/IconEdit.vue';
 import IconRefresh from '@/components/icons/IconRefresh.vue';
-import {usePropertyEditDialog} from '@/modelEditor/property/usePropertyEditDialog.ts';
 import {unclearTypeSet} from '@/modelEditor/diagnostic/unclearType.ts';
 
 const props = defineProps<{
@@ -70,8 +69,6 @@ const {
     addAssociation,
     remove,
 } = useModelEditor();
-
-const {open: openPropertyEditDialog} = usePropertyEditDialog();
 
 const {crossTypeOptions, open: openTypeMapping, refreshCrossTypes} = useTypeMapping();
 const handleEditTypeMapping = () => {
@@ -406,18 +403,6 @@ const association = computed(() => {
                 <div>
                     {{ property.nullable ? ' ?' : '' }}
                 </div>
-
-                <button
-                    class="type-editor-button"
-                    @click.stop="
-                        openPropertyEditDialog({
-                            mappedSuperClassId: mappedSuperClass.id,
-                            property: property,
-                        })
-                    "
-                >
-                    <IconEdit />
-                </button>
             </div>
 
             <div
@@ -611,13 +596,6 @@ const association = computed(() => {
 
 .type-editor-header-label.warning {
     color: var(--warning-color);
-}
-
-.type-editor-button {
-    border: none;
-    margin-left: 0.5rem;
-    border-radius: 0.25rem;
-    --icon-size: 0.8rem;
 }
 
 .view-item {
