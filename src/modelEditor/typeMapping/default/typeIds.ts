@@ -40,7 +40,7 @@ const generateTypeId = (options?: {
     };
 
     return {
-        value: `${prefix}${'0'.repeat(8)}`,
+        value: `${prefix}${'0'.repeat(12)}`,
         getRuleId,
     };
 };
