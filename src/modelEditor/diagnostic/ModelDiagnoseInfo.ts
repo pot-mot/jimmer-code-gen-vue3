@@ -1,5 +1,5 @@
 import type {InheritInfo} from '@/modelEditor/utils/InheritInfo.ts';
-import type {CommandHistory} from '@/history/commandHistory.ts';
+import type {CommandHistory} from '@potmot/command-history';
 import {type ModelEditorHistoryCommands} from '@/modelEditor/history/ModelEditorHistory.ts';
 import type {ReadonlyModelNameSets} from '@/modelEditor/nameSet/ModelNameSets.ts';
 import {computed, reactive, readonly} from 'vue';

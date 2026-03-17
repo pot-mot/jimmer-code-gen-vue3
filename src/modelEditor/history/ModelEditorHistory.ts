@@ -2,7 +2,7 @@ import {
     type CommandChangeInput,
     type CommandDefinition,
     useCommandHistory,
-} from '@/history/commandHistory.ts';
+} from '@potmot/command-history';
 import {type GraphNode, type VueFlowStore, type XYPosition} from '@vue-flow/core';
 import {computed, reactive, readonly, ref, shallowReadonly, watch} from 'vue';
 import {deleteColorVar, type MenuItem, setColorVar} from '@/modelEditor/useModelEditor.ts';
@@ -163,7 +163,14 @@ export const useModelEditorHistory = (
     getContextData: () => ModelContextData,
     getVueFlow: () => VueFlowStore,
 ) => {
-    const history = useCommandHistory<ModelEditorHistoryCommands>();
+    const history = useCommandHistory<ModelEditorHistoryCommands>({
+        onError: (_, context) => {
+            sendMessage(`历史记录发生错误：${context}`, {type: 'error'});
+            return {
+                stillThrow: true,
+            };
+        },
+    });
 
     const canUndo = ref(history.canUndo());
     const canRedo = ref(history.canRedo());

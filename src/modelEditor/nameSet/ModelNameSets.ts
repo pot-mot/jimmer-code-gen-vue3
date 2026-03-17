@@ -2,7 +2,7 @@ import {buildNameSet, type NameSet} from '@/utils/name/nameSet.ts';
 import {reactive, readonly} from 'vue';
 import type {InheritInfo} from '@/modelEditor/utils/InheritInfo.ts';
 import {type ModelEditorHistoryCommands} from '@/modelEditor/history/ModelEditorHistory.ts';
-import type {CommandHistory} from '@/history/commandHistory.ts';
+import type {CommandHistory} from '@potmot/command-history';
 
 type ReadonlyNameSet = Omit<NameSet, 'add' | 'remove' | 'nextThenAdd'>;
 

@@ -23,6 +23,7 @@
         ]
     },
     "dependencies": {
+        "@potmot/command-history": "^0.0.0",
         "@potmot/diff": "^0.0.1",
         "@progress/jszip-esm": "^1.0.4",
         "@typescript/vfs": "^1.6.1",

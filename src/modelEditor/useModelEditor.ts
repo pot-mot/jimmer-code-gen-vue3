@@ -297,7 +297,7 @@ export const useModelEditor = createStore(() => {
             ? vueFlow.screenToFlowCoordinate(screenPosition.value)
             : undefined;
         const protectRepeatNames = options?.protectRepeatNames;
-        const {ids} = history.executeCommand('import', {
+        const importResult = history.executeCommand('import', {
             data: fullData,
             startPosition,
             protectRepeatNames,
@@ -305,8 +305,8 @@ export const useModelEditor = createStore(() => {
         await nextTick();
         await waitChangeSync();
 
-        if (options?.select) {
-            modelSelection.select(ids);
+        if (options?.select && importResult) {
+            modelSelection.select(importResult.ids);
         }
     };
 

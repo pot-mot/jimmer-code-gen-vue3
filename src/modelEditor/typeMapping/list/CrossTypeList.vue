@@ -16,7 +16,7 @@ import IconRefresh from '@/components/icons/IconRefresh.vue';
 import IconDelete from '@/components/icons/IconDelete.vue';
 import IconClose from '@/components/icons/IconClose.vue';
 import {translate} from '@/store/i18nStore.ts';
-import {type CommandDefinition, useCommandHistory} from '@/history/commandHistory.ts';
+import {type CommandDefinition, useCommandHistory} from '@potmot/command-history';
 import {debounce} from 'lodash-es';
 import {judgeTargetIsInteraction} from '@/utils/event/judgeEventTarget.ts';
 import {validateCrossType_IdOnly} from '@/type/__generated/jsonSchema/items/CrossType_IdOnly.ts';
