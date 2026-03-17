@@ -1,8 +1,7 @@
 import {validatePartialModelGraphSubData} from '@/type/context/jsonSchema/PartialModelGraphSubData.ts';
 import {fillModelGraphSubData} from '@/modelEditor/utils/ModelGraphSubData.ts';
 import type {ModelHistoryView} from '@/api/__generated/model/static';
-import {objectDiff} from '@potmot/diff';
-import type {CircularReferenceDiff, ObjectDiff} from '@potmot/diff/dist/type/DiffItem.d.ts';
+import {objectDiff, type CircularReferenceDiff, type ObjectDiff} from '@potmot/diff';
 
 export type ModelDiffInput = DeepReadonly<
     Partial<{

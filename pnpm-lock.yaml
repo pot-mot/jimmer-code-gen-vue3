@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@potmot/diff':
-        specifier: ^0.0.0
-        version: 0.0.0
+        specifier: ^0.0.1
+        version: 0.0.1
       '@progress/jszip-esm':
         specifier: ^1.0.4
         version: 1.0.4
@@ -719,8 +719,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@potmot/diff@0.0.0':
-    resolution: {integrity: sha512-BRCPHzUGCR+6cwX2Zxy6ujC8fVGZN9dLnAMHHPQGrnULxeJsB9J41eanmJA/bMbHPQh4lThH4iwZ4GCb9ZvErg==}
+  '@potmot/diff@0.0.1':
+    resolution: {integrity: sha512-QjFmbxoZWxUyX9uqqYgSZmLQ+m4Px/1b/rA2a52YvlSfB+ZVNpTQj3IOzX6cuO2VahYWZ6k5IWwshJjIKTKd7w==}
 
   '@progress/jszip-esm@1.0.4':
     resolution: {integrity: sha512-A5i26JcTosFKeHCrklarNsByW3RUJd8osRq69eskZgIaq05weTCXdpztlFMwrHpgOGods1D0WFoSQcMNE0eI8Q==}
@@ -2859,7 +2859,7 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@potmot/diff@0.0.0': {}
+  '@potmot/diff@0.0.1': {}
 
   '@progress/jszip-esm@1.0.4':
     dependencies:

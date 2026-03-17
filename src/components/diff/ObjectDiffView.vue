@@ -5,7 +5,7 @@
 >
 import ArrayDiffView from '@/components/diff/ArrayDiffView.vue';
 import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
-import type {ObjectDiff} from '@potmot/diff/dist/type/DiffItem.d.ts';
+import type {ObjectDiff} from '@potmot/diff';
 
 defineProps<{
     diff: ObjectDiff<T, U>;
