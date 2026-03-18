@@ -90,7 +90,9 @@ export const modelVersionDiff = (
     return {
         model: objectDiff(prev?.model, next?.model),
         viewport: objectDiff(prev?.viewport, next?.viewport),
-        subData: objectDiff(prev?.subData, next?.subData, nameIdAnyMatch),
+        subData: objectDiff(prev?.subData, next?.subData, {
+            deepMatchers: nameIdAnyMatch,
+        }),
     };
 };
 
