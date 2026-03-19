@@ -12,8 +12,8 @@ importers:
         specifier: ^0.0.0
         version: 0.0.0
       '@potmot/diff':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.1.2
+        version: 0.1.2
       '@progress/jszip-esm':
         specifier: ^1.0.4
         version: 1.0.4
@@ -725,8 +725,8 @@ packages:
   '@potmot/command-history@0.0.0':
     resolution: {integrity: sha512-r2lSuYY4QnbR6BG3JYGT0ViAp2JeHx9xh2tl9cp87d1ZmC7S0szyrb9Yv7M10CkJ5mtkkbpfda1740Q1yNgnOQ==}
 
-  '@potmot/diff@0.1.0':
-    resolution: {integrity: sha512-pUvFr3FmtND941bSWxCttwIQJ952Ccw6n0TmGZSCJSoGh0rIW/oHH+mTO2lV/gZTONclEzVUCGZLAmYDleePVg==}
+  '@potmot/diff@0.1.2':
+    resolution: {integrity: sha512-7h8ap9FpqRS+ZdFPZ+LnOUV+wTG0WgbhvHNR9sZGyUXRJPDhK0P+rHlHdzkBin55K/JvlTIbVXEx4rWVpuER6g==}
 
   '@progress/jszip-esm@1.0.4':
     resolution: {integrity: sha512-A5i26JcTosFKeHCrklarNsByW3RUJd8osRq69eskZgIaq05weTCXdpztlFMwrHpgOGods1D0WFoSQcMNE0eI8Q==}
@@ -2880,7 +2880,7 @@ snapshots:
     dependencies:
       mitt: 3.0.1
 
-  '@potmot/diff@0.1.0': {}
+  '@potmot/diff@0.1.2': {}
 
   '@progress/jszip-esm@1.0.4':
     dependencies:
