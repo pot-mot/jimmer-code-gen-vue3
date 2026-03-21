@@ -25,8 +25,8 @@ useCodeEditorWorker();
 registerTypeDeclareForMonacoEditor();
 
 ListGlobalConfig.ignoreClassNames = interactionClassNames;
-ListGlobalConfig.pasteErrorHandler(() => {
+ListGlobalConfig.pasteErrorHandler = () => {
     sendMessage(translate('paste_fail_tip'));
-});
+};
 
 app.mount('#app');
