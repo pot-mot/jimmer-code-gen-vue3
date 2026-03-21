@@ -162,3 +162,14 @@ button:hover {
 button:focus {
     box-shadow: 0 0 0.25rem 0.25rem var(--background-color-hover);
 }
+
+:root {
+    --potmot-list--text-color: var(--text-color);
+
+    --potmot-list--bg-color: var(--background-color);
+    --potmot-list--bg-color--hover: var(--background-color-hover);
+    --potmot-list--bg-color--selected: var(--primary-color-background);
+
+    --potmot-list--icon-color: var(--icon-color);
+    --potmot-list--icon-size: var(--icon-size);
+}

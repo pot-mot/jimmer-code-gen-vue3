@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import type {SqlTypeInput, SqlTypeUpdateInput, SqlTypeView} from '@/api/__generated/model/static';
 import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from 'vue';
@@ -222,8 +222,9 @@ const moveDown = async (index: number) => {
     >
         <EditList
             v-model:lines="sqlTypeInputs"
+            :to-key="(item, index) => item.id ?? String(index)"
             :default-line="defaultSqlType"
-            :json-schema-validate="validateSqlType"
+            :paste-validator="validateSqlType"
             :before-paste="beforePaste"
         >
             <template #line="{index}">

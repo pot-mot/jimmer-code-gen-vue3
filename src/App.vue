@@ -9,18 +9,6 @@ import {withLoading} from '@/components/loading/loadingApi.ts';
 import {languageTypes, useI18nStore} from '@/store/i18nStore.ts';
 import {initTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import {initScriptDialog} from '@/modelEditor/script/useScriptDialog.ts';
-import {
-    mountClickOutside,
-    umountClickOutside,
-} from '@/components/list/selectableList/useClickOutside.ts';
-import {onBeforeUnmount, onMounted} from 'vue';
-
-onMounted(() => {
-    mountClickOutside();
-});
-onBeforeUnmount(() => {
-    umountClickOutside();
-});
 
 withLoading('Initialize Store', async () => {
     initDeviceStore();

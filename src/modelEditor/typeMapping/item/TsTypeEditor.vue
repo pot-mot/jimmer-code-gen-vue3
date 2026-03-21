@@ -4,7 +4,7 @@ import type {
     TsTypeInput_TargetOf_jvmMatchRules,
     TsTypeInput_TargetOf_sqlMatchRules,
 } from '@/api/__generated/model/static';
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import IconDelete from '@/components/icons/IconDelete.vue';
 import {translate} from '@/store/i18nStore.ts';
 import {ref, watch} from 'vue';
@@ -155,8 +155,9 @@ defineExpose({
                 <span class="label no-drag">{{ translate('extraImports') }}</span>
                 <EditList
                     v-model:lines="tsTypeInput.extraImports"
+                    :to-key="(item, index) => item.name + String(index)"
                     :default-line="defaultTsImport"
-                    :json-schema-validate="validateTsImport"
+                    :paste-validator="validateTsImport"
                 >
                     <template #line="{index}">
                         <div class="sub-line">
@@ -218,8 +219,9 @@ defineExpose({
                 <span class="label no-drag">{{ translate('jvmMatchRules') }}</span>
                 <EditList
                     v-model:lines="tsTypeInput.jvmMatchRules"
+                    :to-key="(item, index) => item.id ?? String(index)"
                     :default-line="defaultJvmMatchRule"
-                    :json-schema-validate="validateJvmMatchRule"
+                    :paste-validator="validateJvmMatchRule"
                 >
                     <template #line="{index}">
                         <template v-if="tsTypeInput.jvmMatchRules[index]">
@@ -261,8 +263,9 @@ defineExpose({
                 <span class="label no-drag">{{ translate('sqlMatchRules') }}</span>
                 <EditList
                     v-model:lines="tsTypeInput.sqlMatchRules"
+                    :to-key="(item, index) => item.id ?? String(index)"
                     :default-line="defaultSqlMatchRule"
-                    :json-schema-validate="validateSqlMatchRule"
+                    :paste-validator="validateSqlMatchRule"
                 >
                     <template #line="{index}">
                         <template v-if="tsTypeInput.sqlMatchRules[index]">

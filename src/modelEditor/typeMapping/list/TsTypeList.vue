@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import type {TsTypeInput, TsTypeUpdateInput, TsTypeView} from '@/api/__generated/model/static';
 import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from 'vue';
@@ -219,8 +219,9 @@ const moveDown = async (index: number) => {
     >
         <EditList
             v-model:lines="tsTypeInputs"
+            :to-key="(item, index) => item.id ?? String(index)"
             :default-line="defaultTsType"
-            :json-schema-validate="validateTsType"
+            :paste-validator="validateTsType"
             :before-paste="beforePaste"
         >
             <template #line="{index}">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {type NodeProps} from '@vue-flow/core';
 import type {EmbeddableTypeNode} from '@/modelEditor/node/EmbeddableTypeNode.ts';
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import {
     createId,
     getColorVar,
@@ -32,7 +32,7 @@ const groupTheme = computed(() => {
 
 const propertyEditListRef = useTemplateRef('propertyEditListRef');
 const unselectAllProperty = () => {
-    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection();
+    if (propertyEditListRef.value) propertyEditListRef.value.indexSelection.unselectAll();
 };
 const selectProperty = ({
     embeddableTypeId,
@@ -45,7 +45,7 @@ const selectProperty = ({
         const index = props.data.embeddableType.properties.findIndex(
             (property) => property.id === propertyId,
         );
-        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index]);
+        if (index !== -1) propertyEditListRef.value.indexSelection.resetSelection([index]);
     }
 };
 onMounted(() => {
@@ -89,8 +89,9 @@ const beforePaste = (properties: Property[]) => {
             ref="propertyEditListRef"
             class="embeddable-type-property-list"
             v-model:lines="data.embeddableType.properties"
+            :to-key="(item) => item.id"
             :default-line="defaultScalarProperty"
-            :json-schema-validate="validateEmbeddableTypeProperty"
+            :paste-validator="validateEmbeddableTypeProperty"
             :before-paste="beforePaste"
         >
             <template #line="{item, index}">

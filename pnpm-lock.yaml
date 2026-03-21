@@ -14,6 +14,9 @@ importers:
       '@potmot/diff':
         specifier: ^0.1.2
         version: 0.1.2
+      '@potmot/list':
+        specifier: ^0.0.6
+        version: 0.0.6(vue@3.5.30(typescript@5.9.3))
       '@progress/jszip-esm':
         specifier: ^1.0.4
         version: 1.0.4
@@ -498,6 +501,11 @@ packages:
 
   '@potmot/diff@0.1.2':
     resolution: {integrity: sha512-7h8ap9FpqRS+ZdFPZ+LnOUV+wTG0WgbhvHNR9sZGyUXRJPDhK0P+rHlHdzkBin55K/JvlTIbVXEx4rWVpuER6g==}
+
+  '@potmot/list@0.0.6':
+    resolution: {integrity: sha512-0Iwnvb7qRTWlgRrnVR4JAUtsUyPF6kCzX5qdlwMCbbCVnoDEzzqmmXWJcISyjhzpA4PfMr7h6efMESiSG0Gr/Q==}
+    peerDependencies:
+      vue: ^3.5.30
 
   '@progress/jszip-esm@1.0.4':
     resolution: {integrity: sha512-A5i26JcTosFKeHCrklarNsByW3RUJd8osRq69eskZgIaq05weTCXdpztlFMwrHpgOGods1D0WFoSQcMNE0eI8Q==}
@@ -2270,6 +2278,14 @@ snapshots:
       mitt: 3.0.1
 
   '@potmot/diff@0.1.2': {}
+
+  '@potmot/list@0.0.6(vue@3.5.30(typescript@5.9.3))':
+    dependencies:
+      clipboard-polyfill: 4.1.1
+      json5: 2.2.3
+      lodash-es: 4.17.23
+      mitt: 3.0.1
+      vue: 3.5.30(typescript@5.9.3)
 
   '@progress/jszip-esm@1.0.4':
     dependencies:

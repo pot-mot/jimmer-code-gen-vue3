@@ -4,7 +4,7 @@ import type {
     JvmTypeInput_TargetOf_sqlMatchRules,
     JvmTypeInput_TargetOf_tsMatchRules,
 } from '@/api/__generated/model/static';
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import DatabaseTypeOrAnySelect from '@/modelEditor/modelForm/databaseType/DatabaseTypeOrAnySelect.vue';
 import JvmLanguageOrAnySelect from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue';
 import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
@@ -156,8 +156,9 @@ defineExpose({
                 <span class="label no-drag">{{ translate('extraImports') }}</span>
                 <EditList
                     v-model:lines="jvmTypeInput.extraImports"
-                    default-line=""
-                    :json-schema-validate="isString"
+                    :to-key="(item, index) => item + String(index)"
+                    :default-line="() => ''"
+                    :paste-validator="isString"
                 >
                     <template #line="{index}">
                         <div class="sub-line">
@@ -193,8 +194,9 @@ defineExpose({
                 <span class="label no-drag">{{ translate('extraAnnotations') }}</span>
                 <EditList
                     v-model:lines="jvmTypeInput.extraAnnotations"
-                    default-line=""
-                    :json-schema-validate="isString"
+                    :to-key="(item, index) => item + String(index)"
+                    :default-line="() => ''"
+                    :paste-validator="isString"
                 >
                     <template #line="{index}">
                         <div class="sub-line">
@@ -230,8 +232,9 @@ defineExpose({
                 <span class="label no-drag">{{ translate('sqlMatchRules') }}</span>
                 <EditList
                     v-model:lines="jvmTypeInput.sqlMatchRules"
+                    :to-key="(item, index) => item + String(index)"
                     :default-line="defaultSqlMatchRule"
-                    :json-schema-validate="validateSqlMatchRule"
+                    :paste-validator="validateSqlMatchRule"
                 >
                     <template #line="{index}">
                         <template v-if="jvmTypeInput.sqlMatchRules[index]">
@@ -275,8 +278,9 @@ defineExpose({
                 <span class="label no-drag">{{ translate('tsMatchRules') }}</span>
                 <EditList
                     v-model:lines="jvmTypeInput.tsMatchRules"
+                    :to-key="(item, index) => item.id ?? String(index)"
                     :default-line="defaultTsMatchRule"
-                    :json-schema-validate="validateTsMatchRule"
+                    :paste-validator="validateTsMatchRule"
                 >
                     <template #line="{index}">
                         <template v-if="jvmTypeInput.tsMatchRules[index]">

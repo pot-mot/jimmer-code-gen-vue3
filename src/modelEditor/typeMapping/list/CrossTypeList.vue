@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import type {
     CrossTypeInput,
@@ -223,8 +223,9 @@ const moveDown = async (index: number) => {
     >
         <EditList
             v-model:lines="crossTypeInputs"
+            :to-key="(item, index) => item.id ?? String(index)"
             :default-line="defaultCrossType"
-            :json-schema-validate="validateCrossType_IdOnly"
+            :paste-validator="validateCrossType_IdOnly"
             :before-paste="beforePaste"
         >
             <template #line="{index}">

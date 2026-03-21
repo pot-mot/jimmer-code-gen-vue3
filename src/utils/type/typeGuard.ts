@@ -21,10 +21,15 @@ const ajv = new Ajv({allErrors: true}); // 启用所有错误信息
 
 export type SchemaValidatorErrorHandler = (errors: ErrorObject[] | null | undefined) => void;
 
+export type SchemaValidator<T> = (
+    data: unknown,
+    errorHandler?: SchemaValidatorErrorHandler,
+) => data is T;
+
 export const createSchemaValidator = <T>(
     schema: JSONSchemaType<T>,
     baseErrorHandler?: SchemaValidatorErrorHandler,
-) => {
+): SchemaValidator<T> => {
     const validate = ajv.compile(schema);
 
     return (data: unknown, errorHandler?: SchemaValidatorErrorHandler): data is T => {
@@ -51,5 +56,3 @@ export const formatErrorMessage = (
     const {instancePath, message} = error;
     return `${instancePath}: ${message}`;
 };
-
-export type SchemaValidator<T> = ReturnType<typeof createSchemaValidator<T>>;

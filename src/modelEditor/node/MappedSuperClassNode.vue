@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Handle, type NodeProps, Position} from '@vue-flow/core';
 import type {MappedSuperClassNode} from '@/modelEditor/node/MappedSuperClassNode.ts';
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import {
     createId,
     getColorVar,
@@ -35,7 +35,7 @@ const groupTheme = computed(() => {
 
 const propertyEditListRef = useTemplateRef('propertyEditListRef');
 const unselectAllProperty = () => {
-    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection();
+    if (propertyEditListRef.value) propertyEditListRef.value.indexSelection.unselectAll();
 };
 const selectProperty = ({
     mappedSuperClassId,
@@ -48,7 +48,7 @@ const selectProperty = ({
         const index = props.data.mappedSuperClass.properties.findIndex(
             (property) => property.id === propertyId,
         );
-        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index]);
+        if (index !== -1) propertyEditListRef.value.indexSelection.resetSelection([index]);
     }
 };
 onMounted(() => {
@@ -145,8 +145,9 @@ watch(
             ref="propertyEditListRef"
             class="mapped-super-class-property-list"
             v-model:lines="data.mappedSuperClass.properties"
+            :to-key="(item) => item.id"
             :default-line="defaultScalarProperty"
-            :json-schema-validate="validateMappedSuperClassProperty"
+            :paste-validator="validateMappedSuperClassProperty"
             :before-copy="beforeCopy"
             :before-paste="beforePaste"
         >

@@ -4,7 +4,7 @@ import type {
     SqlTypeInput_TargetOf_jvmMatchRules,
     SqlTypeInput_TargetOf_tsMatchRules,
 } from '@/api/__generated/model/static';
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import JvmLanguageOrAnySelect from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue';
 import IconDelete from '@/components/icons/IconDelete.vue';
 import {translate} from '@/store/i18nStore.ts';
@@ -171,8 +171,9 @@ defineExpose({
                 <span class="label no-drag">{{ translate('jvmMatchRules') }}</span>
                 <EditList
                     v-model:lines="sqlTypeInput.jvmMatchRules"
+                    :to-key="(item, index) => item.id ?? String(index)"
                     :default-line="defaultJvmMatchRule"
-                    :json-schema-validate="isString"
+                    :paste-validator="isString"
                 >
                     <template #line="{index}">
                         <template v-if="sqlTypeInput.jvmMatchRules[index]">
@@ -214,8 +215,9 @@ defineExpose({
                 <span class="label no-drag">{{ translate('tsMatchRules') }}</span>
                 <EditList
                     v-model:lines="sqlTypeInput.tsMatchRules"
+                    :to-key="(item, index) => item.id ?? String(index)"
                     :default-line="defaultTsMatchRule"
-                    :json-schema-validate="validateTsMatchRule"
+                    :paste-validator="validateTsMatchRule"
                 >
                     <template #line="{index}">
                         <template v-if="sqlTypeInput.tsMatchRules[index]">

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import FitSizeLineInput from '@/components/input/FitSizeLineInput.vue';
 import {computed, nextTick, onMounted, ref, useTemplateRef} from 'vue';
-import {useClickOutside} from '@/components/list/selectableList/useClickOutside.ts';
 import IconCode from '@/components/icons/IconCode.vue';
+import {useClickOutside} from '@potmot/list';
 
 const model = defineModel<{
     name: string;

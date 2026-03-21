@@ -1,6 +1,6 @@
 const interactionTagNames = ['INPUT', 'TEXTAREA', 'BUTTON'];
 
-export const interactionClassList = [
+export const interactionClassNames = [
     'monaco-editor',
     'code-preview',
     'splitpanes__splitter',
@@ -56,7 +56,7 @@ export const judgeInteraction = (el: Element): boolean => {
     if (interactionTagNames.includes(el.tagName)) {
         return true;
     }
-    return containsClassList(el, interactionClassList);
+    return containsClassList(el, interactionClassNames);
 };
 
 export const judgeElementIsInteraction = (el: Element | null) => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {type NodeProps} from '@vue-flow/core';
 import type {EnumerationNode} from '@/modelEditor/node/EnumerationNode.ts';
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import {
     createId,
     getColorVar,
@@ -41,12 +41,12 @@ const createEnumItem = () => {
 
 const itemEditListRef = useTemplateRef('itemEditListRef');
 const unselectAllItem = () => {
-    if (itemEditListRef.value) itemEditListRef.value.selection.cleanSelection();
+    if (itemEditListRef.value) itemEditListRef.value.indexSelection.unselectAll();
 };
 const selectItem = ({enumerationId, itemId}: {enumerationId: string; itemId: string}) => {
     if (enumerationId === props.data.enumeration.id && itemEditListRef.value) {
         const index = props.data.enumeration.items.findIndex((item) => item.id === itemId);
-        if (index !== -1) itemEditListRef.value.selection.resetSelection([index]);
+        if (index !== -1) itemEditListRef.value.indexSelection.resetSelection([index]);
     }
 };
 onMounted(() => {
@@ -102,8 +102,9 @@ const beforePaste = (items: EnumerationItem[]) => {
             ref="itemEditListRef"
             class="enumeration-item-list"
             v-model:lines="data.enumeration.items"
+            :to-key="(item) => item.id"
             :default-line="createEnumItem"
-            :json-schema-validate="validateEnumerationItem"
+            :paste-validator="validateEnumerationItem"
             :before-paste="beforePaste"
         >
             <template #line="{item, index}">

@@ -2,7 +2,7 @@
 import {Handle, type NodeProps, Position} from '@vue-flow/core';
 import {type EntityNode, NOT_EXIST_ASSOCIATION_ID} from '@/modelEditor/node/EntityNode.ts';
 import EntityPropertyTypeEditor from '@/modelEditor/node/property/EntityPropertyTypeEditor.vue';
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import {
     createId,
     getColorIsDark,
@@ -34,14 +34,14 @@ const groupTheme = computed(() => {
 
 const propertyEditListRef = useTemplateRef('propertyEditListRef');
 const unselectAllProperty = () => {
-    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection();
+    if (propertyEditListRef.value) propertyEditListRef.value.indexSelection.unselectAll();
 };
 const selectProperty = ({entityId, propertyId}: {entityId: string; propertyId: string}) => {
     if (entityId === props.data.entity.id && propertyEditListRef.value) {
         const index = props.data.entity.properties.findIndex(
             (property) => property.id === propertyId,
         );
-        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index]);
+        if (index !== -1) propertyEditListRef.value.indexSelection.resetSelection([index]);
     }
 };
 onMounted(() => {
@@ -136,8 +136,9 @@ watch(
             ref="propertyEditListRef"
             class="entity-property-list"
             v-model:lines="data.entity.properties"
+            :to-key="(item) => item.id"
             :default-line="defaultScalarProperty"
-            :json-schema-validate="validateEntityProperty"
+            :paste-validator="validateEntityProperty"
             :before-copy="beforeCopy"
             :before-paste="beforePaste"
         >

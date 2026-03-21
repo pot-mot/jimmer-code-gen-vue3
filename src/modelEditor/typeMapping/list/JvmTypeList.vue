@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import EditList from '@/components/list/selectableList/EditList.vue';
+import {EditList} from '@potmot/list';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import type {JvmTypeInput, JvmTypeUpdateInput, JvmTypeView} from '@/api/__generated/model/static';
 import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from 'vue';
@@ -222,8 +222,9 @@ const moveDown = async (index: number) => {
     >
         <EditList
             v-model:lines="jvmTypeInputs"
+            :to-key="(item, index) => item.id ?? String(index)"
             :default-line="defaultJvmType"
-            :json-schema-validate="validateJvmType"
+            :paste-validator="validateJvmType"
             :before-paste="beforePaste"
         >
             <template #line="{index}">
