@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {computed, onMounted, readonly, ref, useTemplateRef, watch} from 'vue';
+import {computed, onMounted, ref, useTemplateRef, watch} from 'vue';
 import {BaseEdge, type EdgeProps, getSmoothStepPath} from '@vue-flow/core';
 import type {ConcreteAssociationEdge} from '@/modelEditor/edge/ConcreteAssociationEdge.ts';
 import type {AbstractAssociationEdge} from '@/modelEditor/edge/AbstractAssociationEdge.ts';
-import AutoResizeForeignObject from '@/modelEditor/svg/AutoResizeForeignObject.vue';
+import AutoResizeForeignObject from '@/components/svg/AutoResizeForeignObject.vue';
 import {useModelEditor} from '@/modelEditor/useModelEditor.ts';
 
 const {zoom, graphSelection} = useModelEditor();
