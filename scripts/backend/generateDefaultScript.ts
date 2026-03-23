@@ -1,57 +1,61 @@
-import ts from "typescript";
-import {getTsFiles, writeFiles} from "../utils/fileTools";
-import {ensureDirExists} from "../utils/checkFileExisted";
-import {buildProjectTsProgram} from "../utils/buildProjectTsProgram";
-import {getTypeInfo, hasTypeParameters, isFunctionType} from "../utils/typeTools";
+import ts from 'typescript';
+import {getTsFiles, writeFiles} from '../utils/fileTools';
+import {ensureDirExists} from '../utils/checkFileExisted';
+import {buildProjectTsProgram} from '../utils/buildProjectTsProgram';
+import {getTypeInfo, hasTypeParameters, isFunctionType} from '../utils/typeTools';
 
-const defaultScriptSourcePath = "src/modelEditor/script/default";
-ensureDirExists(defaultScriptSourcePath)
-const defaultScriptPath = "../jimmer-code-gen-kotlin-refactor/src/main/kotlin/top/potmot/init";
-ensureDirExists(defaultScriptPath)
+const defaultScriptSourcePath = 'src/modelEditor/script/default';
+ensureDirExists(defaultScriptSourcePath);
+const defaultScriptPath = '../jimmer-code-gen-kotlin-refactor/src/main/kotlin/top/potmot/init';
+ensureDirExists(defaultScriptPath);
 
-const defaultScriptSourceFiles = getTsFiles(defaultScriptSourcePath)
+const defaultScriptSourceFiles = getTsFiles(defaultScriptSourcePath);
 
-const {
-    program,
-    scriptTypeFiles,
-} = buildProjectTsProgram(
-    defaultScriptSourceFiles
-)
-const typeChecker = program.getTypeChecker()
+const {program, scriptTypeFiles} = buildProjectTsProgram(defaultScriptSourceFiles);
+const typeChecker = program.getTypeChecker();
 
 // 默认脚本
-const defaultScripts = []
-const jvmLanguageSet = new Set(["JAVA", "KOTLIN"])
-const databaseTypeSet = new Set(["MYSQL", "POSTGRESQL", "ORACLE", "SQLSERVER", "H2", "SQLITE"]);
+const defaultScripts = [];
+const jvmLanguageSet = new Set(['JAVA', 'KOTLIN']);
+const databaseTypeSet = new Set(['MYSQL', 'POSTGRESQL', 'ORACLE', 'SQLSERVER', 'H2', 'SQLITE']);
 
 // 收集脚本类型
-const scriptTypeDeclareSet = new Set<string>()
+const scriptTypeDeclareSet = new Set<string>();
 for (const {fileName} of scriptTypeFiles) {
-    const sourceFile = program.getSourceFile(fileName)
+    const sourceFile = program.getSourceFile(fileName);
+    if (sourceFile === undefined) {
+        throw new Error(`[${fileName}] does not exist`);
+    }
     for (const statement of sourceFile.statements) {
-        const {declaration, type, typeName} = getTypeInfo(statement, typeChecker, fileName)
+        const {declaration, type, typeName} = getTypeInfo(statement, typeChecker, fileName);
 
-        if (!isFunctionType(type)) continue
-        if (hasTypeParameters(declaration)) continue
-        const signatures = type.getCallSignatures()
-        if (signatures.length !== 1) continue
+        if (!isFunctionType(type)) continue;
+        if (hasTypeParameters(declaration)) continue;
+        const signatures = type.getCallSignatures();
+        if (signatures.length !== 1) continue;
 
-        scriptTypeDeclareSet.add(typeName)
+        scriptTypeDeclareSet.add(typeName);
     }
 }
 
 for (const {fileName} of defaultScriptSourceFiles) {
-    const sourceFile = program.getSourceFile(fileName)
-    if (sourceFile.statements.length !== 1) {
-        throw new Error(`[${fileName}] contains more than one statement`)
+    const sourceFile = program.getSourceFile(fileName);
+    if (sourceFile === undefined) {
+        throw new Error(`[${fileName}] does not exist`);
     }
-    const statement = sourceFile.statements[0]
+    if (sourceFile.statements.length !== 1) {
+        throw new Error(`[${fileName}] contains more than one statement`);
+    }
+    const statement = sourceFile.statements[0];
     if (!ts.isVariableStatement(statement)) {
-        throw new Error(`[${fileName}] contains statement not a variable declaration`)
+        throw new Error(`[${fileName}] contains statement not a variable declaration`);
     }
     const declaration = statement.declarationList.declarations[0];
     if (!declaration || !ts.isIdentifier(declaration.name)) {
         throw new Error(`[${fileName}] does not contain a valid identifier`);
+    }
+    if (declaration.initializer === undefined) {
+        throw new Error(`[${fileName}] does not contain a valid initializer`);
     }
 
     const variableName = declaration.name.text;
@@ -68,12 +72,13 @@ for (const {fileName} of defaultScriptSourceFiles) {
         throw new Error(`[${fileName}] ${variableName} is not a script type`);
     }
 
-    const leadingComments = ts.getLeadingCommentRanges(sourceFile.text, statement.getFullStart())
+    const leadingComments = ts.getLeadingCommentRanges(sourceFile.text, statement.getFullStart());
     let commentText = '';
     if (leadingComments) {
-        commentText = leadingComments.map(range =>
-            sourceFile.text.substring(range.pos, range.end)
-        ).join('\n').trim()
+        commentText = leadingComments
+            .map((range) => sourceFile.text.substring(range.pos, range.end))
+            .join('\n')
+            .trim();
     }
 
     let enabled = true;
@@ -87,7 +92,7 @@ for (const {fileName} of defaultScriptSourceFiles) {
         }
 
         // 匹配 databaseType=$value 格式
-        const databaseTypeMatch = commentText.match(/databaseType\s*=\s*(\w+)/)
+        const databaseTypeMatch = commentText.match(/databaseType\s*=\s*(\w+)/);
         const databaseTypeValue = databaseTypeMatch?.[1]?.toUpperCase();
         if (databaseTypeValue && databaseTypeSet.has(databaseTypeValue)) {
             databaseType = databaseTypeValue;
@@ -97,7 +102,7 @@ for (const {fileName} of defaultScriptSourceFiles) {
         const jvmLanguageMatch = commentText.match(/jvmLanguage\s*=\s*(\w+)/);
         const jvmLanguageValue = jvmLanguageMatch?.[1]?.toUpperCase();
         if (jvmLanguageValue && jvmLanguageSet.has(jvmLanguageValue)) {
-            jvmLanguage = jvmLanguageValue
+            jvmLanguage = jvmLanguageValue;
         }
     }
 
@@ -108,16 +113,16 @@ for (const {fileName} of defaultScriptSourceFiles) {
         enabled,
         databaseType,
         jvmLanguage,
-        content: declaration.initializer.getFullText(sourceFile).trim()
-    })
+        content: declaration.initializer.getFullText(sourceFile).trim(),
+    });
 }
 
-defaultScripts.sort((a, b) => a.name.localeCompare(b.name))
+defaultScripts.sort((a, b) => a.name.localeCompare(b.name));
 
-
-const defaultScriptFiles = [{
-    fileName: `${defaultScriptPath}/GenerateScript.kt`,
-    content: `package top.potmot.init
+const defaultScriptFiles = [
+    {
+        fileName: `${defaultScriptPath}/GenerateScript.kt`,
+        content: `package top.potmot.init
 
 import top.potmot.entity.database.DatabaseTypeOrAny
 import top.potmot.entity.model.JvmLanguageOrAny
@@ -125,7 +130,8 @@ import top.potmot.entity.script.ScriptType
 import top.potmot.entity.script.dto.GenerateScriptInsertInput
 
 val initGenerateScripts = listOf(
-${defaultScripts.map(it => `    GenerateScriptInsertInput(
+${defaultScripts.map(
+    (it) => `    GenerateScriptInsertInput(
         name = "${it.name}",
         type = ScriptType.${it.type},
         enabled = ${it.enabled},
@@ -135,9 +141,11 @@ ${defaultScripts.map(it => `    GenerateScriptInsertInput(
 ${it.content}
 """.trim(),
     )
-`)}
+`,
+)}
 )
 `,
-}]
+    },
+];
 
-writeFiles(defaultScriptFiles)
+writeFiles(defaultScriptFiles);

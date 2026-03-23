@@ -1,0 +1,11 @@
+{
+    "extends": "@tsconfig/node22/tsconfig.json",
+    "include": ["scripts/**/*", "src/**/*.d.ts"],
+    "compilerOptions": {
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.scripts.tsbuildinfo",
+        "esModuleInterop": true,
+        "allowImportingTsExtensions": true,
+        "module": "es2022",
+        "moduleResolution": "bundler"
+    }
+}

@@ -11,9 +11,9 @@
         "lint:prettier": "prettier --write src/",
         "build": "vue-tsc --noEmit && vite build",
         "preview": "vite preview",
-        "type-check": "vue-tsc --build --force",
+        "type-check": "vue-tsc --build --force --noEmit",
         "api": "tsx scripts/api/generateApi.ts",
-        "type-gen": "tsx scripts/precompile/generateTypes.ts && vue-tsc --build --force",
+        "type-gen": "tsx scripts/precompile/generateTypes.ts && pnpm type-check",
         "default-script-gen": "tsx scripts/backend/generateDefaultScript.ts",
         "default-type-mapping-gen": "tsx scripts/backend/generateDefaultTypeMapping.ts"
     },
@@ -25,7 +25,7 @@
     "dependencies": {
         "@potmot/command-history": "^0.0.0",
         "@potmot/diff": "^0.1.2",
-        "@potmot/list": "^0.0.6",
+        "@potmot/list": "^0.0.7",
         "@progress/jszip-esm": "^1.0.4",
         "@typescript/vfs": "^1.6.1",
         "@vue-flow/core": "^1.46.5",
@@ -62,6 +62,7 @@
         "@vue/test-utils": "^2.4.6",
         "@vue/tsconfig": "^0.8.1",
         "adm-zip": "^0.5.16",
+        "antlr-ng": "^1.0.10",
         "fs-extra": "^11.3.0",
         "husky": "^9.1.7",
         "jsdom": "^27.0.0",
