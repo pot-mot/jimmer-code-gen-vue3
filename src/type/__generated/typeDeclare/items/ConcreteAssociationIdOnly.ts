@@ -3,5 +3,5 @@ export default Object.freeze({
     content: `type ConcreteAssociationIdOnly =
     | OneToOneAssociationIdOnly
     | ManyToOneAssociationIdOnly
-    | ManyToManyAssociationIdOnly`,
+    | ManyToManyAssociationIdOnly;`,
 })

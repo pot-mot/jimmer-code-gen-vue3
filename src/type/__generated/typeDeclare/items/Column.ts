@@ -1,14 +1,14 @@
 export default Object.freeze({
     fileName: 'Column.d.ts',
     content: `type Column = {
-    name: string
-    comment: string
-    type: string
-    dataSize?: number
-    numericPrecision?: number
-    nullable: boolean
-    defaultValue?: string
-    partOfPrimaryKey?: boolean
-    autoIncrement?: boolean
-}`,
+    name: string;
+    comment: string;
+    type: string;
+    dataSize?: number;
+    numericPrecision?: number;
+    nullable: boolean;
+    defaultValue?: string;
+    partOfPrimaryKey?: boolean;
+    autoIncrement?: boolean;
+};`,
 })

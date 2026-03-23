@@ -1,11 +1,17 @@
 export default Object.freeze({
     fileName: 'OneToManyAbstractProperty.d.ts',
-    content: `type OneToManyAbstractProperty = Omit<OneToManyProperty,
-    'category' | 'referencedEntityId' |
-    'name' | 'comment' | 'idViewName' |
-    'useNameTemplate' | 'useCommentTemplate' | 'useIdViewNameTemplate'
+    content: `type OneToManyAbstractProperty = Omit<
+    OneToManyProperty,
+    | 'category'
+    | 'referencedEntityId'
+    | 'name'
+    | 'comment'
+    | 'idViewName'
+    | 'useNameTemplate'
+    | 'useCommentTemplate'
+    | 'useIdViewNameTemplate'
 > & {
-    category: "OneToMany_Abstract"
-    referencedAbstractEntityId: string
-}`,
+    category: 'OneToMany_Abstract';
+    referencedAbstractEntityId: string;
+};`,
 })

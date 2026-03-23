@@ -11,5 +11,5 @@ export default Object.freeze({
     | MappedSuperClassPropertySource
     | EmbeddableTypePropertySource
     | EnumerationItemSource
-    | MappedPropertySource`,
+    | MappedPropertySource;`,
 })

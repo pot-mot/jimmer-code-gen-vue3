@@ -2,6 +2,6 @@ export default Object.freeze({
     fileName: 'TableGenerator.d.ts',
     content: `type TableGenerator = (
     tables: DeepReadonly<Table[]>,
-    context: DeepReadonly<ModelContext>
-) => Record<string, string>`,
+    context: DeepReadonly<ModelContext>,
+) => Record<string, string>;`,
 })

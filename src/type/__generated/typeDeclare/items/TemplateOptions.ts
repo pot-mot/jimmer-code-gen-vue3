@@ -1,10 +1,10 @@
 export default Object.freeze({
     fileName: 'TemplateOptions.d.ts',
     content: `type TemplateOptions = {
-    indent: string
+    indent: string;
     scope: {
-        start: string,
-        end: string
-    }
-}`,
+        start: string;
+        end: string;
+    };
+};`,
 })

@@ -19,5 +19,5 @@ export default Object.freeze({
     | ManyToManyViewProperty
     | GetterFormulaProperty
     | SqlFormulaProperty
-    | TransientProperty`,
+    | TransientProperty;`,
 })

@@ -1,12 +1,12 @@
 export default Object.freeze({
     fileName: 'ForeignKey.d.ts',
     content: `type ForeignKey = {
-    name: string
-    comment: string
-    referencedTableName: string
-    referencedTableSchema: string
-    columnRefs: ColumnRef[]
-    onUpdate?: string
-    onDelete?: string
-}`,
+    name: string;
+    comment: string;
+    referencedTableName: string;
+    referencedTableSchema: string;
+    columnRefs: ColumnRef[];
+    onUpdate?: string;
+    onDelete?: string;
+};`,
 })

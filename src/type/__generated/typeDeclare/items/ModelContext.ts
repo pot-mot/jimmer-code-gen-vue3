@@ -1,20 +1,16 @@
 export default Object.freeze({
     fileName: 'ModelContext.d.ts',
     content: `type ModelContext = {
-    model: Model
-    groupMap: Map<string, GroupWithInheritInfoMap>
-    entityMap: Map<string, EntityWithInheritInfo>
-    mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>
-    embeddableTypeMap: Map<string, EmbeddableTypeWithOverrideProperties>
-    enumerationMap: Map<string, Enumeration>
-    associationMap: Map<string, Association>
+    model: Model;
+    groupMap: Map<string, GroupWithInheritInfoMap>;
+    entityMap: Map<string, EntityWithInheritInfo>;
+    mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>;
+    embeddableTypeMap: Map<string, EmbeddableTypeWithOverrideProperties>;
+    enumerationMap: Map<string, Enumeration>;
+    associationMap: Map<string, Association>;
 
-    nameTool: NameTool
-    createTemplateBuilder: (
-        options: TemplateOptions
-    ) => TemplateBuilder
-    createJvmFileBuilder: (
-        options: JvmFileBuilderOptions
-    ) => JvmFileBuilder
-}`,
+    nameTool: NameTool;
+    createTemplateBuilder: (options: TemplateOptions) => TemplateBuilder;
+    createJvmFileBuilder: (options: JvmFileBuilderOptions) => JvmFileBuilder;
+};`,
 })
