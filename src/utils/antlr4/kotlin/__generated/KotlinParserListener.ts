@@ -1,5 +1,5 @@
 
-import { ErrorNode, ParseTreeListener, ParserRuleContext, TerminalNode } from "antlr4ng";
+import { ErrorNode, type ParseTreeListener, ParserRuleContext, TerminalNode } from "antlr4ng";
 
 
 import { KotlinFileContext } from "./KotlinParser.js";

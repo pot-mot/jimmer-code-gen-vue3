@@ -1,5 +1,5 @@
 
-import { ErrorNode, ParseTreeListener, ParserRuleContext, TerminalNode } from "antlr4ng";
+import { ErrorNode, type ParseTreeListener, ParserRuleContext, TerminalNode } from "antlr4ng";
 
 
 import { Start_Context } from "./Java20Parser.js";

@@ -12,9 +12,6 @@
         },
         {
             "path": "./tsconfig.scripts.json"
-        },
-        {
-            "path": "./tsconfig.antlr4.json"
         }
     ]
 }
