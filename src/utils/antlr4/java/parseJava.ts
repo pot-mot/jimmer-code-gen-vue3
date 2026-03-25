@@ -1,4 +1,4 @@
-import {CharStream, CommonTokenStream, ParseTreeWalker} from 'antlr4ng';
+import {CharStream, CommonTokenStream, ParseTreeWalker, ParserRuleContext} from 'antlr4ng';
 import {
     AdditionalBoundContext,
     AnnotationContext,
@@ -67,6 +67,42 @@ const createEmptyInner = (): JavaInner => ({
     interfaces: [],
     annotationInterfaces: [],
 });
+
+const getRawTextByCtx = (tokenStream: CommonTokenStream, ctx: ParserRuleContext): string => {
+    if (!ctx || !ctx.start || !ctx.stop) return '';
+    const startToken = ctx.start;
+    const stopToken = ctx.stop;
+
+    // 从输入流中获取原始文本
+    const inputStream = tokenStream.tokenSource?.inputStream;
+    if (inputStream) {
+        return inputStream.getTextFromRange(startToken.start, stopToken.stop);
+    }
+
+    // 降级方案：使用 tokenStream 的 getText
+    return tokenStream.getTextFromContext(ctx);
+};
+
+const getCommentsBeforeToken = (
+    tokenStream: CommonTokenStream,
+    tokenIndex: number | null | undefined,
+): string[] => {
+    if (tokenIndex === null || tokenIndex === undefined) return [];
+    const comments: string[] = [];
+    const hiddenTokens = tokenStream.getHiddenTokensToLeft(tokenIndex, 1);
+    if (hiddenTokens) {
+        for (const hiddenToken of hiddenTokens) {
+            if (
+                hiddenToken.type === Java20Lexer.COMMENT ||
+                hiddenToken.type === Java20Lexer.LINE_COMMENT
+            ) {
+                if (hiddenToken.text) comments.push(hiddenToken.text);
+            }
+        }
+    }
+
+    return comments;
+};
 
 const getDimsCount = (dims: {LBRACK: (i?: number) => unknown} | null | undefined): number => {
     if (!dims) return 0;
@@ -444,8 +480,6 @@ const parseThrows = (throwsCtx: ThrowsTContext | null | undefined): JavaType[] =
     return result;
 };
 
-type CommentsGetter = (tokenIndex: number | undefined) => string[];
-
 const parseFieldLike = (
     variableDeclaratorList: VariableDeclaratorListContext,
     typeCtx: UnannTypeContext,
@@ -478,20 +512,20 @@ const parseFieldLike = (
     return result;
 };
 
-const parseField = (ctx: FieldDeclarationContext, getComments: CommentsGetter): JavaField[] => {
+const parseField = (ctx: FieldDeclarationContext, tokenStream: CommonTokenStream): JavaField[] => {
     const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.fieldModifier());
     return parseFieldLike(
         ctx.variableDeclaratorList(),
         ctx.unannType(),
         modifiers,
         annotations,
-        getComments(ctx.start?.tokenIndex),
+        getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
     );
 };
 
 const parseConstantDeclaration = (
     ctx: ConstantDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaField[] => {
     const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.constantModifier());
     return parseFieldLike(
@@ -499,13 +533,13 @@ const parseConstantDeclaration = (
         ctx.unannType(),
         modifiers,
         annotations,
-        getComments(ctx.start?.tokenIndex),
+        getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
     );
 };
 
 const parseMethodParameters = (
     formalParameterList: FormalParameterListContext | null | undefined,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaMethodParameter[] => {
     const parameters: JavaMethodParameter[] = [];
     const formalParams: FormalParameterContext[] = formalParameterList?.formalParameter() || [];
@@ -524,7 +558,7 @@ const parseMethodParameters = (
             const inlineVarArgAnnotations = parseAnnotations(variableArity.annotation() || []);
             parameters.push({
                 name: variableArity.identifier().getText(),
-                comments: getComments(variableArity.start?.tokenIndex),
+                comments: getCommentsBeforeToken(tokenStream, variableArity.start?.tokenIndex),
                 type: finalType,
                 annotations: [...modifierAnnotations, ...inlineVarArgAnnotations],
                 isVarArgs: true,
@@ -542,7 +576,7 @@ const parseMethodParameters = (
 
         parameters.push({
             name,
-            comments: getComments(param.start?.tokenIndex),
+            comments: getCommentsBeforeToken(tokenStream, param.start?.tokenIndex),
             type: applyAdditionalDims(parseType(typeCtx), extraDims),
             annotations,
         });
@@ -553,9 +587,11 @@ const parseMethodParameters = (
 
 const parseMethod = (
     ctx: MethodDeclarationContext | InterfaceMethodDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaMethod => {
     const methodHeader = ctx.methodHeader();
+    const methodBody = ctx.methodBody();
+
     const methodDeclarator = methodHeader.methodDeclarator();
     const methodName = methodDeclarator.identifier().getText();
 
@@ -579,7 +615,7 @@ const parseMethod = (
         }
     }
 
-    const parameters = parseMethodParameters(methodDeclarator.formalParameterList(), getComments);
+    const parameters = parseMethodParameters(methodDeclarator.formalParameterList(), tokenStream);
 
     const typeParametersCtx = methodHeader.typeParameters();
     const typeParameters = typeParametersCtx ? parseTypeParameters(typeParametersCtx) : [];
@@ -588,19 +624,20 @@ const parseMethod = (
 
     return {
         name: methodName,
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         returnType,
         parameters,
         modifiers,
         annotations: [...annotations, ...headerAnnotations],
         typeParameters,
         throws: throwsTypes,
+        rawBody: getRawTextByCtx(tokenStream, methodBody),
     };
 };
 
 const parseConstructor = (
     ctx: ConstructorDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaConstructor => {
     const constructorDeclarator = ctx.constructorDeclarator();
     const name = constructorDeclarator.simpleTypeName().typeIdentifier().getText();
@@ -608,7 +645,7 @@ const parseConstructor = (
 
     const parameters = parseMethodParameters(
         constructorDeclarator.formalParameterList(),
-        getComments,
+        tokenStream,
     );
 
     const typeParametersCtx = constructorDeclarator.typeParameters();
@@ -618,7 +655,7 @@ const parseConstructor = (
 
     return {
         name,
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         parameters,
         modifiers,
         annotations,
@@ -630,25 +667,25 @@ const parseConstructor = (
 const parseInnerClassDeclaration = (
     ctx: ClassDeclarationContext,
     inner: JavaInner,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ) => {
     const normalClassCtx = ctx.normalClassDeclaration();
     if (normalClassCtx) {
-        const javaClass = parseClass(normalClassCtx, getComments);
+        const javaClass = parseClass(normalClassCtx, tokenStream);
         if (javaClass) inner.classes.push(javaClass);
         return;
     }
 
     const enumCtx = ctx.enumDeclaration();
     if (enumCtx) {
-        const javaEnum = parseEnum(enumCtx, getComments);
+        const javaEnum = parseEnum(enumCtx, tokenStream);
         if (javaEnum) inner.enums.push(javaEnum);
         return;
     }
 
     const recordCtx = ctx.recordDeclaration();
     if (recordCtx) {
-        const javaRecord = parseRecord(recordCtx, getComments);
+        const javaRecord = parseRecord(recordCtx, tokenStream);
         if (javaRecord) inner.records.push(javaRecord);
     }
 };
@@ -656,11 +693,11 @@ const parseInnerClassDeclaration = (
 const parseInnerInterfaceDeclaration = (
     ctx: InterfaceDeclarationContext,
     inner: JavaInner,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ) => {
     const normalInterfaceCtx = ctx.normalInterfaceDeclaration();
     if (normalInterfaceCtx) {
-        const javaInterface = parseInterface(normalInterfaceCtx, getComments);
+        const javaInterface = parseInterface(normalInterfaceCtx, tokenStream);
         if (javaInterface) inner.interfaces.push(javaInterface);
         return;
     }
@@ -669,7 +706,7 @@ const parseInnerInterfaceDeclaration = (
     if (annotationInterfaceCtx) {
         const javaAnnotationInterface = parseAnnotationInterface(
             annotationInterfaceCtx,
-            getComments,
+            tokenStream,
         );
         if (javaAnnotationInterface) inner.annotationInterfaces.push(javaAnnotationInterface);
     }
@@ -678,18 +715,18 @@ const parseInnerInterfaceDeclaration = (
 const parseInnerClassMemberDeclaration = (
     memberDecl: ClassMemberDeclarationContext,
     inner: JavaInner,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ) => {
     const classDecl = memberDecl.classDeclaration();
-    if (classDecl) parseInnerClassDeclaration(classDecl, inner, getComments);
+    if (classDecl) parseInnerClassDeclaration(classDecl, inner, tokenStream);
 
     const interfaceDecl = memberDecl.interfaceDeclaration();
-    if (interfaceDecl) parseInnerInterfaceDeclaration(interfaceDecl, inner, getComments);
+    if (interfaceDecl) parseInnerInterfaceDeclaration(interfaceDecl, inner, tokenStream);
 };
 
 const parseClass = (
     ctx: NormalClassDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaClass | undefined => {
     const className =
         ctx.typeIdentifier().Identifier()?.getText() || ctx.typeIdentifier().getText();
@@ -721,7 +758,7 @@ const parseClass = (
 
         const constructorDecl = bodyDecl.constructorDeclaration();
         if (constructorDecl) {
-            constructors.push(parseConstructor(constructorDecl, getComments));
+            constructors.push(parseConstructor(constructorDecl, tokenStream));
             continue;
         }
 
@@ -729,17 +766,17 @@ const parseClass = (
         if (!memberDecl) continue;
 
         const fieldDecl = memberDecl.fieldDeclaration();
-        if (fieldDecl) fields.push(...parseField(fieldDecl, getComments));
+        if (fieldDecl) fields.push(...parseField(fieldDecl, tokenStream));
 
         const methodDecl = memberDecl.methodDeclaration();
-        if (methodDecl) methods.push(parseMethod(methodDecl, getComments));
+        if (methodDecl) methods.push(parseMethod(methodDecl, tokenStream));
 
-        parseInnerClassMemberDeclaration(memberDecl, inner, getComments);
+        parseInnerClassMemberDeclaration(memberDecl, inner, tokenStream);
     }
 
     return {
         name: className,
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         modifiers,
         annotations,
         fields,
@@ -754,7 +791,7 @@ const parseClass = (
 
 const parseRecordComponent = (
     ctx: RecordComponentContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaRecordComponent | undefined => {
     const variableArity = ctx.variableArityRecordComponent();
     if (variableArity) {
@@ -765,7 +802,7 @@ const parseRecordComponent = (
         const type = applyAdditionalDims(parseType(variableArity.unannType()), 1);
         return {
             name: variableArity.identifier().getText(),
-            comments: getComments(variableArity.start?.tokenIndex),
+            comments: getCommentsBeforeToken(tokenStream, variableArity.start?.tokenIndex),
             type,
             modifiers,
             annotations: [...annotations, ...inlineAnnotations],
@@ -780,7 +817,7 @@ const parseRecordComponent = (
     const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.recordComponentModifier());
     return {
         name: idCtx.getText(),
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         type: parseType(typeCtx),
         modifiers,
         annotations,
@@ -789,12 +826,12 @@ const parseRecordComponent = (
 
 const parseCompactConstructor = (
     ctx: CompactConstructorDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaConstructor => {
     const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.constructorModifier());
     return {
         name: ctx.simpleTypeName()?.typeIdentifier().Identifier()?.getText() || '',
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         parameters: [],
         modifiers,
         annotations,
@@ -805,7 +842,7 @@ const parseCompactConstructor = (
 
 const parseRecord = (
     ctx: RecordDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaRecord | undefined => {
     const recordName =
         ctx.typeIdentifier()?.Identifier()?.getText() || ctx.typeIdentifier()?.getText();
@@ -828,7 +865,7 @@ const parseRecord = (
     for (let i = 0; i < componentList.length; i++) {
         const component = componentList[i];
         if (!component) continue;
-        const parsed = parseRecordComponent(component, getComments);
+        const parsed = parseRecordComponent(component, tokenStream);
         if (parsed) recordComponents.push(parsed);
     }
 
@@ -850,7 +887,7 @@ const parseRecord = (
 
         const compactConstructorDecl = recordBodyDecl.compactConstructorDeclaration();
         if (compactConstructorDecl) {
-            constructors.push(parseCompactConstructor(compactConstructorDecl, getComments));
+            constructors.push(parseCompactConstructor(compactConstructorDecl, tokenStream));
             continue;
         }
 
@@ -859,7 +896,7 @@ const parseRecord = (
 
         const constructorDecl = bodyDecl.constructorDeclaration();
         if (constructorDecl) {
-            constructors.push(parseConstructor(constructorDecl, getComments));
+            constructors.push(parseConstructor(constructorDecl, tokenStream));
             continue;
         }
 
@@ -867,17 +904,17 @@ const parseRecord = (
         if (!memberDecl) continue;
 
         const fieldDecl = memberDecl.fieldDeclaration();
-        if (fieldDecl) fields.push(...parseField(fieldDecl, getComments));
+        if (fieldDecl) fields.push(...parseField(fieldDecl, tokenStream));
 
         const methodDecl = memberDecl.methodDeclaration();
-        if (methodDecl) methods.push(parseMethod(methodDecl, getComments));
+        if (methodDecl) methods.push(parseMethod(methodDecl, tokenStream));
 
-        parseInnerClassMemberDeclaration(memberDecl, inner, getComments);
+        parseInnerClassMemberDeclaration(memberDecl, inner, tokenStream);
     }
 
     return {
         name: recordName,
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         modifiers,
         annotations,
         recordComponents,
@@ -892,7 +929,7 @@ const parseRecord = (
 
 const parseInterface = (
     ctx: NormalInterfaceDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaInterface | undefined => {
     const interfaceName =
         ctx.typeIdentifier()?.Identifier()?.getText() || ctx.typeIdentifier()?.getText();
@@ -920,21 +957,21 @@ const parseInterface = (
         if (!bodyDecl) continue;
 
         const constantDecl = bodyDecl.constantDeclaration();
-        if (constantDecl) fields.push(...parseConstantDeclaration(constantDecl, getComments));
+        if (constantDecl) fields.push(...parseConstantDeclaration(constantDecl, tokenStream));
 
         const methodDecl = bodyDecl.interfaceMethodDeclaration();
-        if (methodDecl) methods.push(parseMethod(methodDecl, getComments));
+        if (methodDecl) methods.push(parseMethod(methodDecl, tokenStream));
 
         const classDecl = bodyDecl.classDeclaration();
-        if (classDecl) parseInnerClassDeclaration(classDecl, inner, getComments);
+        if (classDecl) parseInnerClassDeclaration(classDecl, inner, tokenStream);
 
         const interfaceDecl = bodyDecl.interfaceDeclaration();
-        if (interfaceDecl) parseInnerInterfaceDeclaration(interfaceDecl, inner, getComments);
+        if (interfaceDecl) parseInnerInterfaceDeclaration(interfaceDecl, inner, tokenStream);
     }
 
     return {
         name: interfaceName,
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         modifiers,
         annotations,
         fields,
@@ -947,7 +984,7 @@ const parseInterface = (
 
 const parseEnum = (
     ctx: EnumDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaEnum | undefined => {
     const enumName =
         ctx.typeIdentifier()?.Identifier()?.getText() || ctx.typeIdentifier()?.getText();
@@ -980,7 +1017,7 @@ const parseEnum = (
 
         enumItems.push({
             name: constant.identifier()?.getText() || '',
-            comments: getComments(constant.start?.tokenIndex),
+            comments: getCommentsBeforeToken(tokenStream, constant.start?.tokenIndex),
             arguments: itemArguments,
             modifiers: enumModifiers,
             annotations: enumAnnotations,
@@ -999,7 +1036,7 @@ const parseEnum = (
 
         const constructorDecl = bodyDecl.constructorDeclaration();
         if (constructorDecl) {
-            constructors.push(parseConstructor(constructorDecl, getComments));
+            constructors.push(parseConstructor(constructorDecl, tokenStream));
             continue;
         }
 
@@ -1007,17 +1044,17 @@ const parseEnum = (
         if (!memberDecl) continue;
 
         const fieldDecl = memberDecl.fieldDeclaration();
-        if (fieldDecl) fields.push(...parseField(fieldDecl, getComments));
+        if (fieldDecl) fields.push(...parseField(fieldDecl, tokenStream));
 
         const methodDecl = memberDecl.methodDeclaration();
-        if (methodDecl) methods.push(parseMethod(methodDecl, getComments));
+        if (methodDecl) methods.push(parseMethod(methodDecl, tokenStream));
 
-        parseInnerClassMemberDeclaration(memberDecl, inner, getComments);
+        parseInnerClassMemberDeclaration(memberDecl, inner, tokenStream);
     }
 
     return {
         name: enumName,
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         modifiers,
         annotations,
         enumItems,
@@ -1031,7 +1068,7 @@ const parseEnum = (
 
 const parseAnnotationInterfaceField = (
     ctx: AnnotationInterfaceMemberDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaAnnotationInterfaceField | undefined => {
     const elementDeclareCtx = ctx.annotationInterfaceElementDeclaration();
     if (!elementDeclareCtx) return;
@@ -1048,7 +1085,7 @@ const parseAnnotationInterfaceField = (
 
     return {
         name: fieldName,
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         type,
         modifiers,
         annotations,
@@ -1058,7 +1095,7 @@ const parseAnnotationInterfaceField = (
 
 const parseAnnotationInterface = (
     ctx: AnnotationInterfaceDeclarationContext,
-    getComments: CommentsGetter,
+    tokenStream: CommonTokenStream,
 ): JavaAnnotationInterface | undefined => {
     const interfaceName =
         ctx.typeIdentifier()?.Identifier()?.getText() || ctx.typeIdentifier()?.getText();
@@ -1074,19 +1111,19 @@ const parseAnnotationInterface = (
         const member = members[i];
         if (!member) continue;
 
-        const field = parseAnnotationInterfaceField(member, getComments);
+        const field = parseAnnotationInterfaceField(member, tokenStream);
         if (field) fields.push(field);
 
         const classDecl = member.classDeclaration();
-        if (classDecl) parseInnerClassDeclaration(classDecl, inner, getComments);
+        if (classDecl) parseInnerClassDeclaration(classDecl, inner, tokenStream);
 
         const interfaceDecl = member.interfaceDeclaration();
-        if (interfaceDecl) parseInnerInterfaceDeclaration(interfaceDecl, inner, getComments);
+        if (interfaceDecl) parseInnerInterfaceDeclaration(interfaceDecl, inner, tokenStream);
     }
 
     return {
         name: interfaceName,
-        comments: getComments(ctx.start?.tokenIndex),
+        comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
         modifiers,
         annotations,
         fields,
@@ -1160,23 +1197,6 @@ class CustomJavaListener extends Java20ParserListener {
         this.tokenStream = tokenStream;
     }
 
-    private getCommentsBeforeToken(tokenIndex: number): string[] {
-        const comments: string[] = [];
-        const hiddenTokens = this.tokenStream.getHiddenTokensToLeft(tokenIndex, 1);
-        if (hiddenTokens) {
-            for (const hiddenToken of hiddenTokens) {
-                if (
-                    hiddenToken.type === Java20Lexer.COMMENT ||
-                    hiddenToken.type === Java20Lexer.LINE_COMMENT
-                ) {
-                    if (hiddenToken.text) comments.push(hiddenToken.text);
-                }
-            }
-        }
-
-        return comments;
-    }
-
     enterPackageDeclaration = (ctx: PackageDeclarationContext) => {
         const packageParts: string[] = [];
         const identifierList = ctx.identifier() || [];
@@ -1196,30 +1216,27 @@ class CustomJavaListener extends Java20ParserListener {
     enterTopLevelClassOrInterfaceDeclaration = (
         ctx: TopLevelClassOrInterfaceDeclarationContext,
     ) => {
-        const getComments = (tokenIndex: number | undefined) => {
-            if (tokenIndex === undefined) return [];
-            return this.getCommentsBeforeToken(tokenIndex);
-        };
+        const tokenStream = this.tokenStream;
 
         const classCtx = ctx.classDeclaration();
         if (classCtx) {
             const normalClassCtx = classCtx.normalClassDeclaration();
             if (normalClassCtx) {
-                const javaClass = parseClass(normalClassCtx, getComments);
+                const javaClass = parseClass(normalClassCtx, tokenStream);
                 if (javaClass) this.classes.push(javaClass);
                 return;
             }
 
             const enumCtx = classCtx.enumDeclaration();
             if (enumCtx) {
-                const javaEnum = parseEnum(enumCtx, getComments);
+                const javaEnum = parseEnum(enumCtx, tokenStream);
                 if (javaEnum) this.enums.push(javaEnum);
                 return;
             }
 
             const recordCtx = classCtx.recordDeclaration();
             if (recordCtx) {
-                const javaRecord = parseRecord(recordCtx, getComments);
+                const javaRecord = parseRecord(recordCtx, tokenStream);
                 if (javaRecord) this.records.push(javaRecord);
             }
             return;
@@ -1230,7 +1247,7 @@ class CustomJavaListener extends Java20ParserListener {
 
         const normalInterfaceCtx = interfaceCtx.normalInterfaceDeclaration();
         if (normalInterfaceCtx) {
-            const javaInterface = parseInterface(normalInterfaceCtx, getComments);
+            const javaInterface = parseInterface(normalInterfaceCtx, tokenStream);
             if (javaInterface) this.interfaces.push(javaInterface);
             return;
         }
@@ -1239,7 +1256,7 @@ class CustomJavaListener extends Java20ParserListener {
         if (annotationInterfaceCtx) {
             const javaAnnotationInterface = parseAnnotationInterface(
                 annotationInterfaceCtx,
-                getComments,
+                tokenStream,
             );
             if (javaAnnotationInterface) this.annotationInterfaces.push(javaAnnotationInterface);
         }

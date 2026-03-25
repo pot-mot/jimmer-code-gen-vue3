@@ -86,6 +86,7 @@ export type JavaMethod = {
     annotations: JavaAnnotation[];
     typeParameters: JavaTypeParameter[];
     throws: JavaType[];
+    rawBody: string;
 };
 
 export type JavaConstructor = {
