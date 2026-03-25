@@ -5,8 +5,8 @@ import {
     AnnotationInterfaceDeclarationContext,
     AnnotationInterfaceMemberDeclarationContext,
     ArrayTypeContext,
+    ClassBodyDeclarationContext,
     ClassDeclarationContext,
-    ClassMemberDeclarationContext,
     ClassOrInterfaceTypeContext,
     ClassTypeContext,
     CompactConstructorDeclarationContext,
@@ -815,11 +815,29 @@ const parseInnerInterfaceDeclaration = (
     }
 };
 
-const parseInnerClassMemberDeclaration = (
-    memberDecl: ClassMemberDeclarationContext,
+const parseClassBody = (
+    ctx: ClassBodyDeclarationContext,
+    fields: JavaField[],
+    methods: JavaMethod[],
+    constructors: JavaConstructor[],
     inner: JavaInner,
     tokenStream: CommonTokenStream,
-) => {
+): void => {
+    const constructorDecl = ctx.constructorDeclaration();
+    if (constructorDecl) {
+        constructors.push(parseConstructor(constructorDecl, tokenStream));
+        return;
+    }
+
+    const memberDecl = ctx.classMemberDeclaration();
+    if (!memberDecl) return;
+
+    const fieldDecl = memberDecl.fieldDeclaration();
+    if (fieldDecl) fields.push(...parseField(fieldDecl, tokenStream));
+
+    const methodDecl = memberDecl.methodDeclaration();
+    if (methodDecl) methods.push(parseMethod(methodDecl, tokenStream));
+
     const classDecl = memberDecl.classDeclaration();
     if (classDecl) parseInnerClassDeclaration(classDecl, inner, tokenStream);
 
@@ -858,22 +876,7 @@ const parseClass = (
 
     const bodyDeclarations = ctx.classBody()?.classBodyDeclaration() || [];
     for (const bodyDecl of bodyDeclarations) {
-        const constructorDecl = bodyDecl.constructorDeclaration();
-        if (constructorDecl) {
-            constructors.push(parseConstructor(constructorDecl, tokenStream));
-            continue;
-        }
-
-        const memberDecl = bodyDecl.classMemberDeclaration();
-        if (!memberDecl) continue;
-
-        const fieldDecl = memberDecl.fieldDeclaration();
-        if (fieldDecl) fields.push(...parseField(fieldDecl, tokenStream));
-
-        const methodDecl = memberDecl.methodDeclaration();
-        if (methodDecl) methods.push(parseMethod(methodDecl, tokenStream));
-
-        parseInnerClassMemberDeclaration(memberDecl, inner, tokenStream);
+        parseClassBody(bodyDecl, fields, methods, constructors, inner, tokenStream);
     }
 
     return {
@@ -1002,22 +1005,7 @@ const parseRecord = (
         const bodyDecl = recordBodyDecl.classBodyDeclaration();
         if (!bodyDecl) continue;
 
-        const constructorDecl = bodyDecl.constructorDeclaration();
-        if (constructorDecl) {
-            constructors.push(parseConstructor(constructorDecl, tokenStream));
-            continue;
-        }
-
-        const memberDecl = bodyDecl.classMemberDeclaration();
-        if (!memberDecl) continue;
-
-        const fieldDecl = memberDecl.fieldDeclaration();
-        if (fieldDecl) fields.push(...parseField(fieldDecl, tokenStream));
-
-        const methodDecl = memberDecl.methodDeclaration();
-        if (methodDecl) methods.push(parseMethod(methodDecl, tokenStream));
-
-        parseInnerClassMemberDeclaration(memberDecl, inner, tokenStream);
+        parseClassBody(bodyDecl, fields, methods, constructors, inner, tokenStream);
     }
 
     return {
@@ -1144,22 +1132,7 @@ const parseEnum = (
         const bodyDecl = bodyDeclarations[i];
         if (!bodyDecl) continue;
 
-        const constructorDecl = bodyDecl.constructorDeclaration();
-        if (constructorDecl) {
-            constructors.push(parseConstructor(constructorDecl, tokenStream));
-            continue;
-        }
-
-        const memberDecl = bodyDecl.classMemberDeclaration();
-        if (!memberDecl) continue;
-
-        const fieldDecl = memberDecl.fieldDeclaration();
-        if (fieldDecl) fields.push(...parseField(fieldDecl, tokenStream));
-
-        const methodDecl = memberDecl.methodDeclaration();
-        if (methodDecl) methods.push(parseMethod(methodDecl, tokenStream));
-
-        parseInnerClassMemberDeclaration(memberDecl, inner, tokenStream);
+        parseClassBody(bodyDecl, fields, methods, constructors, inner, tokenStream);
     }
 
     return {
