@@ -67,18 +67,20 @@ public class TestClass<T extends Object & Comparable<T>, U> extends Object imple
         assert(cls.typeParameters);
         expect(cls.typeParameters.length).toBe(2);
         assert(cls.typeParameters[0]);
-        expect(cls.typeParameters[0].name).toBe('T');
+        expect(cls.typeParameters[0].typeName).toBe('T');
         expect(cls.typeParameters[0].modifiers).toStrictEqual([]);
         expect(cls.typeParameters[0].annotations).toStrictEqual([]);
         assert(cls.typeParameters[0].bound);
-        expect(cls.typeParameters[0].bound.name).toBe('Object');
-        expect(cls.typeParameters[0].bound.typeArguments).toBeUndefined();
+        expect(cls.typeParameters[0].bound.raw).toBe('extends Object & Comparable<T>');
+        expect(cls.typeParameters[0].bound.typeName).toBe('Object');
+        expect(cls.typeParameters[0].bound.typeArguments).toStrictEqual([]);
         assert(cls.typeParameters[0].bound.additionalBounds?.[0]);
-        expect(cls.typeParameters[0].bound.additionalBounds[0].raw).toBe('Comparable<T>');
+        expect(cls.typeParameters[0].bound.additionalBounds[0].raw).toBe('& Comparable<T>');
+        expect(cls.typeParameters[0].bound.additionalBounds[0].typeName).toBe('Comparable');
         assert(cls.typeParameters[0].bound.additionalBounds[0].typeArguments?.[0]);
-        expect(cls.typeParameters[0].bound.additionalBounds[0].typeArguments[0].name).toBe('T');
+        expect(cls.typeParameters[0].bound.additionalBounds[0].typeArguments[0].raw).toBe('T');
         assert(cls.typeParameters[1]);
-        expect(cls.typeParameters[1].name).toBe('U');
+        expect(cls.typeParameters[1].typeName).toBe('U');
         expect(cls.typeParameters[1].modifiers).toStrictEqual([]);
         expect(cls.typeParameters[1].annotations).toStrictEqual([]);
         expect(cls.typeParameters[1].bound).toBeUndefined();
@@ -96,11 +98,11 @@ public class TestClass<T extends Object & Comparable<T>, U> extends Object imple
         assert(method2.parameters[1]);
         expect(method2.parameters[1].name).toBe('b');
         expect(method2.parameters[1].type).toStrictEqual({
-            name: 'String',
             raw: 'String[]',
+            name: 'String',
             isArray: true,
             arrayDimensions: 1,
-            typeArguments: undefined,
+            typeArguments: [],
         });
         expect(method2.parameters[1].annotations).toStrictEqual([]);
         expect(method2.parameters[1].comments).toStrictEqual(['// 字符串数组参数 ']);
@@ -110,8 +112,7 @@ public class TestClass<T extends Object & Comparable<T>, U> extends Object imple
             name: 'String',
             raw: 'String',
             isArray: false,
-            arrayDimensions: undefined,
-            typeArguments: undefined,
+            typeArguments: [],
         });
 
         // 验证方法泛型参数
@@ -119,16 +120,16 @@ public class TestClass<T extends Object & Comparable<T>, U> extends Object imple
         expect(method2.typeParameters).toBeDefined();
         expect(method2.typeParameters.length).toBe(2);
         assert(method2.typeParameters[0]);
-        expect(method2.typeParameters[0].name).toBe('K');
+        expect(method2.typeParameters[0].typeName).toBe('K');
         expect(method2.typeParameters[0].modifiers).toStrictEqual([]);
         expect(method2.typeParameters[0].annotations).toStrictEqual([]);
         expect(method2.typeParameters[0].bound).toBeUndefined();
         assert(method2.typeParameters[1]);
-        expect(method2.typeParameters[1].name).toBe('V');
+        expect(method2.typeParameters[1].typeName).toBe('V');
         expect(method2.typeParameters[1].modifiers).toStrictEqual([]);
         expect(method2.typeParameters[1].annotations).toStrictEqual([]);
         assert(method2.typeParameters[1].bound);
-        expect(method2.typeParameters[1].bound.name).toBe('Number');
+        expect(method2.typeParameters[1].bound.typeName).toBe('Number');
     });
 
     it('parse interface with multiple inheritance - 解析接口多重继承', () => {
@@ -176,13 +177,18 @@ public interface MyInterface<T extends Serializable & Comparable<T>>
         assert(interface0.typeParameters);
         expect(interface0.typeParameters.length).toBe(1);
         assert(interface0.typeParameters[0]);
-        expect(interface0.typeParameters[0].name).toBe('T');
+        expect(interface0.typeParameters[0].typeName).toBe('T');
         expect(interface0.typeParameters[0].modifiers).toStrictEqual([]);
         expect(interface0.typeParameters[0].annotations).toStrictEqual([]);
         assert(interface0.typeParameters[0].bound);
-        expect(interface0.typeParameters[0].bound.name).toBe('Serializable');
+        expect(interface0.typeParameters[0].bound.typeName).toBe('Serializable');
         assert(interface0.typeParameters[0].bound.additionalBounds?.[0]);
-        expect(interface0.typeParameters[0].bound.additionalBounds[0].raw).toBe('Comparable<T>');
+        expect(interface0.typeParameters[0].bound.additionalBounds[0].raw).toBe('& Comparable<T>');
+        expect(interface0.typeParameters[0].bound.additionalBounds[0].typeName).toBe('Comparable');
+        assert(interface0.typeParameters[0].bound.additionalBounds[0].typeArguments?.[0]);
+        expect(interface0.typeParameters[0].bound.additionalBounds[0].typeArguments[0].raw).toBe(
+            'T',
+        );
 
         // 验证字段 (常量)
         expect(interface0.fields.length).toBe(2);
@@ -214,7 +220,7 @@ public interface MyInterface<T extends Serializable & Comparable<T>>
         expect(genericMethod.annotations).toStrictEqual([]);
         expect(genericMethod.typeParameters?.length).toBe(1);
         assert(genericMethod.typeParameters?.[0]);
-        expect(genericMethod.typeParameters[0].name).toBe('U');
+        expect(genericMethod.typeParameters[0].typeName).toBe('U');
         expect(genericMethod.parameters.length).toBe(1);
         assert(genericMethod.parameters[0]);
         expect(genericMethod.parameters[0].name).toBe('clazz');
@@ -423,6 +429,7 @@ public record Person(
         expect(record.recordComponents[2].name).toBe('hobbies');
         expect(record.recordComponents[2].type.name).toBe('String');
         expect(record.recordComponents[2].isVarArgs).toBe(true);
+        expect(record.recordComponents[2].type.isArray).toBe(false);
         expect(record.recordComponents[2].modifiers).toStrictEqual([]);
         expect(record.recordComponents[2].annotations).toStrictEqual([]);
         expect(record.recordComponents[2].comments.length).toBe(1);
@@ -522,9 +529,9 @@ public class GenericExample<T extends Comparable<? super T>> {
         // 验证类泛型边界中的通配符
         expect(cls.typeParameters?.length).toBe(1);
         assert(cls.typeParameters?.[0]);
-        expect(cls.typeParameters[0].name).toBe('T');
+        expect(cls.typeParameters[0].typeName).toBe('T');
         assert(cls.typeParameters[0].bound);
-        expect(cls.typeParameters[0].bound.name).toBe('Comparable');
+        expect(cls.typeParameters[0].bound.typeName).toBe('Comparable');
         expect(cls.typeParameters[0].bound.additionalBounds?.length).toBe(0);
 
         // 验证字段复杂类型
@@ -546,7 +553,7 @@ public class GenericExample<T extends Comparable<? super T>> {
         expect(convertMethod.annotations).toStrictEqual([]);
         expect(convertMethod.typeParameters?.length).toBe(1);
         assert(convertMethod.typeParameters[0]);
-        expect(convertMethod.typeParameters[0].name).toBe('R');
+        expect(convertMethod.typeParameters[0].typeName).toBe('R');
         expect(convertMethod.typeParameters[0].modifiers).toStrictEqual([]);
         expect(convertMethod.typeParameters[0].annotations).toStrictEqual([]);
         expect(convertMethod.parameters.length).toBe(1);
@@ -659,7 +666,8 @@ public class VarArgsExample {
         assert(method1);
         assert(method1.parameters[0]);
         expect(method1.parameters[0].isVarArgs).toBe(true);
-        expect(method1.parameters[0].type.isArray).toBe(true);
+        expect(method1.parameters[0].type.name).toBe('String');
+        expect(method1.parameters[0].type.isArray).toBe(false);
         expect(method1.parameters[0].annotations).toStrictEqual([]);
         expect(method1.parameters[0].comments).toStrictEqual([]);
         expect(method1.comments).toStrictEqual([]);
@@ -669,7 +677,7 @@ public class VarArgsExample {
         assert(method2);
         assert(method2.parameters[1]);
         expect(method2.parameters[1].isVarArgs).toBe(true);
-        expect(method2.parameters[1].type.isArray).toBe(true);
+        expect(method2.parameters[1].type.isArray).toBe(false);
         expect(method2.parameters[1].annotations).toStrictEqual([]);
         expect(method2.parameters[1].comments).toStrictEqual([]);
         expect(method2.comments).toStrictEqual([]);
@@ -808,7 +816,7 @@ public class AnnotatedClass {
         expect(cls.annotations[0].name).toBe('Service');
         assert(cls.annotations[0].parameters?.[0]);
         expect(cls.annotations[0].parameters[0].name).toBe('value');
-        expect(cls.annotations[0].parameters[0].value).toBe('"userService"');
+        expect(cls.annotations[0].parameters[0].rawValue).toBe('"userService"');
         expect(cls.comments).toStrictEqual([]);
 
         // 验证字段注解

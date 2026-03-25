@@ -1,15 +1,17 @@
-import {CharStream, CommonTokenStream, ParseTreeWalker, ParserRuleContext} from 'antlr4ng';
+import {CharStream, CommonTokenStream, ParseTreeWalker} from 'antlr4ng';
 import {
     AdditionalBoundContext,
     AnnotationContext,
     AnnotationInterfaceDeclarationContext,
     AnnotationInterfaceMemberDeclarationContext,
+    ArrayTypeContext,
     ClassDeclarationContext,
     ClassMemberDeclarationContext,
+    ClassOrInterfaceTypeContext,
+    ClassTypeContext,
     CompactConstructorDeclarationContext,
     ConstantDeclarationContext,
     ConstructorDeclarationContext,
-    ElementValueContext,
     EnumDeclarationContext,
     FieldDeclarationContext,
     FormalParameterContext,
@@ -23,14 +25,23 @@ import {
     NormalClassDeclarationContext,
     NormalInterfaceDeclarationContext,
     PackageDeclarationContext,
+    PrimitiveTypeContext,
     RecordComponentContext,
     RecordDeclarationContext,
+    ReferenceTypeContext,
     ThrowsTContext,
     TopLevelClassOrInterfaceDeclarationContext,
     TypeArgumentsContext,
     TypeBoundContext,
     TypeParametersContext,
+    TypeVariableContext,
+    UnannArrayTypeContext,
+    UnannClassOrInterfaceTypeContext,
+    UnannClassTypeContext,
+    UnannPrimitiveTypeContext,
+    UnannReferenceTypeContext,
     UnannTypeContext,
+    UnannTypeVariableContext,
     VariableDeclaratorListContext,
     WildcardContext,
 } from './__generated/Java20Parser';
@@ -58,7 +69,9 @@ import type {
     JavaTypeParameter,
     JavaTypeParameterAdditionalBound,
     JavaTypeParameterBound,
+    JavaWildcardBound,
 } from './type/JavaMetadata';
+import {getRawTextByCtx} from '@/utils/antlr4/common/Antlr4Common.ts';
 
 const createEmptyInner = (): JavaInner => ({
     classes: [],
@@ -67,21 +80,6 @@ const createEmptyInner = (): JavaInner => ({
     interfaces: [],
     annotationInterfaces: [],
 });
-
-const getRawTextByCtx = (tokenStream: CommonTokenStream, ctx: ParserRuleContext): string => {
-    if (!ctx || !ctx.start || !ctx.stop) return '';
-    const startToken = ctx.start;
-    const stopToken = ctx.stop;
-
-    // 从输入流中获取原始文本
-    const inputStream = tokenStream.tokenSource?.inputStream;
-    if (inputStream) {
-        return inputStream.getTextFromRange(startToken.start, stopToken.stop);
-    }
-
-    // 降级方案：使用 tokenStream 的 getText
-    return tokenStream.getTextFromContext(ctx);
-};
 
 const getCommentsBeforeToken = (
     tokenStream: CommonTokenStream,
@@ -104,85 +102,221 @@ const getCommentsBeforeToken = (
     return comments;
 };
 
-const getDimsCount = (dims: {LBRACK: (i?: number) => unknown} | null | undefined): number => {
-    if (!dims) return 0;
-    const leftBrackets = dims.LBRACK();
-    if (Array.isArray(leftBrackets)) return leftBrackets.length;
-    return leftBrackets ? 1 : 0;
+const parsePrimitiveTypeName = (ctx: UnannPrimitiveTypeContext | PrimitiveTypeContext): string => {
+    return ctx.getText();
 };
 
-const stripGeneric = (text: string): string => {
-    let depth = 0;
-    let result = '';
-    for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
-        if (!ch) continue;
-        if (ch === '<') {
-            depth += 1;
-            continue;
-        }
-        if (ch === '>') {
-            if (depth > 0) depth -= 1;
-            continue;
-        }
-        if (depth === 0) result += ch;
-    }
-    return result;
+const parseTypeVariableName = (ctx: UnannTypeVariableContext | TypeVariableContext): string => {
+    return ctx.typeIdentifier().getText();
 };
 
-const buildType = (
-    name: string,
-    typeArguments?: JavaTypeArgument[],
-    arrayDimensions = 0,
-    raw?: string,
-): JavaType => ({
-    name,
-    isArray: arrayDimensions > 0,
-    arrayDimensions: arrayDimensions > 0 ? arrayDimensions : undefined,
-    typeArguments,
-    raw,
-});
-
-const applyAdditionalDims = (type: JavaType, additionalDims: number): JavaType => {
-    if (additionalDims <= 0) return type;
-    const nextDims = (type.arrayDimensions || 0) + additionalDims;
-    const raw = `${type.raw || type.name}${'[]'.repeat(additionalDims)}`;
+const parseClassOrInterface = (
+    ctx:
+        | UnannClassOrInterfaceTypeContext
+        | UnannClassTypeContext
+        | ClassOrInterfaceTypeContext
+        | ClassTypeContext,
+    tokenStream: CommonTokenStream,
+): {
+    typeName: string;
+    typeArguments: JavaTypeArgument[];
+} => {
+    const packageName = ctx.packageName()?.getText();
+    const typeArgsCtx = ctx.typeArguments();
     return {
-        ...type,
-        isArray: true,
-        arrayDimensions: nextDims,
-        raw,
+        typeName: `${packageName ? `${packageName}.` : ''}${ctx.typeIdentifier().getText()}`,
+        typeArguments: typeArgsCtx ? parseTypeArguments(typeArgsCtx, tokenStream) : [],
     };
 };
 
-const parseElementValue = (ctx: ElementValueContext): string | JavaAnnotationParameter[] => {
-    const arrayInitializer = ctx.elementValueArrayInitializer();
-    if (arrayInitializer) {
-        const values = arrayInitializer.elementValueList()?.elementValue() || [];
-        return values.map((value, index) => ({
-            name: String(index),
-            value: parseElementValue(value),
-        }));
+const parseUnannArrayType = (
+    ctx: UnannArrayTypeContext,
+    tokenStream: CommonTokenStream,
+): {
+    typeName: string;
+    typeArguments: JavaTypeArgument[];
+    arrayDimensions: number;
+} => {
+    const arrayDimensions = ctx.dims().LBRACK().length;
+
+    const primitiveType = ctx.unannPrimitiveType();
+    if (primitiveType) {
+        return {
+            typeName: parsePrimitiveTypeName(primitiveType),
+            typeArguments: [],
+            arrayDimensions,
+        };
     }
 
-    const annotation = ctx.annotation();
-    if (annotation) return annotation.getText();
+    const classOrInterfaceType = ctx.unannClassOrInterfaceType();
+    if (classOrInterfaceType) {
+        const {typeName, typeArguments} = parseClassOrInterface(classOrInterfaceType, tokenStream);
+        return {
+            typeName,
+            typeArguments,
+            arrayDimensions,
+        };
+    }
 
-    const expression = ctx.conditionalExpression();
-    if (expression) return expression.getText();
+    const typeVariable = ctx.unannTypeVariable();
+    if (typeVariable) {
+        return {
+            typeName: parseTypeVariableName(typeVariable),
+            typeArguments: [],
+            arrayDimensions,
+        };
+    }
 
-    return ctx.getText() || '';
+    throw new Error(`Unsupported array type: ${JSON.stringify(ctx)}`);
 };
 
-const parseAnnotation = (ctx: AnnotationContext): JavaAnnotation => {
+const parseArrayType = (
+    ctx: ArrayTypeContext,
+    tokenStream: CommonTokenStream,
+): {
+    typeName: string;
+    typeArguments: JavaTypeArgument[];
+    arrayDimensions: number;
+} => {
+    const arrayDimensions = ctx.dims().LBRACK().length;
+
+    const primitiveType = ctx.primitiveType();
+    if (primitiveType) {
+        return {
+            typeName: parsePrimitiveTypeName(primitiveType),
+            typeArguments: [],
+            arrayDimensions,
+        };
+    }
+
+    const classType = ctx.classType();
+    if (classType) {
+        const {typeName, typeArguments} = parseClassOrInterface(classType, tokenStream);
+        return {
+            typeName,
+            typeArguments,
+            arrayDimensions,
+        };
+    }
+
+    const typeVariable = ctx.typeVariable();
+    if (typeVariable) {
+        return {
+            typeName: parseTypeVariableName(typeVariable),
+            typeArguments: [],
+            arrayDimensions,
+        };
+    }
+
+    throw new Error(`Unsupported array type: ${JSON.stringify(ctx)}`);
+};
+
+const parseUnannReferenceType = (
+    ctx: UnannReferenceTypeContext,
+    tokenStream: CommonTokenStream,
+): JavaType => {
+    const raw = getRawTextByCtx(tokenStream, ctx);
+
+    const classOrInterfaceType = ctx.unannClassOrInterfaceType();
+    if (classOrInterfaceType) {
+        const {typeName, typeArguments} = parseClassOrInterface(classOrInterfaceType, tokenStream);
+
+        return {
+            raw,
+            name: typeName,
+            typeArguments,
+            isArray: false,
+        };
+    }
+
+    const typeVariable = ctx.unannTypeVariable();
+    if (typeVariable) {
+        return {
+            raw,
+            name: parseTypeVariableName(typeVariable),
+            typeArguments: [],
+            isArray: false,
+        };
+    }
+
+    const arrayType = ctx.unannArrayType();
+    if (arrayType) {
+        const {typeName, typeArguments, arrayDimensions} = parseUnannArrayType(
+            arrayType,
+            tokenStream,
+        );
+
+        return {
+            raw,
+            name: typeName,
+            typeArguments,
+            isArray: true,
+            arrayDimensions,
+        };
+    }
+
+    throw new Error(`Unsupported reference type: ${JSON.stringify(ctx)}`);
+};
+
+const parseReferenceType = (
+    ctx: ReferenceTypeContext,
+    tokenStream: CommonTokenStream,
+): JavaType => {
+    const raw = getRawTextByCtx(tokenStream, ctx);
+
+    const classOrInterfaceType = ctx.classOrInterfaceType();
+    if (classOrInterfaceType) {
+        const {typeName, typeArguments} = parseClassOrInterface(classOrInterfaceType, tokenStream);
+
+        return {
+            raw,
+            name: typeName,
+            typeArguments,
+            isArray: false,
+        };
+    }
+
+    const typeVariable = ctx.typeVariable();
+    if (typeVariable) {
+        return {
+            raw,
+            name: parseTypeVariableName(typeVariable),
+            typeArguments: [],
+            isArray: false,
+        };
+    }
+
+    const arrayType = ctx.arrayType();
+    if (arrayType) {
+        const {typeName, typeArguments, arrayDimensions} = parseArrayType(arrayType, tokenStream);
+
+        return {
+            raw,
+            name: typeName,
+            typeArguments,
+            isArray: true,
+            arrayDimensions,
+        };
+    }
+
+    throw new Error(`Unsupported reference type: ${JSON.stringify(ctx)}`);
+};
+
+const parseAnnotation = (
+    ctx: AnnotationContext,
+    tokenStream: CommonTokenStream,
+): JavaAnnotation => {
+    const raw = getRawTextByCtx(tokenStream, ctx);
+
     const normal = ctx.normalAnnotation();
     if (normal) {
         const pairs = normal.elementValuePairList()?.elementValuePair() || [];
         const parameters: JavaAnnotationParameter[] = pairs.map((pair) => ({
             name: pair.identifier().getText(),
-            value: parseElementValue(pair.elementValue()),
+            rawValue: getRawTextByCtx(tokenStream, pair.elementValue()),
         }));
         return {
+            raw,
             name: normal.typeName().getText(),
             parameters,
         };
@@ -191,31 +325,33 @@ const parseAnnotation = (ctx: AnnotationContext): JavaAnnotation => {
     const single = ctx.singleElementAnnotation();
     if (single) {
         return {
+            raw,
             name: single.typeName().getText(),
-            parameters: [{name: 'value', value: parseElementValue(single.elementValue())}],
+            parameters: [
+                {name: 'value', rawValue: getRawTextByCtx(tokenStream, single.elementValue())},
+            ],
         };
     }
 
     const marker = ctx.markerAnnotation();
     if (marker) {
         return {
+            raw,
             name: marker.typeName().getText(),
             parameters: [],
         };
     }
 
-    return {
-        name: ctx.getText(),
-        parameters: [],
-    };
+    throw new Error(`Unsupported annotation: ${JSON.stringify(ctx)}`);
 };
 
-const parseAnnotations = (annotationCtxList: AnnotationContext[]): JavaAnnotation[] => {
+const parseAnnotations = (
+    annotationCtxList: AnnotationContext[],
+    tokenStream: CommonTokenStream,
+): JavaAnnotation[] => {
     const result: JavaAnnotation[] = [];
-    for (let i = 0; i < annotationCtxList.length; i++) {
-        const annotation = annotationCtxList[i];
-        if (!annotation) continue;
-        result.push(parseAnnotation(annotation));
+    for (const annotation of annotationCtxList) {
+        result.push(parseAnnotation(annotation, tokenStream));
     }
     return result;
 };
@@ -228,6 +364,7 @@ const parseModifiersAndAnnotations = (
           }[]
         | null
         | undefined,
+    tokenStream: CommonTokenStream,
 ): {
     modifiers: string[];
     annotations: JavaAnnotation[];
@@ -236,12 +373,10 @@ const parseModifiersAndAnnotations = (
     const annotations: JavaAnnotation[] = [];
     if (!modifierList) return {modifiers, annotations};
 
-    for (let i = 0; i < modifierList.length; i++) {
-        const modifier = modifierList[i];
-        if (!modifier) continue;
+    for (const modifier of modifierList) {
         const annotation = modifier.annotation();
         if (annotation) {
-            annotations.push(parseAnnotation(annotation));
+            annotations.push(parseAnnotation(annotation, tokenStream));
             continue;
         }
         const text = modifier.getText();
@@ -251,232 +386,193 @@ const parseModifiersAndAnnotations = (
     return {modifiers, annotations};
 };
 
-const parseWildcardTypeArgument = (wildcard: WildcardContext): JavaTypeArgument => {
+const parseReferenceTypeArgument = (
+    ctx: ReferenceTypeContext,
+    tokenStream: CommonTokenStream,
+): JavaTypeArgument & {kind: 'type'} => {
+    const {name, typeArguments, isArray, arrayDimensions} = parseReferenceType(ctx, tokenStream);
+    return {
+        raw: getRawTextByCtx(tokenStream, ctx),
+        kind: 'type',
+        typeName: name,
+        typeArguments,
+        isArray,
+        arrayDimensions,
+    };
+};
+
+const parseWildcardTypeArgument = (
+    wildcard: WildcardContext,
+    tokenStream: CommonTokenStream,
+): JavaTypeArgument & {kind: 'wildcard'} => {
+    const annotation = wildcard.annotation();
+
     const bounds = wildcard.wildcardBounds();
-    let wildcardBound: JavaTypeArgument['wildcardBound'];
+    let wildcardBound: JavaWildcardBound | undefined;
     if (bounds) {
         const referenceType = bounds.referenceType();
         if (bounds.EXTENDS()) {
-            wildcardBound = {kind: 'extends', type: referenceType.getText()};
+            wildcardBound = {kind: 'extends', type: parseReferenceType(referenceType, tokenStream)};
         } else if (bounds.SUPER()) {
-            wildcardBound = {kind: 'super', type: referenceType.getText()};
+            wildcardBound = {kind: 'super', type: parseReferenceType(referenceType, tokenStream)};
         }
     }
 
     return {
+        raw: getRawTextByCtx(tokenStream, wildcard),
         kind: 'wildcard',
-        name: '?',
-        isArray: false,
         wildcardBound,
-        raw: wildcard.getText(),
+        annotations: parseAnnotations(annotation, tokenStream),
     };
 };
 
-const parseTypeArguments = (ctx: TypeArgumentsContext): JavaTypeArgument[] => {
+const parseTypeArguments = (
+    ctx: TypeArgumentsContext,
+    tokenStream: CommonTokenStream,
+): JavaTypeArgument[] => {
     const result: JavaTypeArgument[] = [];
     const args = ctx.typeArgumentList().typeArgument();
 
-    for (let i = 0; i < args.length; i++) {
-        const arg = args[i];
-        if (!arg) continue;
-
+    for (const arg of args) {
         const wildcard = arg.wildcard();
         if (wildcard) {
-            result.push(parseWildcardTypeArgument(wildcard));
+            result.push(parseWildcardTypeArgument(wildcard, tokenStream));
             continue;
         }
 
         const referenceType = arg.referenceType();
-        if (!referenceType) {
-            result.push({
-                kind: 'type',
-                name: arg.getText(),
-                isArray: false,
-                raw: arg.getText(),
-            });
-            continue;
+        if (referenceType) {
+            result.push(parseReferenceTypeArgument(referenceType, tokenStream));
         }
-
-        const classOrInterfaceType = referenceType.classOrInterfaceType();
-        if (classOrInterfaceType) {
-            const typeArgsCtx = classOrInterfaceType.typeArguments();
-            result.push({
-                kind: 'type',
-                name: stripGeneric(classOrInterfaceType.getText()),
-                raw: referenceType.getText(),
-                isArray: false,
-                typeArguments: typeArgsCtx ? parseTypeArguments(typeArgsCtx) : undefined,
-            });
-            continue;
-        }
-
-        const typeVariable = referenceType.typeVariable();
-        if (typeVariable) {
-            result.push({
-                kind: 'type',
-                name: typeVariable.typeIdentifier().getText(),
-                isArray: false,
-                raw: typeVariable.getText(),
-            });
-            continue;
-        }
-
-        const arrayType = referenceType.arrayType();
-        if (arrayType) {
-            const dims = getDimsCount(arrayType.dims());
-            const componentText =
-                arrayType.classType()?.getText() ||
-                arrayType.typeVariable()?.getText() ||
-                arrayType.primitiveType()?.getText() ||
-                arrayType.getText();
-
-            result.push({
-                kind: 'type',
-                name: stripGeneric(componentText),
-                raw: componentText,
-                isArray: dims > 0,
-                arrayDimensions: dims > 0 ? dims : undefined,
-            });
-            continue;
-        }
-
-        result.push({
-            kind: 'type',
-            name: referenceType.getText(),
-            isArray: false,
-            raw: referenceType.getText(),
-        });
     }
 
     return result;
 };
 
-const parseType = (typeCtx: UnannTypeContext): JavaType => {
-    const primitiveType = typeCtx.unannPrimitiveType();
+const parseType = (ctx: UnannTypeContext, tokenStream: CommonTokenStream): JavaType => {
+    const raw = getRawTextByCtx(tokenStream, ctx);
+
+    const primitiveType = ctx.unannPrimitiveType();
     if (primitiveType) {
-        const raw = primitiveType.getText();
-        return buildType(raw, undefined, 0, raw);
+        return {
+            raw,
+            name: parsePrimitiveTypeName(primitiveType),
+            typeArguments: [],
+            isArray: false,
+        };
     }
 
-    const referenceType = typeCtx.unannReferenceType();
+    const referenceType = ctx.unannReferenceType();
     if (referenceType) {
-        const classOrInterfaceType = referenceType.unannClassOrInterfaceType();
-        if (classOrInterfaceType) {
-            const typeArgs = classOrInterfaceType.typeArguments();
-            const raw = classOrInterfaceType.getText();
-            return buildType(
-                stripGeneric(raw),
-                typeArgs ? parseTypeArguments(typeArgs) : undefined,
-                0,
-                raw,
-            );
-        }
-
-        const typeVariable = referenceType.unannTypeVariable();
-        if (typeVariable) {
-            const raw = typeVariable.getText();
-            return buildType(raw, undefined, 0, raw);
-        }
-
-        const arrayType = referenceType.unannArrayType();
-        if (arrayType) {
-            const dims = getDimsCount(arrayType.dims());
-            const component =
-                arrayType.unannClassOrInterfaceType()?.getText() ||
-                arrayType.unannTypeVariable()?.getText() ||
-                arrayType.unannPrimitiveType()?.getText() ||
-                arrayType.getText();
-            const componentTypeArgs = arrayType.unannClassOrInterfaceType()?.typeArguments();
-            return buildType(
-                stripGeneric(component),
-                componentTypeArgs ? parseTypeArguments(componentTypeArgs) : undefined,
-                dims,
-                arrayType.getText(),
-            );
-        }
+        return parseUnannReferenceType(referenceType, tokenStream);
     }
 
-    const raw = typeCtx.getText();
-    return buildType(stripGeneric(raw), undefined, 0, raw);
+    throw new Error(`Unsupported type: ${JSON.stringify(ctx)}`);
 };
 
-const parseAdditionalBound = (ctx: AdditionalBoundContext): JavaTypeParameterAdditionalBound => {
-    const interfaceTypeCtx = ctx.interfaceType();
-    const classTypeCtx = interfaceTypeCtx.classType();
-
-    // 获取类型标识符
-    const typeIdentifier = classTypeCtx.typeIdentifier()?.getText() || '';
-
-    // 获取包名（如果有）
-    const packageName = classTypeCtx.packageName()?.getText();
-    const fullTypeName = packageName ? `${packageName}.${typeIdentifier}` : typeIdentifier;
-
-    // 获取泛型参数（如果有）
-    const typeArgsCtx = classTypeCtx.typeArguments();
-    const typeArguments = typeArgsCtx ? parseTypeArguments(typeArgsCtx) : undefined;
-
-    // 构建完整类型名称（包含泛型）
-    const typeNameWithGenerics = typeArguments
-        ? `${fullTypeName}<${typeArguments.map((arg) => arg.raw || arg.name).join(', ')}>`
-        : fullTypeName;
-
+const parseAdditionalBound = (
+    ctx: AdditionalBoundContext,
+    tokenStream: CommonTokenStream,
+): JavaTypeParameterAdditionalBound => {
+    const raw = getRawTextByCtx(tokenStream, ctx);
+    const {typeName, typeArguments} = parseClassOrInterface(
+        ctx.interfaceType().classType(),
+        tokenStream,
+    );
     return {
-        name: typeIdentifier,
-        raw: typeNameWithGenerics,
+        raw,
+        typeName,
         typeArguments,
     };
 };
 
 const parseTypeBound = (
-    ctx: TypeBoundContext | null | undefined,
-): JavaTypeParameterBound | undefined => {
-    if (!ctx) return;
+    ctx: TypeBoundContext,
+    tokenStream: CommonTokenStream,
+): JavaTypeParameterBound => {
+    const raw = getRawTextByCtx(tokenStream, ctx);
 
-    const typeText = ctx.classOrInterfaceType()?.getText() || ctx.typeVariable()?.getText();
-    if (!typeText) return;
+    const classOrInterface = ctx.classOrInterfaceType();
+    if (classOrInterface) {
+        const {typeName, typeArguments} = parseClassOrInterface(classOrInterface, tokenStream);
+        return {
+            raw,
+            typeName,
+            typeArguments,
+            additionalBounds: ctx
+                .additionalBound()
+                ?.map((it) => parseAdditionalBound(it, tokenStream)),
+        };
+    }
 
-    const typeArguments = ctx.classOrInterfaceType()?.typeArguments();
+    const typeVariable = ctx.typeVariable();
+    if (typeVariable) {
+        return {
+            raw,
+            typeName: parseTypeVariableName(typeVariable),
+            typeArguments: [],
+            additionalBounds: [],
+        };
+    }
 
-    return {
-        name: stripGeneric(typeText),
-        raw: typeText,
-        typeArguments: typeArguments ? parseTypeArguments(typeArguments) : undefined,
-        additionalBounds: ctx.additionalBound()?.map(parseAdditionalBound),
-    };
+    throw new Error(`Unsupported type bound: ${JSON.stringify(ctx)}`);
 };
 
-const parseTypeParameters = (ctx: TypeParametersContext): JavaTypeParameter[] => {
+const parseTypeParameters = (
+    ctx: TypeParametersContext,
+    tokenStream: CommonTokenStream,
+): JavaTypeParameter[] => {
     const typeParameters: JavaTypeParameter[] = [];
     const typeParamList = ctx.typeParameterList().typeParameter();
 
-    for (let i = 0; i < typeParamList.length; i++) {
-        const typeParam = typeParamList[i];
-        if (!typeParam) continue;
-
+    for (const typeParam of typeParamList) {
         const typeName = typeParam.typeIdentifier()?.getText() || '';
         const modifierList = typeParam.typeParameterModifier() || [];
-        const {modifiers, annotations} = parseModifiersAndAnnotations(modifierList);
-
+        const {modifiers, annotations} = parseModifiersAndAnnotations(modifierList, tokenStream);
+        const typeBoundCtx = typeParam.typeBound();
         typeParameters.push({
-            name: typeName,
+            raw: getRawTextByCtx(tokenStream, typeParam),
+            typeName,
             modifiers,
             annotations,
-            bound: parseTypeBound(typeParam.typeBound()),
+            bound: typeBoundCtx ? parseTypeBound(typeBoundCtx, tokenStream) : undefined,
         });
     }
 
     return typeParameters;
 };
 
-const parseThrows = (throwsCtx: ThrowsTContext | null | undefined): JavaType[] => {
+const parseThrows = (
+    throwsCtx: ThrowsTContext | null | undefined,
+    tokenStream: CommonTokenStream,
+): JavaType[] => {
     const result: JavaType[] = [];
-    const exceptionTypes = throwsCtx?.exceptionTypeList()?.exceptionType() || [];
-    for (let i = 0; i < exceptionTypes.length; i++) {
-        const exceptionType = exceptionTypes[i];
-        if (!exceptionType) continue;
-        const raw = exceptionType.getText();
-        result.push(buildType(stripGeneric(raw), undefined, 0, raw));
+    const exceptionTypes = throwsCtx?.exceptionTypeList()?.exceptionType() ?? [];
+
+    for (const exceptionType of exceptionTypes) {
+        const classType = exceptionType.classType();
+        if (classType) {
+            const {typeName, typeArguments} = parseClassOrInterface(classType, tokenStream);
+            result.push({
+                raw: getRawTextByCtx(tokenStream, classType),
+                name: typeName,
+                typeArguments,
+                isArray: false,
+            });
+            continue;
+        }
+
+        const typeVariable = exceptionType.typeVariable();
+        if (typeVariable) {
+            result.push({
+                raw: getRawTextByCtx(tokenStream, typeVariable),
+                name: parseTypeVariableName(typeVariable),
+                typeArguments: [],
+                isArray: false,
+            });
+        }
     }
+
     return result;
 };
 
@@ -486,24 +582,20 @@ const parseFieldLike = (
     modifiers: string[],
     annotations: JavaAnnotation[],
     comments: string[],
+    tokenStream: CommonTokenStream,
 ): JavaField[] => {
     const result: JavaField[] = [];
 
-    const baseType = parseType(typeCtx);
+    const type = parseType(typeCtx, tokenStream);
     const declarators = variableDeclaratorList?.variableDeclarator() || [];
 
-    for (let i = 0; i < declarators.length; i++) {
-        const declarator = declarators[i];
-        if (!declarator) continue;
+    for (const declarator of declarators) {
         const idCtx = declarator.variableDeclaratorId();
-        const name = idCtx?.identifier()?.getText();
-        if (!name) continue;
-        const extraDims = getDimsCount(idCtx?.dims());
-
+        const name = idCtx.identifier().getText();
         result.push({
             name,
             comments,
-            type: applyAdditionalDims(baseType, extraDims),
+            type,
             modifiers: [...modifiers],
             annotations: [...annotations],
         });
@@ -513,13 +605,14 @@ const parseFieldLike = (
 };
 
 const parseField = (ctx: FieldDeclarationContext, tokenStream: CommonTokenStream): JavaField[] => {
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.fieldModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.fieldModifier(), tokenStream);
     return parseFieldLike(
         ctx.variableDeclaratorList(),
         ctx.unannType(),
         modifiers,
         annotations,
         getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
+        tokenStream,
     );
 };
 
@@ -527,13 +620,17 @@ const parseConstantDeclaration = (
     ctx: ConstantDeclarationContext,
     tokenStream: CommonTokenStream,
 ): JavaField[] => {
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.constantModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(
+        ctx.constantModifier(),
+        tokenStream,
+    );
     return parseFieldLike(
         ctx.variableDeclaratorList(),
         ctx.unannType(),
         modifiers,
         annotations,
         getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
+        tokenStream,
     );
 };
 
@@ -544,22 +641,21 @@ const parseMethodParameters = (
     const parameters: JavaMethodParameter[] = [];
     const formalParams: FormalParameterContext[] = formalParameterList?.formalParameter() || [];
 
-    for (let i = 0; i < formalParams.length; i++) {
-        const param = formalParams[i];
-        if (!param) continue;
-
+    for (const param of formalParams) {
         const variableArity = param.variableArityParameter();
         if (variableArity) {
-            const baseType = parseType(variableArity.unannType());
-            const finalType = applyAdditionalDims(baseType, 1);
             const {annotations: modifierAnnotations} = parseModifiersAndAnnotations(
                 param.variableModifier(),
+                tokenStream,
             );
-            const inlineVarArgAnnotations = parseAnnotations(variableArity.annotation() || []);
+            const inlineVarArgAnnotations = parseAnnotations(
+                variableArity.annotation(),
+                tokenStream,
+            );
             parameters.push({
                 name: variableArity.identifier().getText(),
                 comments: getCommentsBeforeToken(tokenStream, variableArity.start?.tokenIndex),
-                type: finalType,
+                type: parseType(variableArity.unannType(), tokenStream),
                 annotations: [...modifierAnnotations, ...inlineVarArgAnnotations],
                 isVarArgs: true,
             });
@@ -567,19 +663,21 @@ const parseMethodParameters = (
         }
 
         const typeCtx = param.unannType();
-        if (!typeCtx) continue;
-        const declaratorId = param.variableDeclaratorId();
-        const name = declaratorId?.identifier()?.getText();
-        if (!name) continue;
-        const extraDims = getDimsCount(declaratorId?.dims());
-        const {annotations} = parseModifiersAndAnnotations(param.variableModifier());
-
-        parameters.push({
-            name,
-            comments: getCommentsBeforeToken(tokenStream, param.start?.tokenIndex),
-            type: applyAdditionalDims(parseType(typeCtx), extraDims),
-            annotations,
-        });
+        if (typeCtx) {
+            const declaratorId = param.variableDeclaratorId();
+            const name = declaratorId?.identifier()?.getText();
+            if (!name) continue;
+            const {annotations} = parseModifiersAndAnnotations(
+                param.variableModifier(),
+                tokenStream,
+            );
+            parameters.push({
+                name,
+                comments: getCommentsBeforeToken(tokenStream, param.start?.tokenIndex),
+                type: parseType(typeCtx, tokenStream),
+                annotations,
+            });
+        }
     }
 
     return parameters;
@@ -600,27 +698,26 @@ const parseMethod = (
         'interfaceMethodModifier' in ctx ? ctx.interfaceMethodModifier() : undefined;
 
     const modifierNodes = classMethodModifiers || interfaceMethodModifiers || [];
-    const {modifiers, annotations} = parseModifiersAndAnnotations(modifierNodes);
-    const headerAnnotations = parseAnnotations(methodHeader.annotation() || []);
+    const {modifiers, annotations} = parseModifiersAndAnnotations(modifierNodes, tokenStream);
+    const headerAnnotations = parseAnnotations(methodHeader.annotation() || [], tokenStream);
 
     const resultCtx = methodHeader.result();
     let returnType: JavaType | 'void' = 'void';
     if (!resultCtx.VOID()) {
         const returnTypeCtx = resultCtx.unannType();
         if (returnTypeCtx) {
-            returnType = applyAdditionalDims(
-                parseType(returnTypeCtx),
-                getDimsCount(methodDeclarator.dims()),
-            );
+            returnType = parseType(returnTypeCtx, tokenStream);
         }
     }
 
     const parameters = parseMethodParameters(methodDeclarator.formalParameterList(), tokenStream);
 
     const typeParametersCtx = methodHeader.typeParameters();
-    const typeParameters = typeParametersCtx ? parseTypeParameters(typeParametersCtx) : [];
+    const typeParameters = typeParametersCtx
+        ? parseTypeParameters(typeParametersCtx, tokenStream)
+        : [];
 
-    const throwsTypes = parseThrows(methodHeader.throwsT());
+    const throwsTypes = parseThrows(methodHeader.throwsT(), tokenStream);
 
     return {
         name: methodName,
@@ -641,7 +738,10 @@ const parseConstructor = (
 ): JavaConstructor => {
     const constructorDeclarator = ctx.constructorDeclarator();
     const name = constructorDeclarator.simpleTypeName().typeIdentifier().getText();
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.constructorModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(
+        ctx.constructorModifier(),
+        tokenStream,
+    );
 
     const parameters = parseMethodParameters(
         constructorDeclarator.formalParameterList(),
@@ -649,9 +749,11 @@ const parseConstructor = (
     );
 
     const typeParametersCtx = constructorDeclarator.typeParameters();
-    const typeParameters = typeParametersCtx ? parseTypeParameters(typeParametersCtx) : [];
+    const typeParameters = typeParametersCtx
+        ? parseTypeParameters(typeParametersCtx, tokenStream)
+        : [];
 
-    const throwsTypes = parseThrows(ctx.throwsT());
+    const throwsTypes = parseThrows(ctx.throwsT(), tokenStream);
 
     return {
         name,
@@ -661,6 +763,7 @@ const parseConstructor = (
         annotations,
         typeParameters,
         throws: throwsTypes,
+        rawBody: getRawTextByCtx(tokenStream, ctx.constructorBody()),
     };
 };
 
@@ -732,10 +835,12 @@ const parseClass = (
         ctx.typeIdentifier().Identifier()?.getText() || ctx.typeIdentifier().getText();
     if (!className) return;
 
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.classModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.classModifier(), tokenStream);
 
     const typeParametersCtx = ctx.typeParameters();
-    const typeParameters = typeParametersCtx ? parseTypeParameters(typeParametersCtx) : [];
+    const typeParameters = typeParametersCtx
+        ? parseTypeParameters(typeParametersCtx, tokenStream)
+        : [];
 
     const superClass = ctx.classExtends()?.classType()?.getText();
 
@@ -752,10 +857,7 @@ const parseClass = (
     const inner = createEmptyInner();
 
     const bodyDeclarations = ctx.classBody()?.classBodyDeclaration() || [];
-    for (let i = 0; i < bodyDeclarations.length; i++) {
-        const bodyDecl = bodyDeclarations[i];
-        if (!bodyDecl) continue;
-
+    for (const bodyDecl of bodyDeclarations) {
         const constructorDecl = bodyDecl.constructorDeclaration();
         if (constructorDecl) {
             constructors.push(parseConstructor(constructorDecl, tokenStream));
@@ -797,13 +899,13 @@ const parseRecordComponent = (
     if (variableArity) {
         const {modifiers, annotations} = parseModifiersAndAnnotations(
             variableArity.recordComponentModifier(),
+            tokenStream,
         );
-        const inlineAnnotations = parseAnnotations(variableArity.annotation() || []);
-        const type = applyAdditionalDims(parseType(variableArity.unannType()), 1);
+        const inlineAnnotations = parseAnnotations(variableArity.annotation() || [], tokenStream);
         return {
             name: variableArity.identifier().getText(),
             comments: getCommentsBeforeToken(tokenStream, variableArity.start?.tokenIndex),
-            type,
+            type: parseType(variableArity.unannType(), tokenStream),
             modifiers,
             annotations: [...annotations, ...inlineAnnotations],
             isVarArgs: true,
@@ -814,11 +916,14 @@ const parseRecordComponent = (
     const idCtx = ctx.identifier();
     if (!typeCtx || !idCtx) return;
 
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.recordComponentModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(
+        ctx.recordComponentModifier(),
+        tokenStream,
+    );
     return {
         name: idCtx.getText(),
         comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
-        type: parseType(typeCtx),
+        type: parseType(typeCtx, tokenStream),
         modifiers,
         annotations,
     };
@@ -828,7 +933,10 @@ const parseCompactConstructor = (
     ctx: CompactConstructorDeclarationContext,
     tokenStream: CommonTokenStream,
 ): JavaConstructor => {
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.constructorModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(
+        ctx.constructorModifier(),
+        tokenStream,
+    );
     return {
         name: ctx.simpleTypeName()?.typeIdentifier().Identifier()?.getText() || '',
         comments: getCommentsBeforeToken(tokenStream, ctx.start?.tokenIndex),
@@ -837,6 +945,7 @@ const parseCompactConstructor = (
         annotations,
         typeParameters: [],
         throws: [],
+        rawBody: getRawTextByCtx(tokenStream, ctx.constructorBody()),
     };
 };
 
@@ -848,10 +957,12 @@ const parseRecord = (
         ctx.typeIdentifier()?.Identifier()?.getText() || ctx.typeIdentifier()?.getText();
     if (!recordName) return;
 
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.classModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.classModifier(), tokenStream);
 
     const typeParametersCtx = ctx.typeParameters();
-    const typeParameters = typeParametersCtx ? parseTypeParameters(typeParametersCtx) : [];
+    const typeParameters = typeParametersCtx
+        ? parseTypeParameters(typeParametersCtx, tokenStream)
+        : [];
 
     const interfaces: string[] = [];
     const interfaceList = ctx.classImplements()?.interfaceTypeList()?.interfaceType() || [];
@@ -881,10 +992,7 @@ const parseRecord = (
     const inner = createEmptyInner();
 
     const bodyDeclarations = ctx.recordBody()?.recordBodyDeclaration() || [];
-    for (let i = 0; i < bodyDeclarations.length; i++) {
-        const recordBodyDecl = bodyDeclarations[i];
-        if (!recordBodyDecl) continue;
-
+    for (const recordBodyDecl of bodyDeclarations) {
         const compactConstructorDecl = recordBodyDecl.compactConstructorDeclaration();
         if (compactConstructorDecl) {
             constructors.push(parseCompactConstructor(compactConstructorDecl, tokenStream));
@@ -935,7 +1043,10 @@ const parseInterface = (
         ctx.typeIdentifier()?.Identifier()?.getText() || ctx.typeIdentifier()?.getText();
     if (!interfaceName) return;
 
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.interfaceModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(
+        ctx.interfaceModifier(),
+        tokenStream,
+    );
 
     const interfaces: string[] = [];
     const interfaceList = ctx.interfaceExtends()?.interfaceTypeList()?.interfaceType() || [];
@@ -945,7 +1056,9 @@ const parseInterface = (
     }
 
     const typeParametersCtx = ctx.typeParameters();
-    const typeParameters = typeParametersCtx ? parseTypeParameters(typeParametersCtx) : [];
+    const typeParameters = typeParametersCtx
+        ? parseTypeParameters(typeParametersCtx, tokenStream)
+        : [];
 
     const fields: JavaField[] = [];
     const methods: JavaMethod[] = [];
@@ -990,7 +1103,7 @@ const parseEnum = (
         ctx.typeIdentifier()?.Identifier()?.getText() || ctx.typeIdentifier()?.getText();
     if (!enumName) return;
 
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.classModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.classModifier(), tokenStream);
 
     const interfaces: string[] = [];
     const interfaceList = ctx.classImplements()?.interfaceTypeList()?.interfaceType() || [];
@@ -1002,12 +1115,9 @@ const parseEnum = (
     const enumItems: JavaEnumItem[] = [];
     const bodyCtx = ctx.enumBody();
     const constantList = bodyCtx?.enumConstantList()?.enumConstant() || [];
-    for (let i = 0; i < constantList.length; i++) {
-        const constant = constantList[i];
-        if (!constant) continue;
-
+    for (const constant of constantList) {
         const {modifiers: enumModifiers, annotations: enumAnnotations} =
-            parseModifiersAndAnnotations(constant.enumConstantModifier());
+            parseModifiersAndAnnotations(constant.enumConstantModifier(), tokenStream);
         const itemArguments: string[] = [];
         const argList = constant.argumentList()?.expression() || [];
         for (let j = 0; j < argList.length; j++) {
@@ -1078,8 +1188,9 @@ const parseAnnotationInterfaceField = (
 
     const {modifiers, annotations} = parseModifiersAndAnnotations(
         elementDeclareCtx.annotationInterfaceElementModifier(),
+        tokenStream,
     );
-    const type = parseType(elementDeclareCtx.unannType());
+    const type = parseType(elementDeclareCtx.unannType(), tokenStream);
 
     const defaultValue = elementDeclareCtx.defaultValue()?.elementValue()?.getText();
 
@@ -1101,7 +1212,10 @@ const parseAnnotationInterface = (
         ctx.typeIdentifier()?.Identifier()?.getText() || ctx.typeIdentifier()?.getText();
     if (!interfaceName) return;
 
-    const {modifiers, annotations} = parseModifiersAndAnnotations(ctx.interfaceModifier());
+    const {modifiers, annotations} = parseModifiersAndAnnotations(
+        ctx.interfaceModifier(),
+        tokenStream,
+    );
     const inner = createEmptyInner();
 
     const members = ctx.annotationInterfaceBody()?.annotationInterfaceMemberDeclaration() || [];
@@ -1190,7 +1304,7 @@ class CustomJavaListener extends Java20ParserListener {
     public interfaces: JavaInterface[] = [];
     public annotationInterfaces: JavaAnnotationInterface[] = [];
 
-    private tokenStream: CommonTokenStream;
+    private readonly tokenStream: CommonTokenStream;
 
     constructor(tokenStream: CommonTokenStream) {
         super();

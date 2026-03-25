@@ -1,56 +1,62 @@
 export type JavaAnnotationParameter = {
     name: string;
-    value: string | JavaAnnotationParameter[];
+    rawValue: string;
 };
 
 export type JavaAnnotation = {
+    raw: string;
     name: string;
     parameters: JavaAnnotationParameter[];
 };
 
 export type JavaTypeParameterAdditionalBound = {
-    name: string;
     raw: string;
-    typeArguments?: JavaTypeArgument[];
+    typeName: string;
+    typeArguments: JavaTypeArgument[];
 };
 
 export type JavaTypeParameterBound = {
-    name: string;
     raw: string;
-    isArray?: boolean;
-    arrayDimensions?: number;
-    typeArguments?: JavaTypeArgument[];
-    additionalBounds?: JavaTypeParameterAdditionalBound[];
+    typeName: string;
+    typeArguments: JavaTypeArgument[];
+    additionalBounds: JavaTypeParameterAdditionalBound[];
 };
 
 export type JavaTypeParameter = {
-    name: string;
+    raw: string;
+    typeName: string;
     modifiers: string[];
     annotations: JavaAnnotation[];
-    bound?: JavaTypeParameterBound;
+    bound: JavaTypeParameterBound | undefined;
 };
 
 export type JavaWildcardBound = {
     kind: 'extends' | 'super';
-    type: string;
+    type: JavaType;
 };
 
-export type JavaTypeArgument = {
-    kind: 'type' | 'wildcard';
-    name: string;
-    isArray: boolean;
-    arrayDimensions?: number;
-    typeArguments?: JavaTypeArgument[];
-    wildcardBound?: JavaWildcardBound;
-    raw?: string;
-};
+export type JavaTypeArgument =
+    | {
+          raw: string;
+          kind: 'type';
+          typeName: string;
+          isArray: boolean;
+          arrayDimensions?: number;
+          typeArguments: JavaTypeArgument[];
+      }
+    | {
+          raw: string;
+          kind: 'wildcard';
+          wildcardBound?: JavaWildcardBound;
+          annotations: JavaAnnotation[];
+      };
 
 export type JavaType = {
+    raw: string;
     name: string;
     isArray: boolean;
     arrayDimensions?: number;
-    typeArguments?: JavaTypeArgument[];
-    raw?: string;
+    typeArguments: JavaTypeArgument[];
 };
 
 export type JavaImport = {
@@ -97,6 +103,7 @@ export type JavaConstructor = {
     annotations: JavaAnnotation[];
     typeParameters: JavaTypeParameter[];
     throws: JavaType[];
+    rawBody: string;
 };
 
 export type JavaRecordComponent = {
