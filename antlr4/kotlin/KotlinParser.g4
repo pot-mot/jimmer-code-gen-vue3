@@ -81,7 +81,7 @@ classParameters
     ;
 
 classParameter
-    : modifierList? (VAL | VAR)? simpleIdentifier COLON type (ASSIGNMENT expression)?
+    : modifierList? (VAL | VAR)? simpleIdentifier COLON type ((NL* ASSIGNMENT NL* expression) | (NL* BY NL* expression))?
     ;
 
 delegationSpecifiers
@@ -95,11 +95,15 @@ delegationSpecifier
     ;
 
 constructorInvocation
-    : userType callSuffix
+    : userType typeArguments? valueArguments?
     ;
 
 explicitDelegation
-    : userType NL* BY NL* expression
+    : userType NL* BY NL* explicitDelegationTarget
+    ;
+
+explicitDelegationTarget
+    : userType | constructorInvocation
     ;
 
 classBody
@@ -147,7 +151,7 @@ enumEntry
     ;
 
 functionDeclaration
-    : functionModifierList? FUN (NL* type NL* DOT)? (NL* typeParameters)? (NL* receiverType NL* DOT)? (
+    : functionModifierList? FUN (NL* typeParameters)? (NL* receiverType NL* DOT)? (
         NL* identifier
     )? NL* functionValueParameters (NL* COLON NL* type)? (NL* typeConstraints)? (NL* functionBody)?
     ;

@@ -20,6 +20,7 @@ import { DelegationSpecifiersContext } from "./KotlinParser.js";
 import { DelegationSpecifierContext } from "./KotlinParser.js";
 import { ConstructorInvocationContext } from "./KotlinParser.js";
 import { ExplicitDelegationContext } from "./KotlinParser.js";
+import { ExplicitDelegationTargetContext } from "./KotlinParser.js";
 import { ClassBodyContext } from "./KotlinParser.js";
 import { ClassMemberDeclarationContext } from "./KotlinParser.js";
 import { AnonymousInitializerContext } from "./KotlinParser.js";
@@ -340,6 +341,16 @@ export class KotlinParserListener implements ParseTreeListener {
      * @param ctx the parse tree
      */
     exitExplicitDelegation?: (ctx: ExplicitDelegationContext) => void;
+    /**
+     * Enter a parse tree produced by `KotlinParser.explicitDelegationTarget`.
+     * @param ctx the parse tree
+     */
+    enterExplicitDelegationTarget?: (ctx: ExplicitDelegationTargetContext) => void;
+    /**
+     * Exit a parse tree produced by `KotlinParser.explicitDelegationTarget`.
+     * @param ctx the parse tree
+     */
+    exitExplicitDelegationTarget?: (ctx: ExplicitDelegationTargetContext) => void;
     /**
      * Enter a parse tree produced by `KotlinParser.classBody`.
      * @param ctx the parse tree

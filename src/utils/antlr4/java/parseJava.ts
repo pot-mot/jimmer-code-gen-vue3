@@ -57,6 +57,7 @@ import type {
     JavaEnum,
     JavaEnumItem,
     JavaField,
+    JavaFile,
     JavaImport,
     JavaInner,
     JavaInterface,
@@ -1350,17 +1351,7 @@ class CustomJavaListener extends Java20ParserListener {
     };
 }
 
-export const parseJava = (
-    code: string,
-): {
-    packageName: string;
-    imports: JavaImport[];
-    classes: JavaClass[];
-    enums: JavaEnum[];
-    records: JavaRecord[];
-    interfaces: JavaInterface[];
-    annotationInterfaces: JavaAnnotationInterface[];
-} => {
+export const parseJava = (code: string): JavaFile => {
     const inputStream = CharStream.fromString(code);
     const lexer = new Java20Lexer(inputStream);
     const tokens = new CommonTokenStream(lexer);

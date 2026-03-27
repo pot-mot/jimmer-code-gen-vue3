@@ -201,3 +201,13 @@ export type JavaInner = {
     interfaces: JavaInterface[];
     annotationInterfaces: JavaAnnotationInterface[];
 };
+
+export type JavaFile = {
+    packageName: string;
+    imports: JavaImport[];
+    classes: JavaClass[];
+    enums: JavaEnum[];
+    records: JavaRecord[];
+    interfaces: JavaInterface[];
+    annotationInterfaces: JavaAnnotationInterface[];
+};
