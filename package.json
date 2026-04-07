@@ -71,7 +71,7 @@
         "prettier": "^3.8.1",
         "tsx": "^4.21.0",
         "typescript-json-schema": "^0.65.1",
-        "vite": "^8.0.1",
+        "vite": "^8.0.5",
         "vitest": "^4.1.0",
         "vue-tsc": "^3.2.6"
     }
