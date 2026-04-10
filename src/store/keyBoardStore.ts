@@ -1,4 +1,4 @@
-import {onUnmounted, readonly, ref, watch} from 'vue';
+import {onBeforeUnmount, readonly, ref, watch} from 'vue';
 import {createStore} from '@/utils/store/createStore.ts';
 
 const ctrlKey = ref(false);
@@ -55,7 +55,7 @@ export const initKeyboardStore = () => {
     window.addEventListener('keydown', handleKeyDown, {capture: true});
     window.addEventListener('keyup', handleKeyUp, {capture: true});
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
         window.removeEventListener('keydown', handleKeyDown);
         window.removeEventListener('keyup', handleKeyUp);
     });

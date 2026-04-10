@@ -1,4 +1,4 @@
-import {onUnmounted, readonly, ref, watch} from 'vue';
+import {onBeforeUnmount, readonly, ref, watch} from 'vue';
 import {createStore} from '@/utils/store/createStore.ts';
 import {throttle} from 'lodash-es';
 
@@ -68,7 +68,7 @@ export const initDeviceStore = () => {
     }
     window.addEventListener('resize', handleResize);
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
         if (window.visualViewport) {
             window.visualViewport.removeEventListener('resize', handleResize);
             window.visualViewport.removeEventListener('scroll', handleScroll);

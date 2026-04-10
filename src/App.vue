@@ -10,11 +10,12 @@ import {languageTypes, useI18nStore} from '@/store/i18nStore.ts';
 import {initTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import {initScriptDialog} from '@/modelEditor/script/useScriptDialog.ts';
 
-withLoading('Initialize Store', async () => {
-    initDeviceStore();
-    initThemeStore();
-    initFocusTargetStore();
-    initKeyboardStore();
+initDeviceStore();
+initThemeStore();
+initFocusTargetStore();
+initKeyboardStore();
+
+withLoading('Initialize Script and TypeMapping', async () => {
     await Promise.all([initScriptDialog(), initTypeMapping()]);
 });
 
