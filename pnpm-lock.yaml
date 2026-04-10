@@ -24,11 +24,11 @@ importers:
         specifier: ^1.6.1
         version: 1.6.1(typescript@5.9.3)
       '@vue-flow/core':
-        specifier: ^1.46.5
-        version: 1.46.5(vue@3.5.30(typescript@5.9.3))
+        specifier: ^1.48.2
+        version: 1.48.2(vue@3.5.30(typescript@5.9.3))
       '@vue-flow/node-toolbar':
         specifier: ^1.1.1
-        version: 1.1.1(@vue-flow/core@1.46.5(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))
+        version: 1.1.1(@vue-flow/core@1.48.2(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))
       ajv:
         specifier: ^8.18.0
         version: 8.18.0
@@ -748,8 +748,8 @@ packages:
   '@volar/typescript@2.4.28':
     resolution: {integrity: sha512-Ja6yvWrbis2QtN4ClAKreeUZPVYMARDYZl9LMEv1iQ1QdepB6wn0jTRxA9MftYmYa4DQ4k/DaSZpFPUfxl8giw==}
 
-  '@vue-flow/core@1.46.5':
-    resolution: {integrity: sha512-G1m9qNhCTgzw9K5Q8ZcRKbCXssgytWj00R/THUQA9fdO6oYJfBR8kwbI5tA+WHYHTRSCUvgz4xvp0wlF0tSaVg==}
+  '@vue-flow/core@1.48.2':
+    resolution: {integrity: sha512-raxhgKWE+G/mcEvXJjGFUDYW9rAI3GOtiHR3ZkNpwBWuIaCC1EYiBmKGwJOoNzVFgwO7COgErnK7i08i287AFA==}
     peerDependencies:
       vue: ^3.3.0
 
@@ -2545,7 +2545,7 @@ snapshots:
       path-browserify: 1.0.1
       vscode-uri: 3.1.0
 
-  '@vue-flow/core@1.46.5(vue@3.5.30(typescript@5.9.3))':
+  '@vue-flow/core@1.48.2(vue@3.5.30(typescript@5.9.3))':
     dependencies:
       '@vueuse/core': 10.11.1(vue@3.5.30(typescript@5.9.3))
       d3-drag: 3.0.0
@@ -2556,9 +2556,9 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
 
-  '@vue-flow/node-toolbar@1.1.1(@vue-flow/core@1.46.5(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))':
+  '@vue-flow/node-toolbar@1.1.1(@vue-flow/core@1.48.2(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))':
     dependencies:
-      '@vue-flow/core': 1.46.5(vue@3.5.30(typescript@5.9.3))
+      '@vue-flow/core': 1.48.2(vue@3.5.30(typescript@5.9.3))
       vue: 3.5.30(typescript@5.9.3)
 
   '@vue/compiler-core@3.5.30':

@@ -28,7 +28,7 @@
         "@potmot/list": "^0.0.7",
         "@progress/jszip-esm": "^1.0.4",
         "@typescript/vfs": "^1.6.1",
-        "@vue-flow/core": "^1.46.5",
+        "@vue-flow/core": "^1.48.2",
         "@vue-flow/node-toolbar": "^1.1.1",
         "ajv": "^8.18.0",
         "clipboard-polyfill": "^4.1.1",

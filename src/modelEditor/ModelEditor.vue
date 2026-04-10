@@ -14,6 +14,7 @@ import AbstractAssociationEdge from '@/modelEditor/edge/AbstractAssociationEdge.
 import ModelEditorSelectionRect from '@/modelEditor/selectionRect/ModelEditorSelectionRect.vue';
 import {useModelContextMenu} from '@/modelEditor/contextMenu/useModelContextMenu.ts';
 import {subIdSetToSubIds} from '@/modelEditor/utils/ModelSubIds.ts';
+import HelperLines from '@/modelEditor/helperLines/HelperLines.vue';
 
 const {
     initModelEditor,
@@ -168,6 +169,8 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             no-drag-class-name="no-drag"
             no-wheel-class-name="no-wheel"
             :disable-keyboard-a11y="true"
+            :snap-grid="[1, 1]"
+            snap-to-grid
             @contextmenu.capture="
                 (e: MouseEvent) => {
                     if (judgeTargetIsInteraction(e)) return;
@@ -277,6 +280,8 @@ const handleKeyDown = async (e: KeyboardEvent) => {
                 />
             </template>
         </VueFlow>
+
+        <HelperLines />
 
         <ModelEditorSelectionRect :rect="selectionRect" />
 
