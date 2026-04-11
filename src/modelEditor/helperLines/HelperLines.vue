@@ -312,9 +312,13 @@ const handleNodeBatchPositionChange = (changes: NodePositionChange[]) => {
     // 使用最佳匹配的snapLines进行显示
     if (bestSnapXResult && bestSnapXBounds) {
         setVSnapLines(bestSnapXResult.verticalMap, bestSnapXBounds);
+    } else {
+        vSnapLines = undefined;
     }
     if (bestSnapYResult && bestSnapYBounds) {
         setHSnapLines(bestSnapYResult.horizontalMap, bestSnapYBounds);
+    } else {
+        hSnapLines = undefined;
     }
     hSpacingLines = undefined;
     vSpacingLines = undefined;
