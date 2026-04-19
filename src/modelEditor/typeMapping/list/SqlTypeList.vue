@@ -2,7 +2,8 @@
 import {EditList} from '@potmot/list';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import type {SqlTypeInput, SqlTypeUpdateInput, SqlTypeView} from '@/api/__generated/model/static';
-import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from 'vue';
+import type {ComponentExposed} from 'vue-component-type-helpers';
+import {ref, type VNodeRef, watch} from 'vue';
 import IconEdit from '@/components/icons/IconEdit.vue';
 import {cloneDeepReadonlyRaw} from '@/utils/type/cloneDeepReadonly.ts';
 import SqlTypeEditor from '@/modelEditor/typeMapping/item/SqlTypeEditor.vue';
@@ -52,27 +53,24 @@ const debounceSynUpdate = debounce(async (inputs: SqlTypeInput[]) => {
     oldSqlTypeInputs = clonedInputs;
 }, 500);
 
-let stopWatch: WatchStopHandle | undefined;
-const addWatcher = () => {
-    stopWatch = watch(
-        () => sqlTypeInputs.value,
-        (inputs) => {
-            debounceSynUpdate(inputs);
-        },
-        {deep: true},
-    );
-};
+const stopWatch = watch(
+    () => sqlTypeInputs.value,
+    (inputs) => {
+        debounceSynUpdate(inputs);
+    },
+    {deep: true},
+);
 history.registerCommand('change', {
     applyAction: (options) => {
-        stopWatch?.();
+        stopWatch.pause();
         sqlTypeInputs.value = cloneDeepReadonlyRaw<SqlTypeInput[]>(options.newValue);
-        addWatcher();
+        stopWatch.resume();
         return options;
     },
     revertAction: (options) => {
-        stopWatch?.();
+        stopWatch.pause();
         sqlTypeInputs.value = cloneDeepReadonlyRaw<SqlTypeInput[]>(options.oldValue);
-        addWatcher();
+        stopWatch.resume();
         return options;
     },
 });
@@ -81,7 +79,6 @@ const startEdit = () => {
     viewEditMap.value.clear();
     sqlTypeInputs.value = cloneDeepReadonlyRaw<SqlTypeInput[]>(sqlTypes.value);
     oldSqlTypeInputs = cloneDeepReadonlyRaw<SqlTypeInput[]>(sqlTypes.value);
-    addWatcher();
     isEdit.value = true;
 };
 
@@ -91,20 +88,14 @@ const handleCancel = () => {
     isEdit.value = false;
 };
 
-const sqlTypeEditorRefs = ref<(ComponentPublicInstance<typeof SqlTypeEditor> | null)[]>([]);
-const setSqlTypeEditorRef = (
-    index: number,
-    ref: Element | ComponentPublicInstance<typeof SqlTypeEditor> | null,
-) => {
-    if (ref instanceof Element) {
-        sqlTypeEditorRefs.value[index] = null;
-    } else {
-        sqlTypeEditorRefs.value[index] = ref;
-    }
+type EditorType = ComponentExposed<typeof SqlTypeEditor>;
+const sqlTypeEditorRefs = ref<(EditorType | null)[]>([]);
+const setSqlTypeEditorRef = (index: number, ref: EditorType | null) => {
+    sqlTypeEditorRefs.value[index] = ref;
 };
 const handleSubmit = async () => {
     for (const editor of sqlTypeEditorRefs.value) {
-        if (editor !== null && !editor.validateForm()) return;
+        if (editor && !editor.validateForm()) return;
     }
     await sqlTypeOps.save(sqlTypeInputs.value);
     history.clean();
@@ -222,7 +213,7 @@ const moveDown = async (index: number) => {
     >
         <EditList
             v-model:lines="sqlTypeInputs"
-            :to-key="(item, index) => item.id ?? String(index)"
+            :to-key="(item: SqlTypeInput, index: number) => item.id ?? String(index)"
             :default-line="defaultSqlType"
             :paste-validator="validateSqlType"
             :before-paste="beforePaste"
@@ -230,8 +221,10 @@ const moveDown = async (index: number) => {
             <template #line="{index}">
                 <div class="edit-line">
                     <SqlTypeEditor
+                        :ref="
+                            ((el: EditorType | null) => setSqlTypeEditorRef(index, el)) as VNodeRef
+                        "
                         v-model="sqlTypeInputs[index]!!"
-                        :ref="(el) => setSqlTypeEditorRef(index, el)"
                     />
                     <button
                         @click="removeItem(index)"
@@ -286,11 +279,13 @@ const moveDown = async (index: number) => {
             >
                 <template v-if="viewEditMap.has(item.id)">
                     <SqlTypeEditor
+                        :ref="
+                            ((el: EditorType | null) => setSqlTypeEditorRef(index, el)) as VNodeRef
+                        "
                         :model-value="viewEditMap.get(item.id)!!"
                         @update:model-value="
-                            (value) => viewEditMap.set(item.id, value as SqlTypeUpdateInput)
+                            (value: SqlTypeUpdateInput) => viewEditMap.set(item.id, value)
                         "
-                        :ref="(el) => setSqlTypeEditorRef(index, el)"
                         class="view-edit-item"
                     >
                         <template #header>

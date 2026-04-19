@@ -1,9 +1,5 @@
-<script setup lang="ts">
-import type {
-    SqlTypeInput,
-    SqlTypeInput_TargetOf_jvmMatchRules,
-    SqlTypeInput_TargetOf_tsMatchRules,
-} from '@/api/__generated/model/static';
+<script setup lang="ts" generic="T extends SqlTypeInput | SqlTypeUpdateInput">
+import type {SqlTypeInput, SqlTypeUpdateInput} from '@/api/__generated/model/static';
 import {EditList} from '@potmot/list';
 import JvmLanguageOrAnySelect from '@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue';
 import IconDelete from '@/components/icons/IconDelete.vue';
@@ -15,20 +11,23 @@ import CollapseDetail from '@/components/collapse/CollapseDetail.vue';
 import DatabaseTypeOrAnySelect from '@/modelEditor/modelForm/databaseType/DatabaseTypeOrAnySelect.vue';
 import {validateRegExp} from '@/utils/regExp/parseRegExp.ts';
 
-const sqlTypeInput = defineModel<SqlTypeInput>({
+type JvmMatchRule = T['jvmMatchRules'][number];
+type TsMatchRule = T['tsMatchRules'][number];
+
+const sqlTypeInput = defineModel<T>({
     required: true,
 });
 
 const openState = ref(false);
 
-const defaultJvmMatchRule = (): SqlTypeInput_TargetOf_jvmMatchRules => {
+const defaultJvmMatchRule = (): JvmMatchRule => {
     return {
         jvmSource: 'ANY',
         matchRegExp: '',
     };
 };
 
-const defaultTsMatchRule = (): SqlTypeInput_TargetOf_tsMatchRules => {
+const defaultTsMatchRule = (): TsMatchRule => {
     return {
         matchRegExp: '',
     };
@@ -171,7 +170,7 @@ defineExpose({
                 <span class="label no-drag">{{ translate('jvmMatchRules') }}</span>
                 <EditList
                     v-model:lines="sqlTypeInput.jvmMatchRules"
-                    :to-key="(item, index) => item.id ?? String(index)"
+                    :to-key="(item: JvmMatchRule, index: number) => item.id ?? String(index)"
                     :default-line="defaultJvmMatchRule"
                     :paste-validator="isString"
                 >
@@ -215,7 +214,7 @@ defineExpose({
                 <span class="label no-drag">{{ translate('tsMatchRules') }}</span>
                 <EditList
                     v-model:lines="sqlTypeInput.tsMatchRules"
-                    :to-key="(item, index) => item.id ?? String(index)"
+                    :to-key="(item: TsMatchRule, index: number) => item.id ?? String(index)"
                     :default-line="defaultTsMatchRule"
                     :paste-validator="validateTsMatchRule"
                 >

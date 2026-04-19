@@ -2,7 +2,8 @@
 import {EditList} from '@potmot/list';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import type {TsTypeInput, TsTypeUpdateInput, TsTypeView} from '@/api/__generated/model/static';
-import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from 'vue';
+import type {ComponentExposed} from 'vue-component-type-helpers';
+import {ref, type VNodeRef, watch} from 'vue';
 import IconEdit from '@/components/icons/IconEdit.vue';
 import {cloneDeepReadonlyRaw} from '@/utils/type/cloneDeepReadonly.ts';
 import TsTypeEditor from '@/modelEditor/typeMapping/item/TsTypeEditor.vue';
@@ -52,27 +53,24 @@ const debounceSynUpdate = debounce(async (inputs: TsTypeInput[]) => {
     oldTsTypeInputs = clonedInputs;
 }, 500);
 
-let stopWatch: WatchStopHandle | undefined;
-const addWatcher = () => {
-    stopWatch = watch(
-        () => tsTypeInputs.value,
-        (inputs) => {
-            debounceSynUpdate(inputs);
-        },
-        {deep: true},
-    );
-};
+const stopWatch = watch(
+    () => tsTypeInputs.value,
+    (inputs) => {
+        debounceSynUpdate(inputs);
+    },
+    {deep: true},
+);
 history.registerCommand('change', {
     applyAction: (options) => {
-        stopWatch?.();
+        stopWatch.pause();
         tsTypeInputs.value = cloneDeepReadonlyRaw<TsTypeInput[]>(options.newValue);
-        addWatcher();
+        stopWatch.resume();
         return options;
     },
     revertAction: (options) => {
-        stopWatch?.();
+        stopWatch.pause();
         tsTypeInputs.value = cloneDeepReadonlyRaw<TsTypeInput[]>(options.oldValue);
-        addWatcher();
+        stopWatch.resume();
         return options;
     },
 });
@@ -81,7 +79,6 @@ const startEdit = () => {
     viewEditMap.value.clear();
     tsTypeInputs.value = cloneDeepReadonlyRaw<TsTypeInput[]>(tsTypes.value);
     oldTsTypeInputs = cloneDeepReadonlyRaw<TsTypeInput[]>(tsTypes.value);
-    addWatcher();
     isEdit.value = true;
 };
 
@@ -91,20 +88,14 @@ const handleCancel = () => {
     isEdit.value = false;
 };
 
-const tsTypeEditorRefs = ref<(ComponentPublicInstance<typeof TsTypeEditor> | null)[]>([]);
-const setTsTypeEditorRef = (
-    index: number,
-    ref: Element | ComponentPublicInstance<typeof TsTypeEditor> | null,
-) => {
-    if (ref instanceof Element) {
-        tsTypeEditorRefs.value[index] = null;
-    } else {
-        tsTypeEditorRefs.value[index] = ref;
-    }
+type EditorType = ComponentExposed<typeof TsTypeEditor>;
+const tsTypeEditorRefs = ref<(EditorType | null)[]>([]);
+const setTsTypeEditorRef = (index: number, ref: EditorType | null) => {
+    tsTypeEditorRefs.value[index] = ref;
 };
 const handleSubmit = async () => {
     for (const editor of tsTypeEditorRefs.value) {
-        if (editor !== null && !editor.validateForm()) return;
+        if (editor && !editor.validateForm()) return;
     }
     await tsTypeOps.save(tsTypeInputs.value);
     history.clean();
@@ -219,7 +210,7 @@ const moveDown = async (index: number) => {
     >
         <EditList
             v-model:lines="tsTypeInputs"
-            :to-key="(item, index) => item.id ?? String(index)"
+            :to-key="(item: TsTypeInput, index: number) => item.id ?? String(index)"
             :default-line="defaultTsType"
             :paste-validator="validateTsType"
             :before-paste="beforePaste"
@@ -227,8 +218,10 @@ const moveDown = async (index: number) => {
             <template #line="{index}">
                 <div class="edit-line">
                     <TsTypeEditor
+                        :ref="
+                            ((el: EditorType | null) => setTsTypeEditorRef(index, el)) as VNodeRef
+                        "
                         v-model="tsTypeInputs[index]!!"
-                        :ref="(el) => setTsTypeEditorRef(index, el)"
                     />
                     <button
                         @click="removeItem(index)"
@@ -283,11 +276,13 @@ const moveDown = async (index: number) => {
             >
                 <template v-if="viewEditMap.has(item.id)">
                     <TsTypeEditor
+                        :ref="
+                            ((el: EditorType | null) => setTsTypeEditorRef(index, el)) as VNodeRef
+                        "
                         :model-value="viewEditMap.get(item.id)!!"
                         @update:model-value="
-                            (value) => viewEditMap.set(item.id, value as TsTypeUpdateInput)
+                            (value: TsTypeUpdateInput) => viewEditMap.set(item.id, value)
                         "
-                        :ref="(el) => setTsTypeEditorRef(index, el)"
                         class="view-edit-item"
                     >
                         <template #header>

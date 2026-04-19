@@ -6,7 +6,8 @@ import type {
     CrossTypeUpdateInput,
     CrossTypeView,
 } from '@/api/__generated/model/static';
-import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from 'vue';
+import type {ComponentExposed} from 'vue-component-type-helpers';
+import {ref, type VNodeRef, watch, type WatchHandle} from 'vue';
 import IconEdit from '@/components/icons/IconEdit.vue';
 import {cloneDeepReadonlyRaw} from '@/utils/type/cloneDeepReadonly.ts';
 import CrossTypeEditor from '@/modelEditor/typeMapping/item/CrossTypeEditor.vue';
@@ -56,27 +57,25 @@ const debounceSynUpdate = debounce(async (inputs: CrossTypeInput[]) => {
     oldCrossTypeInputs = clonedInputs;
 }, 500);
 
-let stopWatch: WatchStopHandle | undefined;
-const addWatcher = () => {
-    stopWatch = watch(
-        () => crossTypeInputs.value,
-        (inputs) => {
-            debounceSynUpdate(inputs);
-        },
-        {deep: true},
-    );
-};
+const stopWatch: WatchHandle = watch(
+    () => crossTypeInputs.value,
+    (inputs) => {
+        debounceSynUpdate(inputs);
+    },
+    {deep: true},
+);
+
 history.registerCommand('change', {
     applyAction: (options) => {
-        stopWatch?.();
+        stopWatch.pause();
         crossTypeInputs.value = cloneDeepReadonlyRaw<CrossTypeInput[]>(options.newValue);
-        addWatcher();
+        stopWatch.resume();
         return options;
     },
     revertAction: (options) => {
-        stopWatch?.();
+        stopWatch.pause();
         crossTypeInputs.value = cloneDeepReadonlyRaw<CrossTypeInput[]>(options.oldValue);
-        addWatcher();
+        stopWatch.resume();
         return options;
     },
 });
@@ -85,7 +84,6 @@ const startEdit = () => {
     viewEditMap.value.clear();
     crossTypeInputs.value = cloneDeepReadonlyRaw<CrossTypeInput[]>(crossTypes.value);
     oldCrossTypeInputs = cloneDeepReadonlyRaw<CrossTypeInput[]>(crossTypes.value);
-    addWatcher();
     isEdit.value = true;
 };
 
@@ -95,20 +93,14 @@ const handleCancel = () => {
     isEdit.value = false;
 };
 
-const crossTypeEditorRefs = ref<(ComponentPublicInstance<typeof CrossTypeEditor> | null)[]>([]);
-const setCrossTypeEditorRef = (
-    index: number,
-    ref: Element | ComponentPublicInstance<typeof CrossTypeEditor> | null,
-) => {
-    if (ref instanceof Element) {
-        crossTypeEditorRefs.value[index] = null;
-    } else {
-        crossTypeEditorRefs.value[index] = ref;
-    }
+type EditorType = ComponentExposed<typeof CrossTypeEditor>;
+const crossTypeEditorRefs = ref<(EditorType | null)[]>([]);
+const setCrossTypeEditorRef = (index: number, ref: EditorType | null) => {
+    crossTypeEditorRefs.value[index] = ref;
 };
 const handleSubmit = async () => {
     for (const editor of crossTypeEditorRefs.value) {
-        if (editor !== null && !editor.validateForm()) return;
+        if (editor && !editor.validateForm()) return;
     }
     await crossTypeOps.save(crossTypeInputs.value);
     history.clean();
@@ -223,14 +215,20 @@ const moveDown = async (index: number) => {
     >
         <EditList
             v-model:lines="crossTypeInputs"
-            :to-key="(item, index) => item.id ?? String(index)"
+            :to-key="(item: CrossTypeInput, index: number) => item.id ?? String(index)"
             :default-line="defaultCrossType"
             :paste-validator="validateCrossType_IdOnly"
             :before-paste="beforePaste"
         >
             <template #line="{index}">
                 <div class="edit-line">
-                    <CrossTypeEditor v-model="crossTypeInputs[index]!!" />
+                    <CrossTypeEditor
+                        :ref="
+                            ((el: EditorType | null) =>
+                                setCrossTypeEditorRef(index, el)) as VNodeRef
+                        "
+                        v-model="crossTypeInputs[index]!!"
+                    />
                     <button
                         @click="removeItem(index)"
                         class="delete-button"
@@ -285,11 +283,14 @@ const moveDown = async (index: number) => {
                 <template v-if="viewEditMap.has(item.id)">
                     <div class="view-edit-item">
                         <CrossTypeEditor
+                            :ref="
+                                ((el: EditorType | null) =>
+                                    setCrossTypeEditorRef(index, el)) as VNodeRef
+                            "
                             :model-value="viewEditMap.get(item.id)!!"
                             @update:model-value="
-                                (value) => viewEditMap.set(item.id, value as CrossTypeUpdateInput)
+                                (value: CrossTypeUpdateInput) => viewEditMap.set(item.id, value)
                             "
-                            :ref="(el) => setCrossTypeEditorRef(index, el)"
                         />
                         <div class="view-item-actions">
                             <button

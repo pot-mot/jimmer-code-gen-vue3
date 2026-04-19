@@ -2,7 +2,8 @@
 import {EditList} from '@potmot/list';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import type {JvmTypeInput, JvmTypeUpdateInput, JvmTypeView} from '@/api/__generated/model/static';
-import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from 'vue';
+import type {ComponentExposed} from 'vue-component-type-helpers';
+import {ref, type VNodeRef, watch} from 'vue';
 import IconEdit from '@/components/icons/IconEdit.vue';
 import {cloneDeepReadonlyRaw} from '@/utils/type/cloneDeepReadonly.ts';
 import JvmTypeEditor from '@/modelEditor/typeMapping/item/JvmTypeEditor.vue';
@@ -52,27 +53,24 @@ const debounceSynUpdate = debounce(async (inputs: JvmTypeInput[]) => {
     oldJvmTypeInputs = clonedInputs;
 }, 500);
 
-let stopWatch: WatchStopHandle | undefined;
-const addWatcher = () => {
-    stopWatch = watch(
-        () => jvmTypeInputs.value,
-        (inputs) => {
-            debounceSynUpdate(inputs);
-        },
-        {deep: true},
-    );
-};
+const stopWatch = watch(
+    () => jvmTypeInputs.value,
+    (inputs) => {
+        debounceSynUpdate(inputs);
+    },
+    {deep: true},
+);
 history.registerCommand('change', {
     applyAction: (options) => {
-        stopWatch?.();
+        stopWatch.pause();
         jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(options.newValue);
-        addWatcher();
+        stopWatch.resume();
         return options;
     },
     revertAction: (options) => {
-        stopWatch?.();
+        stopWatch.pause();
         jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(options.oldValue);
-        addWatcher();
+        stopWatch.resume();
         return options;
     },
 });
@@ -81,7 +79,6 @@ const startEdit = () => {
     viewEditMap.value.clear();
     jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value);
     oldJvmTypeInputs = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value);
-    addWatcher();
     isEdit.value = true;
 };
 
@@ -91,20 +88,14 @@ const handleCancel = () => {
     isEdit.value = false;
 };
 
-const jvmTypeEditorRefs = ref<(ComponentPublicInstance<typeof JvmTypeEditor> | null)[]>([]);
-const setJvmTypeEditorRef = (
-    index: number,
-    ref: Element | ComponentPublicInstance<typeof JvmTypeEditor> | null,
-) => {
-    if (ref instanceof Element) {
-        jvmTypeEditorRefs.value[index] = null;
-    } else {
-        jvmTypeEditorRefs.value[index] = ref;
-    }
+type EditorType = ComponentExposed<typeof JvmTypeEditor>;
+const jvmTypeEditorRefs = ref<(EditorType | null)[]>([]);
+const setJvmTypeEditorRef = (index: number, ref: EditorType | null) => {
+    jvmTypeEditorRefs.value[index] = ref;
 };
 const handleSubmit = async () => {
     for (const editor of jvmTypeEditorRefs.value) {
-        if (editor !== null && !editor.validateForm()) return;
+        if (editor && !editor.validateForm()) return;
     }
     await jvmTypeOps.save(jvmTypeInputs.value);
     history.clean();
@@ -222,7 +213,7 @@ const moveDown = async (index: number) => {
     >
         <EditList
             v-model:lines="jvmTypeInputs"
-            :to-key="(item, index) => item.id ?? String(index)"
+            :to-key="(item: JvmTypeInput, index: number) => item.id ?? String(index)"
             :default-line="defaultJvmType"
             :paste-validator="validateJvmType"
             :before-paste="beforePaste"
@@ -230,8 +221,10 @@ const moveDown = async (index: number) => {
             <template #line="{index}">
                 <div class="edit-line">
                     <JvmTypeEditor
+                        :ref="
+                            ((el: EditorType | null) => setJvmTypeEditorRef(index, el)) as VNodeRef
+                        "
                         v-model="jvmTypeInputs[index]!!"
-                        :ref="(el) => setJvmTypeEditorRef(index, el)"
                     />
                     <button
                         @click="removeItem(index)"
@@ -286,11 +279,13 @@ const moveDown = async (index: number) => {
             >
                 <template v-if="viewEditMap.has(item.id)">
                     <JvmTypeEditor
+                        :ref="
+                            ((el: EditorType | null) => setJvmTypeEditorRef(index, el)) as VNodeRef
+                        "
                         :model-value="viewEditMap.get(item.id)!!"
                         @update:model-value="
-                            (value) => viewEditMap.set(item.id, value as JvmTypeUpdateInput)
+                            (value: JvmTypeUpdateInput) => viewEditMap.set(item.id, value)
                         "
-                        :ref="(el) => setJvmTypeEditorRef(index, el)"
                         class="view-edit-item"
                     >
                         <template #header>

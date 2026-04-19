@@ -168,6 +168,7 @@ export const resetTypeMapping = async () => {
         title: translate({key: 'reset_confirm_title', args: [translate('type_mapping')]}),
         content: translate({key: 'reset_confirm_content', args: [translate('type_mapping')]}),
         onConfirm: async () => {
+            // TODO create single backend api
             await withLoading('reset typeMapping', async () => {
                 await api.typeMappingService.deleteCrossType({
                     body: crossTypes.value.map((it) => it.id),

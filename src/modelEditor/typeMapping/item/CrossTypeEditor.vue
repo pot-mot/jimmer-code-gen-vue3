@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type {CrossTypeInput} from '@/api/__generated/model/static';
+<script setup lang="ts" generic="T extends CrossTypeInput | CrossTypeUpdateInput">
+import type {CrossTypeInput, CrossTypeUpdateInput} from '@/api/__generated/model/static';
 import {ref, watch} from 'vue';
 import {translate} from '@/store/i18nStore.ts';
 import JvmTypeSelect from '@/modelEditor/typeMapping/select/JvmTypeSelect.vue';
@@ -8,7 +8,7 @@ import TsTypeSelect from '@/modelEditor/typeMapping/select/TsTypeSelect.vue';
 import {useTypeMapping} from '@/modelEditor/typeMapping/useTypeMapping.ts';
 import NullableLimitSelect from '@/modelEditor/typeMapping/select/NullableLimitSelect.vue';
 
-const crossTypeInput = defineModel<CrossTypeInput>({
+const crossTypeInput = defineModel<T>({
     required: true,
 });
 
